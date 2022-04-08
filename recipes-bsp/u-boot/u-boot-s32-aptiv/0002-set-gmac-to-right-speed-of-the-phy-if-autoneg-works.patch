@@ -1,0 +1,33 @@
+From d0b84ecbe74d2de9721a1fc9f22aa452d2f60164 Mon Sep 17 00:00:00 2001
+From: Olaf Benninghaus <olaf.benninghaus@aptiv.com>
+Date: Wed, 30 Jun 2021 16:42:56 +0200
+Subject: [PATCH 2/2] set gmac to right speed of the phy if autoneg works
+
+---
+ drivers/net/dwc_eth_qos_s32cc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/dwc_eth_qos_s32cc.c b/drivers/net/dwc_eth_qos_s32cc.c
+index 3af176faed..cb2459b662 100644
+--- a/drivers/net/dwc_eth_qos_s32cc.c
++++ b/drivers/net/dwc_eth_qos_s32cc.c
+@@ -331,7 +331,7 @@ static int eqos_set_tx_clk_speed_s32cc(struct udevice *dev)
+ 
+ 	if (!eqos || !eqos->phy || !eqos->mac_regs)
+ 		return -ENODEV;
+-
++#if 0 /* OBE the gmac doesn't know the right speed OBE */
+ 	if (eqos->phy->phy_id != PHY_FIXED_ID) {
+ 		/*Auto neg.*/
+ 		u32 idx = (eqos->mac_regs->phy_if_ctrl_status
+@@ -351,6 +351,7 @@ static int eqos_set_tx_clk_speed_s32cc(struct udevice *dev)
+ 			break;
+ 		}
+ 	} else
++#endif
+ 		/*No auto neg.*/
+ 		speed = eqos->phy->speed;
+ 
+-- 
+2.25.1
+
