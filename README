@@ -281,3 +281,144 @@ By default, the u-boot image is compiled and installed. If you want u-boot to be
 compiled separately, use the following command：
 
         # bitbake u-boot-s32
+
+6.5 IPCF
+--------
+
+IPCF is short for "Inter-Platform Communication Framework" on NXP S32G
+platform, it is designed to work on various hardware platforms and operating
+systems. Prior to being used it needs to be integrated in the operating
+systems running on each platform. For S32G, to use this feature, users need
+to manually prepare application for M7 cores(refer to the following section
+6.6.1 "IPCF application on M7 side"), and the A53 linux side components
+have already integrated into wrlinux(please refer to the following section
+6.6.2 "Enable IPCF feature in wrlinux").
+
+6.5.1 IPCF application on M7 side
+---------------------------------
+
+Please note that, application on M7 side is not a pre-built binary file, it
+should be built manually, as preparation, the following(all of them can be
+found on Flexera) shoul be setup in the following order on user's local host
+machine:
+
+	1. S32 Design Studio 3.4
+	2. S32 Design Studio 3.4 Development Packages for Offline Use,
+	   Support for S32G Family
+	3. Real Time Drivers (RTD) 4.4 version 3.0.0 D2112 (use file
+	   with _updatesite.zip in the name and install through
+	   Extensions and Updates in S32 Design Studio)
+	4. IPCF version 4.5.0 D2201 (use file with _updatesite.zip in
+	   the name and install through Extensions and Updates in
+	   S32 Design Studio)
+
+For detail informations about the above packages setup, installation and
+build steps, please refer to the documents:
+
+	"S32DS_Installation_Guide_3.4.0.pdf"
+	"SW32_RTD_4.4_3.0.0_D2112_ReleaseNotes.pdf"
+	"SW32G_IPCF_4.5.0_D2201_ReleaseNotes.pdf"
+
+and etc., which can be found in related packages downloaded from flexra.
+
+And if the IPCF application on M7 side build successfully following the
+related documents, then users can find the binary files:
+
+	"IPCF_Example_S32G274.bin" and "IPCF_Example_S32G399_M7_0.bin"
+
+from S32DS IPCF example project.
+
+6.5.2 Enable IPCF feature in wrlinux
+------------------------------------
+
+If users want to enable IPCF feature on A53 side linux system, please add
+the following lines in the <project-build-dir>/conf/local.conf:
+
+	IPCF_M7_APP_BIN_DIR = "/path/to/your-ipcf-m7-app/"
+	IMAGE_INSTALL:append = ' ipc-shm'
+
+then build the project as normal:
+
+	bitbake wrlinux-image-std
+
+the IPCF related drivers and M7 side app binaries(IPCF_Example_S32G274.bin and
+IPCF_Example_S32G399_M7_0.bin) will be built into WIC image.
+
+NOTICE:
+    The M7 side binary default names are IPCF_Example_S32G274.bin and
+IPCF_Example_S32G399_M7_0.bin, and they are defined by two variables
+IPCF_M7_APP_BIN_NAME and IPCF_M7_APP_BIN_NAME_S32G3 respectively, users can
+use different binary names by modifying these variables, or set related
+variable(s) to empty if it is unneeded for users.
+
+
+6.5.3 IPCF verify steps
+-----------------------
+
+If both the IPCF application on M7 side and IPCF related drivers in linux
+are all build successfully, then users can follow the below steps to verify
+this feature:
+
+	1. dd WIC image(build following 6.6.2 section) into one SD-card
+
+	2. using the SD-card to bootup the board
+
+	3. stop in u-boot stage, and excute following commands
+
+		a> disable Data Cache from uboot:
+			=>dcache off
+		b> zero-set SRAM shared memory used by both sample apps:
+			=>mw.q 0x34000000 0x0 0x100000
+		c> load IPCF binary in SRAM:
+		   for S32G2:
+			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G274_M7_0.bin
+		   for S32G3:
+			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G399_M7_0.bin
+		   then:
+			=>cp.q 0x80000000 0x34300000 0x30000
+			=>dcache on;
+		d> start M7 core (the argument is the address of the Interrupt Vector):
+		   for S32G2:
+			=>startm7 0x34401000;
+		   for S32G3:
+			=>startm7 0x34381000;
+		e> boot Linux:
+			=>boot
+
+	4. after linux system startup, enable ipcf driver support on linux
+
+		modprobe ipc-shm-sample
+
+
+	5. run ipcf test command
+
+		echo 10 > /sys/kernel/ipc-shm-sample/ping
+
+If all the above steps succeed, the result messages should be like:
+
+	root@nxp-s32g:~# echo 10 > /sys/kernel/ipc-shm-sample/ping
+	ipc-shm-sample: starting demo...
+	ipc-shm-sample: ch 0 >> 20 bytes: SENDING MESSAGES: 10
+	ipc-shm-sample: ch 1 >> 32 bytes: #0 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 1 << 32 bytes: #0 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 2 >> 32 bytes: #1 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 2 << 32 bytes: #1 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 1 >> 32 bytes: #2 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 1 << 32 bytes: #2 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 2 >> 32 bytes: #3 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 2 << 32 bytes: #3 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 1 >> 32 bytes: #4 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 1 << 32 bytes: #4 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 2 >> 32 bytes: #5 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 2 << 32 bytes: #5 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 1 >> 32 bytes: #6 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 1 << 32 bytes: #6 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 2 >> 32 bytes: #7 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 2 << 32 bytes: #7 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 1 >> 32 bytes: #8 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 1 << 32 bytes: #8 HELLO WORLD! from CORE 4
+	ipc-shm-sample: ch 2 >> 32 bytes: #9 HELLO WORLD! from KERNEL
+	ipc-shm-sample: ch 0 << 20 bytes: REPLIED MESSAGES: 10
+	ipc-shm-sample: ch 2 << 32 bytes: #9 HELLO WORLD! from CORE 4
+	ipc-shm-sample: exit demo
+	root@nxp-s32g:~#

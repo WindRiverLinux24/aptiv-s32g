@@ -1,0 +1,88 @@
+From 9dce2f48eaf60292a8045f8cf768962e0ae639a7 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Wed, 6 Apr 2022 16:42:11 +0800
+Subject: [PATCH] shm-sample: use strncpy instead of strcpy
+
+When kernel enable CONFIG_FORTIRY_SOURCE option, strcpy will call
+__builtin_memcpy, and strcpy will trigger the calltrace as below:
+
+Unable to handle kernel paging request at virtual address ffffffc00c600015
+Mem abort info:
+  ESR = 0x96000061
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x21: alignment fault
+Data abort info:
+  ISV = 0, ISS = 0x00000061
+  CM = 0, WnR = 1
+swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000080d6e000
+[ffffffc00c600015] pgd=10000000fffff003, p4d=10000000fffff003, pud=10000000fffff003, pmd=1000000086bb8003, pte=0068000034100713
+Internal error: Oops: 96000061 [#1] PREEMPT_RT SMP
+Modules linked in: ipc_shm_sample(O) ipc_shm_dev(O)
+CPU: 1 PID: 382 Comm: sh Tainted: G           O      5.15.32-rt34-yocto-preempt-rt #255
+Hardware name: Freescale S32G274 (DT)
+pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __memcpy+0x2c/0x240
+lr : ipc_sysfs_store+0x134/0x3c0 [ipc_shm_sample]
+sp : ffffffc00c5b3b90
+x29: ffffffc00c5b3b90 x28: ffffff80069da700 x27: 0000000000000000
+x26: 0000000000000000 x25: 0000000000000000 x24: ffffff8006a79320
+x23: 0000000000000000 x22: ffffffc00c600010 x21: ffffffc000adf400
+x20: ffffff80069da700 x19: 0000000000000003 x18: 0000000000000001
+x17: 0000000000000000 x16: 0000000000000000 x15: ffffff80069dab98
+x14: 0000000000000002 x13: 003031203a534547 x12: 415353454d20474e
+x11: ffffff7f7f7f7f7f x10: fefefdff2f301f39 x9 : 7f7f7f7f7f7f7f7f
+x8 : 0000008000000000 x7 : 534547415353454d x6 : 20474e49444e4553
+x5 : ffffffc00c600025 x4 : ffffffc00c5b3c4d x3 : 534547415353454d
+x2 : 0000000000000015 x1 : ffffffc00c5b3c38 x0 : ffffffc00c600010
+Call trace:
+ __memcpy+0x2c/0x240
+ kobj_attr_store+0x18/0x30
+ sysfs_kf_write+0x4c/0x60
+ kernfs_fop_write_iter+0x120/0x1b0
+ new_sync_write+0xf0/0x198
+ vfs_write+0x2c8/0x3f8
+ ksys_write+0x74/0x108
+ __arm64_sys_write+0x24/0x30
+ invoke_syscall+0x58/0x120
+ el0_svc_common.constprop.0+0x4c/0xf8
+ do_el0_svc+0x78/0x98
+ el0_svc+0x20/0x60
+ el0t_64_sync_handler+0xb0/0xb8
+ el0t_64_sync+0x1a0/0x1a4
+
+Using strncpy can avoid this.
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ sample/sample.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sample/sample.c b/sample/sample.c
+index 73baf5b..fc478b1 100644
+--- a/sample/sample.c
++++ b/sample/sample.c
+@@ -254,7 +254,7 @@ static int send_ctrl_msg(const uint8_t instance)
+ 	 * in SRAM and A53 will complain about unaligned accesses.
+ 	 */
+ 	sprintf(tmp, "SENDING MESSAGES: %d", app.num_msgs);
+-	strcpy(app.ctrl_shm, tmp);
++	strncpy(app.ctrl_shm, tmp, (strlen(tmp) + 1));
+ 
+ 	sample_info("ch %d >> %ld bytes: %s\n", chan_id, strlen(tmp), tmp);
+ 
+@@ -286,7 +286,7 @@ static void generate_msg(char *s, int len, int msg_no)
+ 	 * in SRAM and A53 will complain about unaligned accesses.
+ 	 */
+ 	sprintf(tmp, "#%d HELLO WORLD! from KERNEL", msg_no);
+-	strcpy(s, tmp);
++	strncpy(s, tmp, (strlen(tmp) + 1));
+ }
+ 
+ /**
+-- 
+2.25.1
+
