@@ -497,7 +497,7 @@ index fdc925a069..bca289b8a8 100644
  #endif
  
 +#elif defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
-+#define FDT_FILE fsl-s32g274a-aptiv-cvc.dtb
++#define FDT_FILE fsl-s32g274a-aptiv.dtb
 +
 +#if defined(CONFIG_USB)
 +#define CONFIG_USB_EHCI_MX6
