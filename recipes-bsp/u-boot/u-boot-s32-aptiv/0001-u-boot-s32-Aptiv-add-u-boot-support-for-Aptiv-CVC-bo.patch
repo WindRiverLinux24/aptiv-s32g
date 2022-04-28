@@ -1,6 +1,6 @@
-From 6463feb8c9c689e671b94207ef0b34d9acf8f80d Mon Sep 17 00:00:00 2001
+From bd60d873270ae0e9317d463cbea10889b90d7317 Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
-Date: Wed, 23 Mar 2022 18:15:56 +0800
+Date: Thu, 28 Apr 2022 14:43:30 +0800
 Subject: [PATCH] u-boot-s32: Aptiv: add u-boot support for Aptiv CVC board
 
 This patch is based on the files fsl-s32g274aaptiv.dts and s32g274aaptiv_defconfig
@@ -8,41 +8,20 @@ from the meta-aptiv layer.
 
 Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 ---
- arch/arm/cpu/armv8/s32/Kconfig    |  12 ++
- arch/arm/dts/Makefile             |   1 +
- arch/arm/dts/aptiv-cvc-sousa.dts  | 301 ++++++++++++++++++++++++++++++
- board/freescale/s32-gen1/Makefile |   1 +
- configs/aptiv_cvc_sousa_defconfig |  81 ++++++++
- drivers/net/dwc_eth_qos_s32cc.c   |   1 +
- include/configs/s32.h             |   4 +
- include/configs/s32g274a.h        |   8 +
- 8 files changed, 409 insertions(+)
+ arch/arm/dts/Makefile              |   1 +
+ arch/arm/dts/aptiv-cvc-sousa.dts   | 301 +++++++++++++++++++++++++++++
+ arch/arm/mach-s32/s32g2/Kconfig    |  15 ++
+ board/nxp/aptiv_cvc_sousa/Kconfig  |  15 ++
+ board/nxp/aptiv_cvc_sousa/Makefile |   7 +
+ configs/aptiv_cvc_sousa_defconfig  |  81 ++++++++
+ drivers/net/dwc_eth_qos_s32cc.c    |   1 +
+ include/configs/s32g2xxaevb.h      |  14 +-
+ 8 files changed, 434 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm/dts/aptiv-cvc-sousa.dts
+ create mode 100644 board/nxp/aptiv_cvc_sousa/Kconfig
+ create mode 100644 board/nxp/aptiv_cvc_sousa/Makefile
  create mode 100644 configs/aptiv_cvc_sousa_defconfig
 
-diff --git a/arch/arm/cpu/armv8/s32/Kconfig b/arch/arm/cpu/armv8/s32/Kconfig
-index 8e8e3094c7..323d1a3a6b 100644
---- a/arch/arm/cpu/armv8/s32/Kconfig
-+++ b/arch/arm/cpu/armv8/s32/Kconfig
-@@ -45,6 +45,18 @@ config TARGET_S32R45EMU
- 	bool "Support s32r45 ZeBu"
- 	select NXP_S32R45
- 
-+config TARGET_APTIV_CVC_SOUSA
-+	bool "Support for Aptiv CVC board"
-+	imply DM_USB
-+	imply I2C_EEPROM
-+	imply PHY
-+	imply PHY_BROADCOM
-+	imply SAF1508BET_USB_PHY
-+	imply SJA1105
-+	imply USB
-+	imply USB_EHCI_HCD
-+	select NXP_S32G2XX
-+
- config TARGET_S32G2XXAEVB
- 	bool "Support s32g274aevb"
- 	imply ADC
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
 index b713be55a4..b49042372e 100644
 --- a/arch/arm/dts/Makefile
@@ -362,27 +341,82 @@ index 0000000000..166154cca8
 +		};
 +	};
 +};
-diff --git a/board/freescale/s32-gen1/Makefile b/board/freescale/s32-gen1/Makefile
-index 1d2b62fbae..a6a78571b6 100644
---- a/board/freescale/s32-gen1/Makefile
-+++ b/board/freescale/s32-gen1/Makefile
-@@ -18,6 +18,7 @@ endif
- obj-$(CONFIG_NETDEVICES) += eth.o
+diff --git a/arch/arm/mach-s32/s32g2/Kconfig b/arch/arm/mach-s32/s32g2/Kconfig
+index f6e4733ab5..2f9ea5f5e7 100644
+--- a/arch/arm/mach-s32/s32g2/Kconfig
++++ b/arch/arm/mach-s32/s32g2/Kconfig
+@@ -20,6 +20,20 @@ config TARGET_S32G274ARDB2
+ 	select NXP_S32GRDB_BOARD
+ 	select SPI_FLASH_MACRONIX
  
- obj-$(CONFIG_TARGET_S32G2XXAEVB) += s32gxxxaevb.o
-+obj-$(CONFIG_TARGET_APTIV_CVC_SOUSA) += s32gxxxaevb.o
- obj-$(CONFIG_TARGET_S32G3XXAEVB) += s32gxxxaevb.o
- obj-$(CONFIG_TARGET_S32G274ARDB2) += s32gxxxardb.o
- obj-$(CONFIG_TARGET_S32G399ARDB3) += s32gxxxardb.o
++config TARGET_APTIV_CVC_SOUSA
++	bool "Support for Aptiv CVC board"
++	help
++	  This Aptiv CVC board is based on S32G274A SoC.
++	imply DM_USB
++	imply I2C_EEPROM
++	imply PHY
++	imply PHY_BROADCOM
++	imply SAF1508BET_USB_PHY
++	imply SJA1105
++	imply USB
++	imply USB_EHCI_HCD
++	select NXP_S32GEVB_BOARD
++
+ config TARGET_S32G2XXAEVB
+ 	bool "Support S32G274AEVB board"
+ 	help
+@@ -63,6 +77,7 @@ endchoice
+ source "board/nxp/s32-cc/s32g/Kconfig"
+ source "board/nxp/s32g274ardb2/Kconfig"
+ source "board/nxp/s32g2xxaevb/Kconfig"
++source "board/nxp/aptiv_cvc_sousa/Kconfig"
+ source "board/nxp/s32g274abluebox3/Kconfig"
+ source "board/nxp/s32g274aemu/Kconfig"
+ 
+diff --git a/board/nxp/aptiv_cvc_sousa/Kconfig b/board/nxp/aptiv_cvc_sousa/Kconfig
+new file mode 100644
+index 0000000000..4eab69ed98
+--- /dev/null
++++ b/board/nxp/aptiv_cvc_sousa/Kconfig
+@@ -0,0 +1,15 @@
++# SPDX-License-Identifier: GPL-2.0+
++# Copyright 2022 NXP
++
++if TARGET_APTIV_CVC_SOUSA
++
++config SYS_CONFIG_NAME
++	default "s32g2xxaevb"
++
++config SYS_BOARD
++	default "s32g2xxaevb"
++
++config NR_DRAM_BANKS
++	default 2
++
++endif
+diff --git a/board/nxp/aptiv_cvc_sousa/Makefile b/board/nxp/aptiv_cvc_sousa/Makefile
+new file mode 100644
+index 0000000000..9bbb5c34ab
+--- /dev/null
++++ b/board/nxp/aptiv_cvc_sousa/Makefile
+@@ -0,0 +1,7 @@
++#
++# Copyright 2022 NXP
++#
++# SPDX-License-Identifier:      GPL-2.0+
++#
++
++obj-y += ../s32-cc/s32g/
 diff --git a/configs/aptiv_cvc_sousa_defconfig b/configs/aptiv_cvc_sousa_defconfig
 new file mode 100644
-index 0000000000..0d2cc4b674
+index 0000000000..3342abb576
 --- /dev/null
 +++ b/configs/aptiv_cvc_sousa_defconfig
-@@ -0,0 +1,81 @@
+@@ -0,0 +1,80 @@
 +CONFIG_ARM=y
 +CONFIG_ARM_SMCCC=y
-+CONFIG_ARCH_S32=y
++CONFIG_ARCH_S32G2=y
 +CONFIG_SYS_TEXT_BASE=0x340a0000
 +CONFIG_ENV_SIZE=0x2000
 +CONFIG_ENV_SECT_SIZE=0x2000
@@ -396,7 +430,6 @@ index 0000000000..0d2cc4b674
 +CONFIG_FIT=y
 +CONFIG_SD_BOOT=y
 +CONFIG_USE_BOOTARGS=y
-+CONFIG_ARCH_MISC_INIT=y
 +CONFIG_MD5SUM_VERIFY=y
 +CONFIG_DEFAULT_DEVICE_TREE="aptiv-cvc-sousa"
 +CONFIG_ENV_IS_IN_MMC=y
@@ -462,10 +495,10 @@ index 0000000000..0d2cc4b674
 +CONFIG_CMD_PMIC=y
 +CONFIG_CMD_SMC=y
 diff --git a/drivers/net/dwc_eth_qos_s32cc.c b/drivers/net/dwc_eth_qos_s32cc.c
-index f92ca33a7c..cb2459b662 100644
+index 668e7136f3..3af176faed 100644
 --- a/drivers/net/dwc_eth_qos_s32cc.c
 +++ b/drivers/net/dwc_eth_qos_s32cc.c
-@@ -365,6 +365,7 @@ static int check_sgmii_cfg(int gmac_no)
+@@ -364,6 +364,7 @@ static int check_sgmii_cfg(int gmac_no)
  	enum serdes_xpcs_mode_gen2 mode, desired_mode1, desired_mode2;
  
  #if defined(CONFIG_TARGET_S32G2XXAEVB) || \
@@ -473,40 +506,37 @@ index f92ca33a7c..cb2459b662 100644
  	defined(CONFIG_TARGET_S32G3XXAEVB) || \
  	defined(CONFIG_NXP_S32GRDB_BOARD)  || \
  	defined(CONFIG_TARGET_S32G399AEMU)
-diff --git a/include/configs/s32.h b/include/configs/s32.h
-index eb03a8221e..05e81738e6 100644
---- a/include/configs/s32.h
-+++ b/include/configs/s32.h
-@@ -158,6 +158,10 @@
- #define PFENG_MODE "enable,sgmii,none,none"
- #define PFENG_EMAC "0"
- #endif
-+#ifdef CONFIG_TARGET_APTIV_CVC_SOUSA
-+#define PFENG_MODE "disable,sgmii,none,sgmii"
-+#define PFENG_EMAC "0"
-+#endif
- #define PFE_EXTRA_ENV_SETTINGS \
- 	"pfeng_mode=" PFENG_MODE "\0" \
- 	"pfeaddr=00:01:be:be:ef:11\0" \
-diff --git a/include/configs/s32g274a.h b/include/configs/s32g274a.h
-index fdc925a069..bca289b8a8 100644
---- a/include/configs/s32g274a.h
-+++ b/include/configs/s32g274a.h
-@@ -20,6 +20,14 @@
- #define CONFIG_MXC_USB_PORTSC        PORT_PTS_ULPI
- #endif
+diff --git a/include/configs/s32g2xxaevb.h b/include/configs/s32g2xxaevb.h
+index 263a511ca6..d07282808b 100644
+--- a/include/configs/s32g2xxaevb.h
++++ b/include/configs/s32g2xxaevb.h
+@@ -9,13 +9,25 @@
  
-+#elif defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
-+#define FDT_FILE fsl-s32g274a-aptiv.dtb
+ #define EXTRA_BOOTCOMMAND		PFE_INIT_CMD
+ #define EXTRA_BOOT_ARGS			PFE_EXTRA_BOOT_ARGS
+-#define FDT_FILE			"fsl-s32g2xxa-evb.dtb"
+ 
++#if defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
 +
-+#if defined(CONFIG_USB)
-+#define CONFIG_USB_EHCI_MX6
-+#define CONFIG_MXC_USB_PORTSC        PORT_PTS_ULPI
++#define FDT_FILE			"fsl-s32g274a-aptiv.dtb"
++#ifdef CONFIG_FSL_PFENG
++#  define PFENG_MODE "disable,sgmii,none,sgmii"
++#  define PFENG_EMAC "0"
 +#endif
 +
- #elif defined(CONFIG_TARGET_S32G274ARDB2)
- #define FDT_FILE fsl-s32g274a-rdb2.dtb
++#else
++
++#define FDT_FILE			"fsl-s32g2xxa-evb.dtb"
+ #ifdef CONFIG_FSL_PFENG
+ #  define PFENG_MODE "enable,none,rgmii,rgmii"
+ #  define PFENG_EMAC "1"
+ #endif
  
++#endif
++
+ #if defined(CONFIG_USB)
+ #  define CONFIG_MXC_USB_PORTSC		PORT_PTS_ULPI
+ #  define CONFIG_USB_EHCI_MX6
 -- 
 2.25.1
 
