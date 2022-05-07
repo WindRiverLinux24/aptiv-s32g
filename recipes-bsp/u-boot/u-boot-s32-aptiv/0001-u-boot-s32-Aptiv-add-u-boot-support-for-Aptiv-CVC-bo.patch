@@ -93,7 +93,7 @@ index 0000000000..166154cca8
 +};
 +
 +&usbotg {
-+	status = "disabled";
++	status = "okay";
 +};
 +
 +&gmac0_mdio {
@@ -345,7 +345,7 @@ diff --git a/arch/arm/mach-s32/s32g2/Kconfig b/arch/arm/mach-s32/s32g2/Kconfig
 index f6e4733ab5..2f9ea5f5e7 100644
 --- a/arch/arm/mach-s32/s32g2/Kconfig
 +++ b/arch/arm/mach-s32/s32g2/Kconfig
-@@ -20,6 +20,20 @@ config TARGET_S32G274ARDB2
+@@ -20,6 +20,21 @@ config TARGET_S32G274ARDB2
  	select NXP_S32GRDB_BOARD
  	select SPI_FLASH_MACRONIX
  
@@ -361,6 +361,7 @@ index f6e4733ab5..2f9ea5f5e7 100644
 +	imply SJA1105
 +	imply USB
 +	imply USB_EHCI_HCD
++	select MISC_INIT_R
 +	select NXP_S32GEVB_BOARD
 +
  config TARGET_S32G2XXAEVB
