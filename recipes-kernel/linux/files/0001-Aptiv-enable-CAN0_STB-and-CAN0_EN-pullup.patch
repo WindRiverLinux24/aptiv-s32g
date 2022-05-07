@@ -1,0 +1,48 @@
+From 8888bccf18daa8c647ffcaa2fc5c33b895ee5ddd Mon Sep 17 00:00:00 2001
+From: Olaf Benninghaus <olaf.benninghaus@aptiv.com>
+Date: Fri, 13 Aug 2021 15:40:43 +0200
+Subject: [PATCH] Aptiv: enable CAN0_STB and CAN0_EN pullup
+
+This patch is based on the file 0001-enable-CAN0_STB-pullup.patch
+at layer meta-aptiv/recipes-aptiv/linux-s32/files/.
+
+Upstream-Status: Pending
+
+Signed-off-by: Olaf Benninghaus <olaf.benninghaus@aptiv.com>
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+[Quanyang: add pull-up of GPIO9 for CAN0_EN.]
+---
+ arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts | 1 +
+ include/dt-bindings/pinctrl/s32g-pinctrl.h           | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts b/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
+index d824186cb281b..d60e8609b2836 100755
+--- a/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
+@@ -182,6 +182,7 @@ S32_GEN1_PAD_PC12__CAN0_TXD
+ 				S32_GEN1_PAD_PC11__CAN0_RXD_OUT
+ 				S32_GEN1_PAD_PC11__CAN0_RXD_IN
+ 				S32_GEN1_PAD_PA10__SIUL_GPI10   /* Enable PullUp for CAN0_STB */
++				S32_GEN1_PAD_PA9__SIUL_GPIO9   /* Enable PullUp for CAN0_EN */
+ 			>;
+ 		};
+ 		pinctrl0_can1: can1grp {
+diff --git a/include/dt-bindings/pinctrl/s32g-pinctrl.h b/include/dt-bindings/pinctrl/s32g-pinctrl.h
+index ec3c3e3e76ad6..55256e48a1878 100644
+--- a/include/dt-bindings/pinctrl/s32g-pinctrl.h
++++ b/include/dt-bindings/pinctrl/s32g-pinctrl.h
+@@ -768,8 +768,8 @@
+ #define S32_GEN1_PAD_PA6__SIUL_GPIO6	 6	 PAD_GPIO_PULL_NONE
+ #define S32_GEN1_PAD_PA7__SIUL_GPIO7	 7	 PAD_GPIO_PULL_NONE
+ #define S32_GEN1_PAD_PA8__SIUL_GPIO8	 8	 PAD_GPIO_PULL_NONE
+-#define S32_GEN1_PAD_PA9__SIUL_GPIO9	 9	 PAD_GPIO_PULL_NONE
+-#define S32_GEN1_PAD_PA10__SIUL_GPI10	 10	 PAD_GPIO_PULL_NONE
++#define S32_GEN1_PAD_PA9__SIUL_GPIO9	 9	 PAD_GPIO_PULL_UP
++#define S32_GEN1_PAD_PA10__SIUL_GPI10	 10	 PAD_GPIO_PULL_UP
+ #define S32_GEN1_PAD_PA11__SIUL_GPIO11	 11	 PAD_GPIO_PULL_NONE
+ #define S32_GEN1_PAD_PA12__SIUL_GPIO12	 12	 PAD_GPIO_PULL_NONE
+ #define S32_GEN1_PAD_PA13__SIUL_GPIO13	 13	 PAD_GPIO_PULL_NONE
+-- 
+2.25.1
+

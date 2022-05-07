@@ -6,4 +6,5 @@ LINUX_VERSION:aptiv_cvc_sousa ?= "5.15.x"
 
 SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0001-dts-Aptiv-Add-new-dts-for-Aptiv-CVC-board.patch \
+	file://0001-Aptiv-enable-CAN0_STB-and-CAN0_EN-pullup.patch \
 "
