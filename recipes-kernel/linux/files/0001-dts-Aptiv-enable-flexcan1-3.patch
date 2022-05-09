@@ -1,0 +1,82 @@
+From 2e871e12be2d122ba021565b8ba6e84ae3f0b9f3 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Mon, 9 May 2022 19:16:29 +0800
+Subject: [PATCH] dts: Aptiv: enable flexcan1~3
+
+Add pinctrl assignment for flexcan3. And the pin CAN17_19_EN which
+is wired out from TCA9539's pin[13], add a device-tree node s32g_can17_19_en
+to enable CAN17~19 which correspond flexcan1~3.
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ .../boot/dts/freescale/fsl-s32g274a-aptiv.dts | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts b/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
+index d60e8609b2836..25d4e19ff0b42 100755
+--- a/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-s32g274a-aptiv.dts
+@@ -12,6 +12,7 @@
+ #include "fsl-s32g274a.dtsi"
+ #include <dt-bindings/pinctrl/s32g-pinctrl.h>
+ #include <dt-bindings/pinctrl/s32g-aptiv-pinctrl.h>
++#include <dt-bindings/gpio/gpio.h>
+ 
+ / {
+ 	model = "Freescale S32G274";
+@@ -94,6 +95,12 @@ tca9539_74: tca9539@74 { // GPIO EXPANDER
+ 		#gpio-cells = <2>;
+ 		reg = <0x74>;
+ 		status = "okay";
++
++		reg_s32g_can17_19_en:s32g_can17_19_en {
++			gpio-hog;
++			gpios = <13 GPIO_ACTIVE_HIGH>;
++			output-high;
++		};
+ 	};
+ };
+ 
+@@ -137,6 +144,12 @@ &can2 {
+ 	status = "okay";
+ };
+ 
++&can3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl0_can3>, <&pinctrl1_can3>;
++	status = "okay";
++};
++
+ &stm0 {
+ 	status = "okay";
+ };
+@@ -197,6 +210,12 @@ S32_GEN1_PAD_PB11__CAN2_TXD
+ 				S32_GEN1_PAD_PB12__CAN2_RXD_OUT
+ 			>;
+ 		};
++		pinctrl0_can3: can3grp {
++			fsl,pins = <
++				S32_GEN1_PAD_PB13__CAN3_TXD
++				S32_GEN1_PAD_PB14__CAN3_RXD_OUT
++			>;
++		};
+ 		pinctrl0_uart0: uart0grp {
+ 			fsl,pins = <
+ 				S32_GEN1_PAD_PC09__UART0_TXD_OUT
+@@ -419,6 +438,11 @@ pinctrl1_can2: can2grp {
+ 				S32_GEN1_PAD_PB12__CAN2_RXD_IN
+ 			>;
+ 		};
++		pinctrl1_can3: can3grp {
++			fsl,pins = <
++				S32_GEN1_PAD_PB14__CAN3_RXD_IN
++			>;
++		};
+ 		pinctrl1_uart1:uart1grp {
+ 			fsl,pins = <
+ 				S32_GEN1_PAD_PC04__UART1_RXD_IN
+-- 
+2.25.1
+
