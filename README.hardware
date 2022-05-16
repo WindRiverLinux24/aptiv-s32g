@@ -35,9 +35,11 @@ The following BSP features are validated and supported.
   o Bus
 	+ I2C: On-Chip I2C controller
 	+ uSDHC: On-Chip ultra secured digital host controller
+	+ USB: On-Chip USB 2.0 controller with host mode
 
   o Network
 	+ Ethernet: DWMAC ethernet controller, BCM89610 Gigabit PHY
+	+ FLEXCAN: Flexible controller area network
 	+ IEEE-1588
 
   o Storage
@@ -55,11 +57,10 @@ The following BSP features are validated and supported.
 
 The following features are not supported or validated same as SDK.
 
-	x FLEXCAN: Flexible controller area network
+	x USB OTG
 	x DSPI: NXP DSPI bus controller in master mode
 	x PCIe: On-Chip PCIe controller
 	x QSPI: On-Chip Quad-SPI flash controller
-	x USB: On-Chip USB 2.0 controller with host mode
 	x CPU Freq
 	x HSE: Hardware Security Engine
 	x PFE: Package Forwarding Engine
@@ -74,7 +75,7 @@ The following features are not supported or validated same as SDK.
 NOTE: This BSP is only validated in the following environment with booting from
 SD, if used in a different environment it may run into unknown issues.
 
-S32G274A-EVB:
+Aptiv CVC Board:
 	Processor:				NXP S32G274A
 	CPU Revision:			rev. 2.1.0
 	Board Serial:			NXP S32G27x
