@@ -219,19 +219,7 @@ NOTICE:
     For hardware reasons, the power management features are not supported for
 	Aptiv CVC board.
 
-6.2.1 Prerequirement
---------------------
-
-Currentlly, the ATF is an optional template feature, if users want to enable
-it, please adding the following line in <build-dir>/conf/local.conf of the
-project:
-
-	WRTEMPLATE = "feature/atf-s32g"
-
-This will enable the ATF feature and compile and install the related files
-into WIC image.
-
-6.2.2 CPU Hotplug verify steps
+6.2.1 CPU Hotplug verify steps
 ------------------------------
 
 With ATF enabled, CPU Hotplug is supported, below is the steps
