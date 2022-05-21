@@ -13,7 +13,7 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  arch/arm/mach-s32/s32g2/Kconfig    |  15 ++
  board/nxp/aptiv_cvc_sousa/Kconfig  |  15 ++
  board/nxp/aptiv_cvc_sousa/Makefile |   7 +
- configs/aptiv_cvc_sousa_defconfig  |  81 ++++++++
+ configs/aptiv_cvc_sousa_defconfig  |  84 ++++++++
  drivers/net/dwc_eth_qos_s32cc.c    |   1 +
  include/configs/s32g2xxaevb.h      |  14 +-
  8 files changed, 434 insertions(+), 1 deletion(-)
@@ -414,7 +414,7 @@ new file mode 100644
 index 0000000000..3342abb576
 --- /dev/null
 +++ b/configs/aptiv_cvc_sousa_defconfig
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,83 @@
 +CONFIG_ARM=y
 +CONFIG_ARM_SMCCC=y
 +CONFIG_ARCH_S32G2=y
@@ -495,6 +495,9 @@ index 0000000000..3342abb576
 +CONFIG_CMD_TIMER=y
 +CONFIG_CMD_PMIC=y
 +CONFIG_CMD_SMC=y
++CONFIG_FAT_WRITE=y
++CONFIG_MENU=y
++CONFIG_CMD_BOOTMENU=y
 diff --git a/drivers/net/dwc_eth_qos_s32cc.c b/drivers/net/dwc_eth_qos_s32cc.c
 index 668e7136f3..3af176faed 100644
 --- a/drivers/net/dwc_eth_qos_s32cc.c
