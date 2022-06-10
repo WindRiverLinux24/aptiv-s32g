@@ -310,9 +310,9 @@ build steps, please refer to the documents:
 and etc., which can be found in related packages downloaded from flexra.
 
 And if the IPCF application on M7 side build successfully following the
-related documents, then users can find the binary files:
+related documents, then users can find the binary file:
 
-	"IPCF_Example_S32G274.bin" and "IPCF_Example_S32G399_M7_0.bin"
+	"IPCF_Example_S32G274.bin"
 
 from S32DS IPCF example project.
 
@@ -329,16 +329,14 @@ then build the project as normal:
 
 	bitbake wrlinux-image-std
 
-the IPCF related drivers and M7 side app binaries(IPCF_Example_S32G274.bin and
-IPCF_Example_S32G399_M7_0.bin) will be built into WIC image.
+the IPCF related drivers and M7 side app binary IPCF_Example_S32G274.bin
+will be built into WIC image.
 
 NOTICE:
-    The M7 side binary default names are IPCF_Example_S32G274.bin and
-IPCF_Example_S32G399_M7_0.bin, and they are defined by two variables
-IPCF_M7_APP_BIN_NAME and IPCF_M7_APP_BIN_NAME_S32G3 respectively, users can
-use different binary names by modifying these variables, or set related
-variable(s) to empty if it is unneeded for users.
-
+    The M7 side binary default name is IPCF_Example_S32G274.bin and it's
+defined by the variable IPCF_M7_APP_BIN_NAME, users can use different binary
+names by modifying these variables, or set related variable(s) to empty if it
+is unneeded for users.
 
 6.5.3 IPCF verify steps
 -----------------------
@@ -358,18 +356,12 @@ this feature:
 		b> zero-set SRAM shared memory used by both sample apps:
 			=>mw.q 0x34000000 0x0 0x100000
 		c> load IPCF binary in SRAM:
-		   for S32G2:
 			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G274_M7_0.bin
-		   for S32G3:
-			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G399_M7_0.bin
 		   then:
 			=>cp.q 0x80000000 0x34300000 0x30000
 			=>dcache on;
 		d> start M7 core (the argument is the address of the Interrupt Vector):
-		   for S32G2:
 			=>startm7 0x34401000;
-		   for S32G3:
-			=>startm7 0x34381000;
 		e> boot Linux:
 			=>boot
 
