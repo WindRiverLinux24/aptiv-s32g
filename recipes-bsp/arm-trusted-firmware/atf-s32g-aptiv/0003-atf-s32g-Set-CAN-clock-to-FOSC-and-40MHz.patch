@@ -16,19 +16,19 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  fdts/fsl-s32-gen1.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fdts/fsl-s32-gen1.dtsi b/fdts/fsl-s32-gen1.dtsi
+diff --git a/fdts/s32cc.dtsi b/fdts/s32cc.dtsi
 index 9d945b19f..eda8bfd16 100644
---- a/fdts/fsl-s32-gen1.dtsi
-+++ b/fdts/fsl-s32-gen1.dtsi
+--- a/fdts/s32cc.dtsi
++++ b/fdts/s32cc.dtsi
 @@ -290,7 +290,7 @@
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
--				<&clks S32GEN1_CLK_PERIPH_PLL_PHI2>,
-+				<&clks S32GEN1_CLK_FXOSC>,
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI3>,
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI4>,
- 				<&clks S32GEN1_CLK_PERIPH_PLL_PHI5>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI1>,
+-				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI2>,
++				<&plat_clks S32GEN1_CLK_FXOSC>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI3>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI4>,
+ 				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI5>,
 @@ -313,7 +313,7 @@
  				<80000000>,
  				<40000000>,
