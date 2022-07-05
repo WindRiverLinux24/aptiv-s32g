@@ -20,7 +20,7 @@ new file mode 100644
 index 000000000..9d54b2b53
 --- /dev/null
 +++ b/fdts/aptiv-cvc-sousa.dts
-@@ -0,0 +1,274 @@
+@@ -0,0 +1,268 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright 2019-2021 NXP
@@ -39,13 +39,7 @@ index 000000000..9d54b2b53
 +		reg = <0x0 0x44064000 0x0 0x200>;
 +		pinctrl-0 = <&pinctrl0_usb &pinctrl1_usb>;
 +		pinctrl-names = "default";
-+		phys = <&saf1508_phy>;
-+	};
-+
-+	saf1508_phy: usb_phy@44064000 {
-+		compatible = "nxp,saf1508bet";
-+		reg = <0x0 0x44064000 0x0 0x200>;
-+		#phy-cells = <0>;
++		phy_type = "ulpi";
 +	};
 +};
 +

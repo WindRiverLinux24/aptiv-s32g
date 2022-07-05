@@ -24,7 +24,7 @@ diff --git a/arch/arm/mach-s32/s32g2/Kconfig b/arch/arm/mach-s32/s32g2/Kconfig
 index f6e4733ab5..2f9ea5f5e7 100644
 --- a/arch/arm/mach-s32/s32g2/Kconfig
 +++ b/arch/arm/mach-s32/s32g2/Kconfig
-@@ -20,6 +20,21 @@ config TARGET_S32G274ARDB2
+@@ -20,6 +20,20 @@ config TARGET_S32G274ARDB2
  	  18 CAN ports, I2C and DSPI.
  	select NXP_S32GRDB_BOARD
  
@@ -36,7 +36,6 @@ index f6e4733ab5..2f9ea5f5e7 100644
 +	imply I2C_EEPROM
 +	imply PHY
 +	imply PHY_BROADCOM
-+	imply SAF1508BET_USB_PHY
 +	imply SJA1105
 +	imply USB
 +	imply USB_EHCI_HCD
@@ -93,7 +92,7 @@ new file mode 100644
 index 0000000000..3342abb576
 --- /dev/null
 +++ b/configs/aptiv_cvc_sousa_defconfig
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,79 @@
 +CONFIG_ARM=y
 +CONFIG_ARM_SMCCC=y
 +CONFIG_ARCH_S32G2=y
@@ -139,7 +138,6 @@ index 0000000000..3342abb576
 +CONFIG_DM_PCI=y
 +CONFIG_PCIE_S32GEN1=y
 +CONFIG_PHY=y
-+#CONFIG_SAF1508BET_USB_PHY=y
 +CONFIG_DM_PMIC=y
 +CONFIG_DM_PMIC_VR5510=y
 +CONFIG_FSL_LINFLEXUART=y
