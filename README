@@ -137,7 +137,7 @@ ipaddr=192.168.1.100
 serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
-fdtfile=fsl-s32g274a-aptiv.dtb
+fdtfile=s32g274a-aptiv.dtb
 rootpath=/tftpboot/rootfs
 consoledev=ttyLF0
 baudrate=115200
@@ -172,7 +172,7 @@ To burn WIC image to SD card, user only need to execute the below command:
 
 Board can boot automatically by set the below uboot environment variables:
 
-=> setenv bootfile Image; setenv fdtfile fsl-s32g274a-aptiv.dtb; setenv loadaddr 0x8A080000; setenv fdtaddr 0x8FE00000;
+=> setenv bootfile Image; setenv fdtfile s32g274a-aptiv.dtb; setenv loadaddr 0x8A080000; setenv fdtaddr 0x8FE00000;
 
 => setenv bootargs console=ttyLF0,115200n8 root=/dev/mmcblk0p2 rw
 
