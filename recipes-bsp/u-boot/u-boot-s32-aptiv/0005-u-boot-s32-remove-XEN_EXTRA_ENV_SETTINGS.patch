@@ -1,0 +1,70 @@
+From dab395c07a3e2d32b22167fc17958e371ccc2c1c Mon Sep 17 00:00:00 2001
+From: Yu Feng <Yu.Feng@windriver.com>
+Date: Fri, 29 Jul 2022 11:18:38 +0800
+Subject: [PATCH] u-boot-s32: remove XEN_EXTRA_ENV_SETTINGS and XEN_BOOTCMD
+
+The patch removes XEN_EXTRA_ENV_SETTINGS and XEN_BOOTCMD,
+so that the U-Boot can boot Linux from SD card by using the default
+configuration.
+
+Issue: VXWEXEC-62210
+
+Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
+---
+ include/configs/s32-cc.h | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
+
+diff --git a/include/configs/s32-cc.h b/include/configs/s32-cc.h
+index 7270cc376a..6f030a2c1f 100644
+--- a/include/configs/s32-cc.h
++++ b/include/configs/s32-cc.h
+@@ -147,19 +147,6 @@
+ #  define PCIE_EXTRA_ENV_SETTINGS ""
+ #endif
+ 
+-#ifdef CONFIG_XEN_SUPPORT
+-#  define XEN_EXTRA_ENV_SETTINGS \
+-	"script_addr=0x80200000\0" \
+-	"mmcpart_ext=" __stringify(MMC_PART_EXT) "\0" \
+-
+-#  define XEN_BOOTCMD \
+-	"ext4load mmc ${mmcdev}:${mmcpart_ext} ${script_addr} " \
+-		"boot/${script}; source ${script_addr}; " \
+-		"booti ${xen_addr} - ${fdt_addr};"
+-#else
+-#  define XEN_EXTRA_ENV_SETTINGS  ""
+-#endif
+-
+ #define S32CC_ENV_SETTINGS \
+ 	BOOTENV \
+ 	"boot_fdt=try\0" \
+@@ -279,17 +266,13 @@
+ 		"fi\0" \
+ 	GMAC_EXTRA_ENV_SETTINGS \
+ 	PCIE_EXTRA_ENV_SETTINGS \
+-	XEN_EXTRA_ENV_SETTINGS \
+ 
+ #if defined(CONFIG_TARGET_TYPE_S32GEN1_EMULATOR)
+ #  define BOOTCOMMAND "${boot_mtd} ${loadaddr} - ${fdt_addr}"
+ #elif defined(CONFIG_QSPI_BOOT)
+ #  define BOOTCOMMAND "run flashboot"
+ #elif defined(CONFIG_SD_BOOT)
+-#  ifdef CONFIG_XEN_SUPPORT
+-#    define BOOTCOMMAND XEN_BOOTCMD
+-#  else
+-#    define BOOTCOMMAND \
++#  define BOOTCOMMAND \
+ 	"mmc dev ${mmcdev}; " \
+ 	"if mmc rescan; " \
+ 	"then " \
+@@ -302,7 +285,6 @@
+ 	"else " \
+ 		"run netboot;" \
+ 	"fi"
+-#  endif
+ #endif
+ 
+ #ifdef CONFIG_BOOTCOMMAND
+-- 
+2.37.1
+
