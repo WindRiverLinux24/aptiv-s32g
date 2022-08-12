@@ -1,0 +1,31 @@
+From d183699337aa045a5d6ab00f7f4a8a8814d1a2f3 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Thu, 11 Aug 2022 14:59:16 +0800
+Subject: [PATCH] s32cc: increate boot image size to 128MB
+
+We need extend this image size value in order to boot large vxWorks
+image.
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ include/configs/s32-cc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/configs/s32-cc.h b/include/configs/s32-cc.h
+index 7270cc376a..c16b474618 100644
+--- a/include/configs/s32-cc.h
++++ b/include/configs/s32-cc.h
+@@ -75,7 +75,7 @@
+ #endif
+ 
+ /* Increase image size */
+-#define CONFIG_SYS_BOOTM_LEN		(SZ_64M)
++#define CONFIG_SYS_BOOTM_LEN		(SZ_128M)
+ 
+ /**
+  * Note: The *_FLASH_ADDR and *_FLASH_MAXSIZE macros are used
+-- 
+2.36.1
+
