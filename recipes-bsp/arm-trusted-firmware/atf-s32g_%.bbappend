@@ -10,6 +10,6 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0005-aptiv-s32g-atf-add-xrdc.patch \
 "
 
-EXTRA_OEMAKE += "S32_HAS_HV=1"
+EXTRA_OEMAKE:append:aptiv_cvc_sousa = " S32_HAS_HV=1"
 
 COMPATIBLE_MACHINE:aptiv_cvc_sousa = "aptiv_cvc_sousa"
