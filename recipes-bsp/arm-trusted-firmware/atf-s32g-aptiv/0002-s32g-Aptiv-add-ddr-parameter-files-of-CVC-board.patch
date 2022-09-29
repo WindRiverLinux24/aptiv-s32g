@@ -35393,7 +35393,7 @@ new file mode 100644
 index 000000000..5642719b4
 --- /dev/null
 +++ b/plat/nxp/s32/s32g/s32g2/aptiv.mk
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,23 @@
 +#
 +# Copyright 2019-2022 NXP
 +#
@@ -35401,16 +35401,6 @@ index 000000000..5642719b4
 +#
 +
 +S32_PLAT_SOC := s32g2
-+
-+ifdef APTIV_CVC_SOUSA
-+DDR_DRV_SRCS            += ${DDR_DRV}/aptiv_cvc_sousa/ddrc_cfg.c \
-+			   ${DDR_DRV}/aptiv_cvc_sousa/dmem_cfg.c \
-+			   ${DDR_DRV}/aptiv_cvc_sousa/dq_swap_cfg.c \
-+			   ${DDR_DRV}/aptiv_cvc_sousa/phy_cfg.c \
-+			   ${DDR_DRV}/aptiv_cvc_sousa/pie_cfg.c \
-+			   ${DDR_DRV}/aptiv_cvc_sousa/imem_cfg.c \
-+
-+endif
 +
 +include plat/nxp/s32/s32g/s32g_common.mk
 +

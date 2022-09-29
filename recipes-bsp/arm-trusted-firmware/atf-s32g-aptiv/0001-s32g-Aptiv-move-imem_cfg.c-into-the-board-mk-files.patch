@@ -1,68 +1,38 @@
-From d77033cdbf14eb07b7458c7042566a7c972a93ed Mon Sep 17 00:00:00 2001
+From e1f47d3065d08c4c02ce717745c6416fb402869b Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
-Date: Wed, 23 Mar 2022 16:26:25 +0800
-Subject: [PATCH 1/2] s32g: Aptiv: move imem_cfg.c into the board mk files
+Date: Tue, 27 Sep 2022 16:13:19 +0800
+Subject: [PATCH] s32g: Aptiv: set correct path for DDR files
 
-Since Aptiv CVC board has its own imem_cfg.c file, so we need
-move NXP's common imem_cfg.c into the board mk files in order to fix
-compile error.
+Since DDR files are all in drivers/nxp/s32/ddr/aptiv_cvc_sousa/ but not
+drivers/nxp/s32/ddr/s32g2, we need set correct path for them.
 
 Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 ---
- plat/nxp/s32/s32_common.mk       | 1 -
- plat/nxp/s32/s32g/s32g2/s32g2.mk | 1 +
- plat/nxp/s32/s32g/s32g3/s32g3.mk | 1 +
- plat/nxp/s32/s32r/s32r.mk        | 1 +
- 4 files changed, 3 insertions(+), 1 deletion(-)
+ plat/nxp/s32/s32_ddr.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/plat/nxp/s32/s32_common.mk b/plat/nxp/s32/s32_common.mk
-index 7f76d5ed2..8691bf9d9 100644
---- a/plat/nxp/s32/s32_common.mk
-+++ b/plat/nxp/s32/s32_common.mk
-@@ -41,7 +41,6 @@ DDR_DRV_SRCS += \
- 	${DDR_DRV}/ddr_lp_mmio.c \
- 	${DDR_DRV}/ddr_lp_csr.c \
- 	${DDR_DRV}/ddrss_cfg.c \
--	${DDR_DRV}/imem_cfg.c \
+diff --git a/plat/nxp/s32/s32_ddr.mk b/plat/nxp/s32/s32_ddr.mk
+index 1f7f97dc9..14ef059ff 100644
+--- a/plat/nxp/s32/s32_ddr.mk
++++ b/plat/nxp/s32/s32_ddr.mk
+@@ -12,7 +12,7 @@ DDR_UTILS_FILE	:= ${CUSTOM_DDR_DRV}/ddr_utils.h
+ PLAT_DDR_DRV	:= ${CUSTOM_DDR_DRV}
+ else
+ COMMON_DDR_DRV	= ${DDR_DRV}
+-PLAT_DDR_DRV	= ${DDR_DRV}/${S32_PLAT_SOC}
++PLAT_DDR_DRV	= ${DDR_DRV}/aptiv_cvc_sousa
+ endif
  
- BL2_AT_EL3		:= 1
+ DDR_DRV_SRCS += \
+@@ -26,7 +26,7 @@ DDR_DRV_SRCS += \
+ 	${COMMON_DDR_DRV}/ddr_lp.c \
+ 	${COMMON_DDR_DRV}/ddr_lp_csr.c \
+ 	${COMMON_DDR_DRV}/ddrss_cfg.c \
+-	${COMMON_DDR_DRV}/imem_cfg.c \
++	${PLAT_DDR_DRV}/imem_cfg.c \
+ 	${DDR_DRV}/ddr_density.c \
  
-diff --git a/plat/nxp/s32/s32g/s32g2/s32g2.mk b/plat/nxp/s32/s32g/s32g2/s32g2.mk
-index 6c22d5d43..69cc149b5 100644
---- a/plat/nxp/s32/s32g/s32g2/s32g2.mk
-+++ b/plat/nxp/s32/s32g/s32g2/s32g2.mk
-@@ -11,6 +11,7 @@ DDR_DRV_SRCS            += ${DDR_DRV}/s32g2/ddrc_cfg.c \
- 			   ${DDR_DRV}/s32g2/dq_swap_cfg.c \
- 			   ${DDR_DRV}/s32g2/phy_cfg.c \
- 			   ${DDR_DRV}/s32g2/pie_cfg.c \
-+			   ${DDR_DRV}/imem_cfg.c \
- 
- include plat/nxp/s32/s32g/s32g_common.mk
- 
-diff --git a/plat/nxp/s32/s32g/s32g3/s32g3.mk b/plat/nxp/s32/s32g/s32g3/s32g3.mk
-index 7c159cf69..c98d42c6c 100644
---- a/plat/nxp/s32/s32g/s32g3/s32g3.mk
-+++ b/plat/nxp/s32/s32g/s32g3/s32g3.mk
-@@ -11,6 +11,7 @@ DDR_DRV_SRCS            += ${DDR_DRV}/s32g3/ddrc_cfg.c \
- 			   ${DDR_DRV}/s32g3/dq_swap_cfg.c \
- 			   ${DDR_DRV}/s32g3/phy_cfg.c \
- 			   ${DDR_DRV}/s32g3/pie_cfg.c \
-+			   ${DDR_DRV}/imem_cfg.c \
- 
- include plat/nxp/s32/s32g/s32g_common.mk
- 
-diff --git a/plat/nxp/s32/s32r/s32r.mk b/plat/nxp/s32/s32r/s32r.mk
-index 53fe4bfa6..18e380bfe 100644
---- a/plat/nxp/s32/s32r/s32r.mk
-+++ b/plat/nxp/s32/s32r/s32r.mk
-@@ -11,6 +11,7 @@ DDR_DRV_SRCS            += ${DDR_DRV}/s32r/ddrc_cfg.c \
- 			   ${DDR_DRV}/s32r/dq_swap_cfg.c \
- 			   ${DDR_DRV}/s32r/phy_cfg.c \
- 			   ${DDR_DRV}/s32r/pie_cfg.c \
-+			   ${DDR_DRV}/imem_cfg.c \
- 
- include plat/nxp/s32/s32_common.mk
- 
+ # If CUSTOM_DDR_DRV is set, this target modifies the ddr_utils.h file
 -- 
-2.25.1
+2.36.1
 
