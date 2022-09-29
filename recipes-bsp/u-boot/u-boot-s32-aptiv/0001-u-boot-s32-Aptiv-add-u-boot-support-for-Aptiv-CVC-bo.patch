@@ -172,18 +172,6 @@ index 0000000000..3342abb576
 +CONFIG_FAT_WRITE=y
 +CONFIG_MENU=y
 +CONFIG_CMD_BOOTMENU=y
-diff --git a/drivers/net/dwc_eth_qos_s32cc.c b/drivers/net/dwc_eth_qos_s32cc.c
-index 668e7136f3..3af176faed 100644
---- a/drivers/net/dwc_eth_qos_s32cc.c
-+++ b/drivers/net/dwc_eth_qos_s32cc.c
-@@ -364,6 +364,7 @@ static int check_sgmii_cfg(int gmac_no)
- 
- #if defined(CONFIG_NXP_S32GEVB_BOARD) || \
- 	defined(CONFIG_NXP_S32GRDB_BOARD)  || \
-+	defined(CONFIG_TARGET_APTIV_CVC_SOUSA) || \
- 	defined(CONFIG_TARGET_S32G399AEMU)
- 
- 	desired_mode1 = SGMII_XPCS_1G_OP;
 diff --git a/include/configs/s32g2xxaevb.h b/include/configs/s32g2xxaevb.h
 index 263a511ca6..d07282808b 100644
 --- a/include/configs/s32g2xxaevb.h
