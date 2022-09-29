@@ -113,12 +113,12 @@ index 000000000..1862c2e58
 +	status = "okay";
 +
 +	tca9539_74: tca9539@74 { // GPIO EXPANDER
-+            compatible = "ti,tca9539";
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+            reg = <0x74>;
-+	           status = "okay";
-+        };
++		compatible = "ti,tca9539";
++		gpio-controller;
++		#gpio-cells = <2>;
++		reg = <0x74>;
++		status = "okay";
++	};
 +};
 +
 +/* Platform board PCI X16 EXPRESS - I2C_SCL_S0, I2C_SDA_S0  */
