@@ -24,8 +24,8 @@ index 7270cc376a..c16b474618 100644
 -#define CONFIG_SYS_BOOTM_LEN		(SZ_64M)
 +#define CONFIG_SYS_BOOTM_LEN		(SZ_128M)
  
- /**
-  * Note: The *_FLASH_ADDR and *_FLASH_MAXSIZE macros are used
+ /* Size of malloc() pool */
+ #define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + SZ_2M)
 -- 
 2.36.1
 
