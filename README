@@ -402,3 +402,15 @@ If all the above steps succeed, the result messages should be like:
 	ipc-shm-sample: ch 2 << 32 bytes: #9 HELLO WORLD! from CORE 4
 	ipc-shm-sample: exit demo
 	root@nxp-s32g:~#
+
+6.6 Templates
+-------------
+
+6.6.1 Skip_mmc_init
+-------------------
+
+This template is to skip the mmc initialization in atf-s32g, since it conflicts
+with the mmc initialization in Autosar. To use this template, add the below line
+in your local.conf file:
+
+    WRTEMPLATE = "feature/skip_mmc_init"

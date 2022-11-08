@@ -1,0 +1,52 @@
+From 47127b7c46d5b97c8463dff99d5d6298ccb4bea4 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Thu, 20 Oct 2022 04:55:06 +0000
+Subject: [PATCH] aptiv-s32g: atf-s32g: don't initialize mmc in atf
+
+This is requested by Aptiv to leave mmc init to M7 and the modifications
+are also from Aptiv.
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ drivers/nxp/s32/mmc/s32_mmc.c      |  22 +-
+ 2 files changed, 414 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/nxp/s32/mmc/s32_mmc.c.orig
+
+diff --git a/drivers/nxp/s32/mmc/s32_mmc.c b/drivers/nxp/s32/mmc/s32_mmc.c
+index 1da13bc44..61dfeaebd 100644
+--- a/drivers/nxp/s32/mmc/s32_mmc.c
++++ b/drivers/nxp/s32/mmc/s32_mmc.c
+@@ -295,17 +295,17 @@ cmd_error:
+ 
+ static int s32_mmc_set_ios(unsigned int clk, unsigned int width)
+ {
+-	uint32_t regdata;
+-
+-	s32_mmc_set_clk(clk);
+-
+-	regdata = mmio_read_32(USDHC_PROT_CTRL);
+-	regdata &= ~(PROT_CTRL_DTW_MASK);
+-	if (width == MMC_BUS_WIDTH_4)
+-		regdata |= PROT_CTRL_DTW_4;
+-	else if (width == MMC_BUS_WIDTH_8)
+-		regdata |= PROT_CTRL_DTW_8;
+-	mmio_write_32(USDHC_PROT_CTRL, regdata);
++	// uint32_t regdata;
++	//
++	// s32_mmc_set_clk(clk);
++	//
++	// regdata = mmio_read_32(USDHC_PROT_CTRL);
++	// regdata &= ~(PROT_CTRL_DTW_MASK);
++	// if (width == MMC_BUS_WIDTH_4)
++	// 	regdata |= PROT_CTRL_DTW_4;
++	// else if (width == MMC_BUS_WIDTH_8)
++	// 	regdata |= PROT_CTRL_DTW_8;
++	// mmio_write_32(USDHC_PROT_CTRL, regdata);
+ 
+ 	return 0;
+ }
+-- 
+2.32.0
+
