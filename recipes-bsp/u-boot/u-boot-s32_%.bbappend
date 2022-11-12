@@ -11,3 +11,12 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 "
 
 COMPATIBLE_MACHINE:aptiv_cvc_sousa = "aptiv_cvc_sousa"
+
+do_compile:append:aptiv_cvc_sousa() {
+    if [ "${HSE_SEC_ENABLED}" = "1" ]; then
+        cfgout="${B}/aptiv_cvc_sousa_defconfig/u-boot-s32.cfgout"
+        if [ -e $cfgout ]; then
+            sed -i 's|${HSE_FW_DEFAULT_NAME}|${HSE_LOCAL_FIRMWARE_DIR}/${HSE_FW_NAME_S32G2}|g' $cfgout
+        fi
+    fi
+}
