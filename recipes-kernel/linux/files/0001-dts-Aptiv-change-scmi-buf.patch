@@ -1,0 +1,35 @@
+From 2fdf7ec6f77f25ca710333edbb69dceff1fef1a0 Mon Sep 17 00:00:00 2001
+From: Yu Feng <Yu.Feng@windriver.com>
+Date: Tue, 22 Nov 2022 13:14:20 +0800
+Subject: [PATCH] dts: Aptiv: change scmi buf
+
+The patch changes the SCMI buffer to 0xa0000000.
+
+Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
+
+Rebase to bsp35
+Upstream-Status: Inappropriate [HVP specific]
+Signed-off-by: Hongxu Jia <hongxu.jia@eng.windriver.com>
+---
+ arch/arm64/boot/dts/freescale/s32cc.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/s32cc.dtsi b/arch/arm64/boot/dts/freescale/s32cc.dtsi
+index 7e96c1c5b4b6..aa5a96c88568 100644
+--- a/arch/arm64/boot/dts/freescale/s32cc.dtsi
++++ b/arch/arm64/boot/dts/freescale/s32cc.dtsi
+@@ -72,9 +72,9 @@ pci_shared_memory1: shm@c0400000 {
+ 			no-map;
+ 		};
+ 
+-		scmi_shbuf: shm@d0000000 {
++		scmi_shbuf: shm@a0000000 {
+ 			compatible = "arm,scmi-shmem";
+-			reg = <0x0 0xd0000000 0x0 0x400000>;    /* 4 MB */
++			reg = <0x0 0xa0000000 0x0 0x400000>;    /* 4 MB */
+ 			no-map;
+ 		};
+ 
+-- 
+2.27.0
+

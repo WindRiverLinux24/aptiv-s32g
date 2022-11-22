@@ -1,0 +1,289 @@
+From f68211a78039d0524567e78b178973771d9681e5 Mon Sep 17 00:00:00 2001
+From: Yu Feng <Yu.Feng@windriver.com>
+Date: Tue, 22 Nov 2022 13:03:37 +0800
+Subject: [PATCH] aptiv-s32g: atf: add xrdc
+
+This patch adds xRDC support for ATF, so that the ATF
+and U-Boot can run hypervisor. The hyperviosr only can
+arrange the contiguous memory space to a guest. For running
+guests as many as possible, the scmi share memory should
+be moved to lower address. This patch changes the
+scmi share memory to 0xa0000000, so that the hyperviosr
+can arrange the 1524MB (0xa0400000 ~ 0xFF800000) contiguous
+memory to the guests which need to use DMA transfer.
+
+Upstream-Status: Pending
+
+Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
+
+Rebase to bsp35
+Signed-off-by: Hongxu Jia <hongxu.jia@eng.windriver.com>
+---
+ fdts/s32cc.dtsi                               |  4 +-
+ plat/nxp/s32/include/s32_platform_def.h       |  6 +-
+ plat/nxp/s32/s32_bl31.c                       |  4 ++
+ plat/nxp/s32/s32_lowlevel_bl31.S              | 67 +++++++++++++++++-
+ plat/nxp/s32/s32_svc.c                        | 70 +++++++++++++++++++
+ plat/nxp/s32/s32g/include/s32g_platform_def.h |  6 +-
+ 6 files changed, 150 insertions(+), 7 deletions(-)
+
+diff --git a/fdts/s32cc.dtsi b/fdts/s32cc.dtsi
+index f6d18c20e..6a3e2af63 100644
+--- a/fdts/s32cc.dtsi
++++ b/fdts/s32cc.dtsi
+@@ -53,9 +53,9 @@
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		scmi_shbuf: shm@d0000000 {
++		scmi_shbuf: shm@a0000000 {
+ 			compatible = "arm,scmi-shmem";
+-			reg = <0x0 0xd0000000 0x0 0x400000>;    /* 4 MB */
++			reg = <0x0 0xa0000000 0x0 0x400000>;    /* 4 MB */
+ 			no-map;
+ 		};
+ 
+diff --git a/plat/nxp/s32/include/s32_platform_def.h b/plat/nxp/s32/include/s32_platform_def.h
+index 6bfdd4cb8..e3e9d62be 100644
+--- a/plat/nxp/s32/include/s32_platform_def.h
++++ b/plat/nxp/s32/include/s32_platform_def.h
+@@ -166,7 +166,7 @@
+ #define S32_UART_SIZE		S32_LINFLEX0_SIZE
+ #endif
+ 
+-#define S32_OSPM_SCMI_MEM	(0xd0000000U)
++#define S32_OSPM_SCMI_MEM	(0xa0000000U)
+ #define S32_OSPM_SCMI_MEM_SIZE	(0x400000U)
+ 
+ #define S32_QSPI_BASE		(0x40134000ul)
+@@ -187,5 +187,9 @@
+ #define S32_SCP_CH_MEM_SIZE	(128)
+ #define S32_SCP_SCMI_MEM_SIZE	(S32_SCP_CH_MEM_SIZE * PLATFORM_CORE_COUNT)
+ 
++#define S32_XRDC0_BASE		(0x401A4000ul)
++#define S32_XRDC1_BASE		(0x44004000ul)
++#define S32_XRDC_SZ			(0x4000)
++
+ #endif /* S32_PLATFORM_H */
+ 
+diff --git a/plat/nxp/s32/s32_bl31.c b/plat/nxp/s32/s32_bl31.c
+index bca517a01..bf0654eba 100644
+--- a/plat/nxp/s32/s32_bl31.c
++++ b/plat/nxp/s32/s32_bl31.c
+@@ -91,6 +91,10 @@ static const mmap_region_t s32_mmap[] = {
+ 			MT_MEMORY | MT_RW | MT_SECURE),
+ 	MAP_REGION_FLAT(S32_OSPM_SCMI_MEM, S32_OSPM_SCMI_MEM_SIZE,
+ 			MT_NON_CACHEABLE | MT_RW | MT_SECURE),
++	MAP_REGION_FLAT(S32_XRDC0_BASE, S32_XRDC_SZ,
++			MT_DEVICE | MT_RW),
++	MAP_REGION_FLAT(S32_XRDC1_BASE, S32_XRDC_SZ,
++			MT_DEVICE | MT_RW),
+ 	/* SCP entries */
+ 	MAP_REGION_FLAT(MSCM_BASE_ADDR, MMU_ROUND_UP_TO_4K(MSCM_SIZE),
+ 			MT_DEVICE | MT_RW),
+diff --git a/plat/nxp/s32/s32_lowlevel_bl31.S b/plat/nxp/s32/s32_lowlevel_bl31.S
+index 4b44d087a..663f9b8b1 100644
+--- a/plat/nxp/s32/s32_lowlevel_bl31.S
++++ b/plat/nxp/s32/s32_lowlevel_bl31.S
+@@ -13,7 +13,7 @@
+ .globl plat_secondary_cold_boot_setup
+ 
+ .globl s32_core_release_var
+-
++.globl s32_xrdc_reg_write
+ 
+ /* Set SMPEN bit on u-boot's behalf */
+ /* TODO check whether this function is still necessary in BL31; in cortex_a53.S
+@@ -234,3 +234,68 @@ wfi_done:
+ 	br	x7
+ endfunc plat_secondary_cold_boot_setup
+ 
++/* Write a 32-bit value to an XRDC register
++*
++* This is a helper routine used by the eXtended Resource Domain Controller
++* code to modify 32-bit registers. It's needed specifically for the case where
++* a write is performed on the XRDC_CR register to turn the XRDC unit on.
++*
++* The unusual implementation of this function is required in order to
++* prevent an XRDC access violation from occuring when we first activate it.
++* During initialization, we want to assign the Cortex-A53 CPU cores to
++* domain 0, and grant that domain access to the DDR RAM and GICv3 memory
++* regions. However the manual states that the CPU cores have the following
++* default domain ID assignments at start-up:
++*
++* DID             Description
++*  2              cluster 0, cpu 0
++*  3              cluster 0, cpu 1
++*  6              cluster 1, cpu 0
++*  7              cluster 1, cpu 1
++*  5              SCU/CCI transactions
++*
++* This means that by default, CPU0 has a DID of 2. We program the master
++* assignment registers for the CPU cores to override this and put them
++* in domain 0. However even with this configuration in place, when we first
++* set the XRDC_CR[GVLD] bit to turn the XRDC on, it results in an access
++* violation being triggered for domain 2.
++*
++* The S32G reference manual states that you must "minimize the amount of
++* system bus traffic while XRDC_CR[GVLD] is being set." The code below
++* attempts to do this with the following strategy:
++*
++* - The code is placed entirely within a single cache line (note that
++*   the Cortex-A53 cache line size is 64 bytes)
++* - The cache line is padded out with NOP instructions
++* - The RET instruction is placed at the every end of the cache line
++*
++* With this particular instruction arrangement, the XRDC can be activated
++* without any errors. The specific reason why this works is not entirely
++* clear, but it's likely that it has the effect of defeating branch
++* prediction and speculative fetching of other instructions before
++* the store to the XRDC_CR register completes.
++*/
++
++	.balign 64
++
++func s32_xrdc_reg_write
++	str	w1, [x0]
++	ldr	w1, [x0]
++	nop
++	nop
++
++	nop
++	nop
++	nop
++	nop
++
++	nop
++	nop
++	nop
++	nop
++
++	nop
++	nop
++	nop
++	RET
++endfunc s32_xrdc_reg_write
+diff --git a/plat/nxp/s32/s32_svc.c b/plat/nxp/s32/s32_svc.c
+index 57a8e1168..e3067a560 100644
+--- a/plat/nxp/s32/s32_svc.c
++++ b/plat/nxp/s32/s32_svc.c
+@@ -9,8 +9,10 @@
+ #include <drivers/scmi.h>
+ #include <scmi-msg/common.h>
+ #include <s32_bl_common.h>
++#include <lib/mmio.h>
+ 
+ #define S32_SCMI_ID			0xc20000feU
++#define S32_XRDC_ID			0xc2000100U
+ 
+ #define MSG_ID(m)			((m) & 0xffU)
+ #define MSG_TYPE(m)			(((m) >> 8) & 0x3U)
+@@ -111,6 +113,71 @@ static int scp_scmi_handler(uint32_t smc_fid, u_register_t x1,
+ 	return send_scmi_to_scp(S32_OSPM_SCMI_MEM);
+ }
+ 
++static uint32_t xrdc_read(uint64_t addr, uint32_t len)
++{
++	uint32_t val;
++
++	switch (len){
++	case 1:
++		val = mmio_read_8(addr);
++		break;
++	case 2:
++		val = mmio_read_16(addr);
++		break;
++	case 4:
++		val = mmio_read_32(addr);
++		break;
++	default:
++		val = 0;
++		break;
++	}
++
++	dsbsy();
++
++	return (val);
++}
++
++static void xrdc_write(uint64_t addr, uint32_t len, uint32_t val)
++{
++	switch (len){
++	case 1:
++		mmio_write_8(addr, val);
++		break;
++	case 2:
++		mmio_write_16(addr, val);
++		break;
++	case 4:
++		mmio_write_32(addr, val);
++		break;
++	default:
++		break;
++	}
++
++	dsbsy();
++}
++
++extern void s32_xrdc_reg_write (uint32_t *, uint32_t);
++
++static uint32_t xrdc_handle(uint64_t addr, uint32_t rw, uint32_t len,
++				uint32_t wval)
++{
++	if (((addr < (S32_XRDC0_BASE + S32_XRDC_SZ)) && (addr >= S32_XRDC0_BASE)) ||
++		((addr < (S32_XRDC1_BASE + S32_XRDC_SZ)) && (addr >= S32_XRDC1_BASE))){
++		if (rw == 0){
++			if ((addr == S32_XRDC0_BASE) || (addr == S32_XRDC1_BASE)) {
++				s32_xrdc_reg_write ((uint32_t *)addr, wval);
++			} else {
++				xrdc_write(addr, len, wval);
++			}
++			return (0);
++		} else {
++			return xrdc_read(addr, len);
++		}
++	} else {
++		return (0);
++	}
++}
++
+ uintptr_t s32_svc_smc_handler(uint32_t smc_fid,
+ 			       u_register_t x1,
+ 			       u_register_t x2,
+@@ -128,6 +195,9 @@ uintptr_t s32_svc_smc_handler(uint32_t smc_fid,
+ 			SMC_RET1(handle, scmi_handler(smc_fid, x1, x2, x3));
+ 		}
+ 		break;
++	case S32_XRDC_ID:
++		SMC_RET1(handle, xrdc_handle(x1, x2, x3, x4));
++		break;
+ 	default:
+ 		WARN("Unimplemented SIP Service Call: 0x%x\n", smc_fid);
+ 		SMC_RET1(handle, SMC_UNK);
+diff --git a/plat/nxp/s32/s32g/include/s32g_platform_def.h b/plat/nxp/s32/s32g/include/s32g_platform_def.h
+index 35ad77ad5..428358b06 100644
+--- a/plat/nxp/s32/s32g/include/s32g_platform_def.h
++++ b/plat/nxp/s32/s32g/include/s32g_platform_def.h
+@@ -65,16 +65,16 @@
+ 
+ #if defined IMAGE_BL31
+ /* To limit usage, keep these in sync with sizeof(s32_mmap) */
+-#define MAX_MMAP_REGIONS		39
++#define MAX_MMAP_REGIONS		41
+ #define MAX_XLAT_TABLES			15
+ #endif
+ 
+ #if defined IMAGE_BL2
+ #if (ERRATA_S32_050543 == 1)
+-#define MAX_MMAP_REGIONS		28
++#define MAX_MMAP_REGIONS		30
+ #define MAX_XLAT_TABLES			27
+ #else
+-#define MAX_MMAP_REGIONS		27
++#define MAX_MMAP_REGIONS		29
+ #define MAX_XLAT_TABLES			26
+ #endif
+ #endif /* IMAGE_BL2 */
+-- 
+2.27.0
+
