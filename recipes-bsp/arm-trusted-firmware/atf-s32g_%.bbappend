@@ -10,6 +10,7 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0003-atf-s32g-Set-CAN-clock-to-FOSC-and-40MHz.patch \
 	file://0004-aptiv-s32g-atf-add-aptiv-cvc-dts-file.patch \
 	file://0005-aptiv-s32g-atf-add-xrdc.patch \
+	file://0006-aptiv-set-S32_VR5510-for-aptiv-CVC-platform.patch \
 	${SKIP_MMC_INIT_PATCH} \
 "
 
