@@ -1,6 +1,6 @@
-From f68211a78039d0524567e78b178973771d9681e5 Mon Sep 17 00:00:00 2001
+From 2d4429924010b99f7baf2393d2915b8c09d639dd Mon Sep 17 00:00:00 2001
 From: Yu Feng <Yu.Feng@windriver.com>
-Date: Tue, 22 Nov 2022 13:03:37 +0800
+Date: Tue, 6 Dec 2022 13:52:10 +0800
 Subject: [PATCH] aptiv-s32g: atf: add xrdc
 
 This patch adds xRDC support for ATF, so that the ATF
@@ -15,23 +15,20 @@ memory to the guests which need to use DMA transfer.
 Upstream-Status: Pending
 
 Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
-
-Rebase to bsp35
-Signed-off-by: Hongxu Jia <hongxu.jia@eng.windriver.com>
 ---
  fdts/s32cc.dtsi                               |  4 +-
  plat/nxp/s32/include/s32_platform_def.h       |  6 +-
  plat/nxp/s32/s32_bl31.c                       |  4 ++
- plat/nxp/s32/s32_lowlevel_bl31.S              | 67 +++++++++++++++++-
+ plat/nxp/s32/s32_lowlevel_bl31.S              | 68 +++++++++++++++++-
  plat/nxp/s32/s32_svc.c                        | 70 +++++++++++++++++++
- plat/nxp/s32/s32g/include/s32g_platform_def.h |  6 +-
- 6 files changed, 150 insertions(+), 7 deletions(-)
+ plat/nxp/s32/s32g/include/s32g_platform_def.h |  4 +-
+ 6 files changed, 150 insertions(+), 6 deletions(-)
 
 diff --git a/fdts/s32cc.dtsi b/fdts/s32cc.dtsi
-index f6d18c20e..6a3e2af63 100644
+index 215005322..b1bfca3ac 100644
 --- a/fdts/s32cc.dtsi
 +++ b/fdts/s32cc.dtsi
-@@ -53,9 +53,9 @@
+@@ -57,9 +57,9 @@
  		#size-cells = <2>;
  		ranges;
  
@@ -44,7 +41,7 @@ index f6d18c20e..6a3e2af63 100644
  		};
  
 diff --git a/plat/nxp/s32/include/s32_platform_def.h b/plat/nxp/s32/include/s32_platform_def.h
-index 6bfdd4cb8..e3e9d62be 100644
+index 9be824c2f..72158dab6 100644
 --- a/plat/nxp/s32/include/s32_platform_def.h
 +++ b/plat/nxp/s32/include/s32_platform_def.h
 @@ -166,7 +166,7 @@
@@ -56,9 +53,9 @@ index 6bfdd4cb8..e3e9d62be 100644
  #define S32_OSPM_SCMI_MEM_SIZE	(0x400000U)
  
  #define S32_QSPI_BASE		(0x40134000ul)
-@@ -187,5 +187,9 @@
- #define S32_SCP_CH_MEM_SIZE	(128)
- #define S32_SCP_SCMI_MEM_SIZE	(S32_SCP_CH_MEM_SIZE * PLATFORM_CORE_COUNT)
+@@ -190,5 +190,9 @@
+ #define ADC0_BASE_ADDR		(0x401f8000U)
+ #define ADC0_SIZE		(0x1000)
  
 +#define S32_XRDC0_BASE		(0x401A4000ul)
 +#define S32_XRDC1_BASE		(0x44004000ul)
@@ -67,10 +64,10 @@ index 6bfdd4cb8..e3e9d62be 100644
  #endif /* S32_PLATFORM_H */
  
 diff --git a/plat/nxp/s32/s32_bl31.c b/plat/nxp/s32/s32_bl31.c
-index bca517a01..bf0654eba 100644
+index b1d89fe6f..0c3b13625 100644
 --- a/plat/nxp/s32/s32_bl31.c
 +++ b/plat/nxp/s32/s32_bl31.c
-@@ -91,6 +91,10 @@ static const mmap_region_t s32_mmap[] = {
+@@ -100,6 +100,10 @@ static const mmap_region_t s32_mmap[] = {
  			MT_MEMORY | MT_RW | MT_SECURE),
  	MAP_REGION_FLAT(S32_OSPM_SCMI_MEM, S32_OSPM_SCMI_MEM_SIZE,
  			MT_NON_CACHEABLE | MT_RW | MT_SECURE),
@@ -82,7 +79,7 @@ index bca517a01..bf0654eba 100644
  	MAP_REGION_FLAT(MSCM_BASE_ADDR, MMU_ROUND_UP_TO_4K(MSCM_SIZE),
  			MT_DEVICE | MT_RW),
 diff --git a/plat/nxp/s32/s32_lowlevel_bl31.S b/plat/nxp/s32/s32_lowlevel_bl31.S
-index 4b44d087a..663f9b8b1 100644
+index f1bd76587..ed181e789 100644
 --- a/plat/nxp/s32/s32_lowlevel_bl31.S
 +++ b/plat/nxp/s32/s32_lowlevel_bl31.S
 @@ -13,7 +13,7 @@
@@ -94,10 +91,11 @@ index 4b44d087a..663f9b8b1 100644
  
  /* Set SMPEN bit on u-boot's behalf */
  /* TODO check whether this function is still necessary in BL31; in cortex_a53.S
-@@ -234,3 +234,68 @@ wfi_done:
+@@ -80,3 +80,69 @@ func plat_secondary_cold_boot_setup
+ 	ldr	x7, [x7]
  	br	x7
  endfunc plat_secondary_cold_boot_setup
- 
++
 +/* Write a 32-bit value to an XRDC register
 +*
 +* This is a helper routine used by the eXtended Resource Domain Controller
@@ -164,7 +162,7 @@ index 4b44d087a..663f9b8b1 100644
 +	RET
 +endfunc s32_xrdc_reg_write
 diff --git a/plat/nxp/s32/s32_svc.c b/plat/nxp/s32/s32_svc.c
-index 57a8e1168..e3067a560 100644
+index 937f93b89..0dc620880 100644
 --- a/plat/nxp/s32/s32_svc.c
 +++ b/plat/nxp/s32/s32_svc.c
 @@ -9,8 +9,10 @@
@@ -178,7 +176,7 @@ index 57a8e1168..e3067a560 100644
  
  #define MSG_ID(m)			((m) & 0xffU)
  #define MSG_TYPE(m)			(((m) >> 8) & 0x3U)
-@@ -111,6 +113,71 @@ static int scp_scmi_handler(uint32_t smc_fid, u_register_t x1,
+@@ -112,6 +114,71 @@ static int scp_scmi_handler(uint32_t smc_fid, u_register_t x1,
  	return send_scmi_to_scp(S32_OSPM_SCMI_MEM);
  }
  
@@ -250,7 +248,7 @@ index 57a8e1168..e3067a560 100644
  uintptr_t s32_svc_smc_handler(uint32_t smc_fid,
  			       u_register_t x1,
  			       u_register_t x2,
-@@ -128,6 +195,9 @@ uintptr_t s32_svc_smc_handler(uint32_t smc_fid,
+@@ -129,6 +196,9 @@ uintptr_t s32_svc_smc_handler(uint32_t smc_fid,
  			SMC_RET1(handle, scmi_handler(smc_fid, x1, x2, x3));
  		}
  		break;
@@ -261,29 +259,20 @@ index 57a8e1168..e3067a560 100644
  		WARN("Unimplemented SIP Service Call: 0x%x\n", smc_fid);
  		SMC_RET1(handle, SMC_UNK);
 diff --git a/plat/nxp/s32/s32g/include/s32g_platform_def.h b/plat/nxp/s32/s32g/include/s32g_platform_def.h
-index 35ad77ad5..428358b06 100644
+index 5c5b51f8f..1e089109a 100644
 --- a/plat/nxp/s32/s32g/include/s32g_platform_def.h
 +++ b/plat/nxp/s32/s32g/include/s32g_platform_def.h
-@@ -65,16 +65,16 @@
+@@ -63,8 +63,8 @@
+ #define BL31SSRAM_MAX_CODE_SIZE	(S32G_SSRAM_LIMIT - BL31SSRAM_BASE)
+ #define BL31SSRAM_STACK_SIZE	0x1000
  
- #if defined IMAGE_BL31
- /* To limit usage, keep these in sync with sizeof(s32_mmap) */
 -#define MAX_MMAP_REGIONS		39
+-#define MAX_XLAT_TABLES			28
 +#define MAX_MMAP_REGIONS		41
- #define MAX_XLAT_TABLES			15
- #endif
++#define MAX_XLAT_TABLES			30
  
- #if defined IMAGE_BL2
- #if (ERRATA_S32_050543 == 1)
--#define MAX_MMAP_REGIONS		28
-+#define MAX_MMAP_REGIONS		30
- #define MAX_XLAT_TABLES			27
- #else
--#define MAX_MMAP_REGIONS		27
-+#define MAX_MMAP_REGIONS		29
- #define MAX_XLAT_TABLES			26
- #endif
- #endif /* IMAGE_BL2 */
+ #if defined IMAGE_BL33
+ #pragma warning "BL33 image is being built; you should configure it out."
 -- 
-2.27.0
+2.34.1
 
