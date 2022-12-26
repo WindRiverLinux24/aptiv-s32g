@@ -414,3 +414,24 @@ with the mmc initialization in Autosar. To use this template, add the below line
 in your local.conf file:
 
     WRTEMPLATE = "feature/skip_mmc_init"
+
+6.7 Secure boot
+---------------
+
+About the detailed description, please refer to the README in layers/nxp-s32g/s32g-secure-boot.
+
+6.7.1 Specific Boot Steps For Aptiv
+-----------------------------------
+
+Aptiv board has its own fitImage and load address, so user should use below fitImage name,
+configuration name and load address to replace the corresponding ones in section 3.4 of
+layers/nxp-s32g/s32g-secure-boot/README
+
+fitImage Name: fitImage-aptiv_cvc_sousa
+configuration Name: conf-freescale_s32g274a-aptiv.dtb
+Load Address of fitImage: 0x8A080000
+
+Detailed steps as below:
+	# fatload mmc 0:1 0x8A080000 ffitImage-aptiv_cvc_sousa
+	# run mmcargs
+	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
