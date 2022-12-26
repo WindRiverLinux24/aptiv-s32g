@@ -1,0 +1,23 @@
+From a011b3f62b9f02ba2f8e06ddf05f44c18598bb76 Mon Sep 17 00:00:00 2001
+From: Meng Li <Meng.Li@windriver.com>
+Date: Mon, 26 Dec 2022 21:25:02 +0800
+Subject: [PATCH] configs: aptiv_cvc_sousa: enable CONFIG_FIT_SIGNATURE for
+ secure boot verification
+
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ configs/aptiv_cvc_sousa_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configs/aptiv_cvc_sousa_defconfig b/configs/aptiv_cvc_sousa_defconfig
+index 77ff58c9ce..c7054fb445 100644
+--- a/configs/aptiv_cvc_sousa_defconfig
++++ b/configs/aptiv_cvc_sousa_defconfig
+@@ -79,3 +79,4 @@ CONFIG_MENU=y
+ CONFIG_CMD_BOOTMENU=y
+ CONFIG_XEN_SUPPORT=y
+ CONFIG_NXP_HSE_SUPPORT=y
++CONFIG_FIT_SIGNATURE=y
+-- 
+2.36.1
+
