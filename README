@@ -432,6 +432,6 @@ configuration Name: conf-freescale_s32g274a-aptiv.dtb
 Load Address of fitImage: 0x8A080000
 
 Detailed steps as below:
-	# fatload mmc 0:1 0x8A080000 ffitImage-aptiv_cvc_sousa
+	# fatload mmc 0:1 0x8A080000 fitImage-aptiv_cvc_sousa
 	# run mmcargs
 	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
