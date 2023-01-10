@@ -11,6 +11,7 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0004-aptiv-s32g-atf-add-aptiv-cvc-dts-file.patch \
 	file://0005-aptiv-s32g-atf-add-xrdc.patch \
 	file://0006-aptiv-set-S32_VR5510-for-aptiv-CVC-platform.patch \
+	file://0007-aptiv-s32g-atf-s32g-Patch-PFE1-2-SGMII-MDIO-Bus-for-.patch \
 	${SKIP_MMC_INIT_PATCH} \
 "
 

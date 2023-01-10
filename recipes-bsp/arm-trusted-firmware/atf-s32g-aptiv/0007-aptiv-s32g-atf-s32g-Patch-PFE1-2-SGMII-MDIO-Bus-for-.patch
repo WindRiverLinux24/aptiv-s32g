@@ -1,0 +1,75 @@
+From 6da4fd3f963644448c9acf7c5cf9661a5bad8e20 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Tue, 27 Dec 2022 17:43:26 +0800
+Subject: [PATCH] aptiv-s32g: atf-s32g: Patch PFE1-2 SGMII MDIO Bus for GCP
+
+This patch comes from:
+
+recipes-aptiv/u-boot-s32/files/0001-Patch-PFE1-2-SGMII-MDIO-Bus-for-GCP.patch
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ fdts/s32g.dtsi | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/fdts/s32g.dtsi b/fdts/s32g.dtsi
+index 1677231cb..2638a3325 100644
+--- a/fdts/s32g.dtsi
++++ b/fdts/s32g.dtsi
+@@ -554,13 +554,13 @@
+ 
+ 	pfe1_mdio_pins: pfe1_mdio {
+ 		pfe1_mdio_grp0 {
+-			pinmux = <S32CC_PINMUX(60, FUNC2)>;
++			pinmux = <S32CC_PINMUX(177, FUNC4)>;
+ 			output-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+ 		pfe1_mdio_grp1 {
+-			pinmux = <S32CC_PINMUX(61, FUNC2)>;
++			pinmux = <S32CC_PINMUX(178, FUNC4)>;
+ 			drive-open-drain;
+ 			output-enable;
+ 			input-enable;
+@@ -568,7 +568,7 @@
+ 		};
+ 
+ 		pfe1_mdio_grp2 {
+-			pinmux = <S32CC_PINMUX(857, FUNC2)>;
++			pinmux = <S32CC_PINMUX(857, FUNC3)>;
+ 		};
+ 
+ 	};
+@@ -620,7 +620,7 @@
+ 
+ 	pfe2_mdio_pins: pfe2_mdio {
+ 		pfe2_mdio_grp0 {
+-			pinmux = <S32CC_PINMUX(79, FUNC2)>;
++			pinmux = <S32CC_PINMUX(81, FUNC2)>;
+ 			drive-open-drain;
+ 			output-enable;
+ 			input-enable;
+@@ -628,15 +628,14 @@
+ 		};
+ 
+ 		pfe2_mdio_grp1 {
+-			pinmux = <S32CC_PINMUX(82, FUNC2)>;
++			pinmux = <S32CC_PINMUX(80, FUNC1)>;
+ 			output-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+ 		pfe2_mdio_grp2 {
+-			pinmux = <S32CC_PINMUX(877, FUNC3)>;
++			pinmux = <S32CC_PINMUX(877, FUNC2)>;
+ 		};
+-
+ 	};
+ 
+ 	pfe2_pins: pfe2 {
+-- 
+2.36.1
+
