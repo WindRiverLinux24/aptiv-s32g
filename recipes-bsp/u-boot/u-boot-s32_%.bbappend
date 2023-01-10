@@ -7,6 +7,7 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0004-u-boot-s32-enable-CONFIG_XEN_SUPPORT.patch \
 	file://0005-u-boot-s32-remove-XEN_EXTRA_ENV_SETTINGS.patch \
 	file://0006-s32cc-increate-boot-image-size-to-128MB.patch \
+	file://0007-s32-serdes-hwconfig-change-hwconfig-for-CVC-board.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', 'file://0001-configs-aptiv_cvc_sousa-add-HSE_SECBOOT-config.patch', '', d)} \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', 'file://0001-configs-aptiv_cvc_sousa-enable-CONFIG_FIT_SIGNATURE-.patch', '', d)} \
 "
