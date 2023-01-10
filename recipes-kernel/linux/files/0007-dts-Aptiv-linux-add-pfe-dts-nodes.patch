@@ -1,0 +1,71 @@
+From 27195ac5d6ae42eb89e95ebe6b8f3537f5dbc437 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Tue, 1 Nov 2022 19:08:33 +0800
+Subject: [PATCH] dts: Aptiv: enable pfe relevant device nodes
+
+Set "status" properties of pfe relevant device nodes to be "okay" to
+enable these devices.
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ .../boot/dts/freescale/s32g274a-aptiv.dts     | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/s32g274a-aptiv.dts b/arch/arm64/boot/dts/freescale/s32g274a-aptiv.dts
+index 7252741938b9..730a3224efdf 100755
+--- a/arch/arm64/boot/dts/freescale/s32g274a-aptiv.dts
++++ b/arch/arm64/boot/dts/freescale/s32g274a-aptiv.dts
+@@ -39,6 +39,48 @@ &usbotg {
+ 	status = "okay";
+ };
+ 
++&pfe {
++	status = "okay";
++};
++
++&pfe_mdio0 {
++	status = "okay";
++};
++
++&pfe_mdio1 {
++	/* unused */
++	status = "okay";
++};
++
++&pfe_mdio2 {
++	/* unused */
++	status = "okay";
++};
++
++&pfe_netif0 {
++	phy-mode = "sgmii";
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&pfe_netif1 {
++	phy-mode = "sgmii";
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&pfe_netif2 {
++	phy-mode = "sgmii";
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
+ &gmac0 {
+ 	status = "okay";
+ 	phy-mode = "rgmii";
+-- 
+2.36.1
+

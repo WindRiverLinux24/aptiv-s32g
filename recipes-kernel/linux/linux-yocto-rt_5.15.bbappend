@@ -9,4 +9,7 @@ SRC_URI:append:aptiv_cvc_sousa = " \
 	file://0001-Aptiv-enable-CAN0_STB-and-CAN0_EN-pullup.patch \
 	file://0001-dts-Aptiv-enable-flexcan1-3.patch \
 	file://0001-dts-Aptiv-change-scmi-buf.patch \
+	file://0006-dts-Aptiv-linux-disable-dma-coherent-for-pfe-for-cu.patch \
+	file://0007-dts-Aptiv-linux-add-pfe-dts-nodes.patch \
+	file://0008-dts-Aptiv-add-s32g274a-aptiv-pfems.dts-to-enable-pf.patch \
 "
