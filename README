@@ -435,3 +435,47 @@ Detailed steps as below:
 	# fatload mmc 0:1 0x8A080000 fitImage-aptiv_cvc_sousa
 	# run mmcargs
 	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
+
+6.8 PFE
+-------
+
+The NXP PFE (Packet Forwarding Engine) offloads the processing of Ethernet packets
+from the host cores, yielding higher performance and lower power than pure software
+processing can achieve.
+
+PFE is a component of S32G274A and S32G399A SOCs. It must be installed with the
+firmware to use. PFE firmware is not shipped with SDK, customers have to contact
+NXP to get permission and download the PFE firmware.
+
+6.8.1 PFE firmware
+------------------
+
+PFE is a firmware-based module. Load the firmware before using PFE.
+The firmwares name are "s32g_pfe_class.fw" and "s32g_pfe_util.fw" with
+version 1.5.0, which have to be downloaded from NXP Software.
+
+6.8.2 Steps to verify
+---------------------
+
+1. Add the "pfe" package to the system through including the
+following line in your local.conf:
+
+    # Set firmware dir
+    PFE_LOCAL_FIRMWARE_DIR = "<The firmwares fully directory path, eg: lib/firmware/>"
+
+    The variable PFE_LOCAL_FIRMWARE_DIR indicates the location where can
+    get the firmwares s32g_pfe_class.fw and s32g_pfe_util.fw.
+    And after setting the above variables, the firmwares can be installed
+    into WIC image's first boot partition automatically when build WIC image.
+
+2. Built and install them:
+
+	# bitbake wrlinux-image-<small/std>
+
+As PFE driver is a kernel module now, so it should not be used to NFS boot
+port. Please refer to the document "S32G Linux PFE Driver User’s Manual" for
+more information.
+
+About the detailed pfe port map information can refer to the chapter "Ethernet
+Hardware Support on S32G2" of the documents of Linux BSP 35.0 User Manual for
+S32G2 platforms.
