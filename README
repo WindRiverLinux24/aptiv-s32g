@@ -463,6 +463,13 @@ following line in your local.conf:
     # Set firmware dir
     PFE_LOCAL_FIRMWARE_DIR = "<The firmwares fully directory path, eg: lib/firmware/>"
 
+    # Install pfe in rootfs
+    IMAGE_INSTALL:append = " pfe"
+
+    # Install pfe in initramfs, this is required when initramfs is used,
+    # for example, when feature/ostree is enabled.
+    PACKAGE_INSTALL:append = " pfe"
+
     The variable PFE_LOCAL_FIRMWARE_DIR indicates the location where can
     get the firmwares s32g_pfe_class.fw and s32g_pfe_util.fw.
     And after setting the above variables, the firmwares can be installed
