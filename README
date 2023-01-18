@@ -423,16 +423,15 @@ About the detailed description, please refer to the README in layers/nxp-s32g/s3
 6.7.1 Specific Boot Steps For Aptiv
 -----------------------------------
 
-Aptiv board has its own fitImage and load address, so user should use below fitImage name,
-configuration name and load address to replace the corresponding ones in section 3.4 of
+Aptiv board has its own load address, so user should use below configuration name and load address
+to replace the corresponding ones in section 3.4 of
 layers/nxp-s32g/s32g-secure-boot/README
 
-fitImage Name: fitImage-aptiv_cvc_sousa
 configuration Name: conf-freescale_s32g274a-aptiv.dtb
 Load Address of fitImage: 0x8A080000
 
 Detailed steps as below:
-	# fatload mmc 0:1 0x8A080000 fitImage-aptiv_cvc_sousa
+	# fatload mmc 0:1 0x8A080000 fitImage
 	# run mmcargs
 	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
 
