@@ -1,0 +1,206 @@
+From 5bd0344e5360f0d871a1a5abcbad2bb6af423958 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Mon, 30 Jan 2023 18:32:37 +0800
+Subject: [PATCH] aptiv-cvc-fl: add support for Aptiv CVC-FL board
+
+Add new UBOOT_CONFIG "aptiv_cvc_fl" for Aptiv CVC-FL board.
+The reason why we use "aptiv_cvc_fl" as config name rather than
+"aptiv-cvc-fl" is that UBOOT_CONFIG must be identical to atf
+PLATFORM variable "aptiv_cvc_fl". This is because "u-boot-nodtb.bin"
+is copied to ${DEPLOYDIR}/${UBOOT_CONFIG}/${UBOOT_BINARY} and atf
+will access it via ${DEPLOY_DIR_IMAGE}/${plat}/${UBOOT_BINARY}.
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ arch/arm/mach-s32/s32g3/Kconfig | 14 ++++++++++++++
+ board/nxp/aptiv_cvc_fl/Kconfig  | 15 +++++++++++++++
+ board/nxp/aptiv_cvc_fl/Makefile |  7 +++++++
+ configs/aptiv_cvc_fl_defconfig  |  4 ++++
+ drivers/usb/host/ehci-mx6.c     |  8 ++++++++
+ include/configs/s32g3xxaevb.h   | 14 ++++++++++++++
+ 6 files changed, 62 insertions(+)
+ create mode 100644 board/nxp/aptiv_cvc_fl/Kconfig
+ create mode 100644 board/nxp/aptiv_cvc_fl/Makefile
+ create mode 100644 configs/aptiv_cvc_fl_defconfig
+
+diff --git a/arch/arm/mach-s32/s32g3/Kconfig b/arch/arm/mach-s32/s32g3/Kconfig
+index 82f575985a..a0fd8e6491 100644
+--- a/arch/arm/mach-s32/s32g3/Kconfig
++++ b/arch/arm/mach-s32/s32g3/Kconfig
+@@ -26,6 +26,19 @@ config TARGET_S32G3XXAEVB
+ 	imply USB_ULPI
+ 	select NXP_S32GEVB_BOARD
+ 
++config TARGET_APTIV_CVC_FL
++	bool "Support for Aptiv CVC FL board"
++	help
++	  This Aptiv CVC board is based on S32G399A SoC.
++	imply DM_USB
++	imply I2C_EEPROM
++	imply PHY
++	imply PHY_BROADCOM
++	imply SJA1105
++	imply USB
++	imply USB_EHCI_HCD
++	select NXP_S32GEVB_BOARD
++
+ config TARGET_S32G3XXAEVB3
+ 	bool "Support S32G3-EVB3 board"
+ 	help
+@@ -48,6 +61,7 @@ config S32CC_HWCONFIG
+ 
+ source "board/nxp/s32-cc/s32g/Kconfig"
+ source "board/nxp/s32g399ardb3/Kconfig"
++source "board/nxp/aptiv_cvc_fl/Kconfig"
+ source "board/nxp/s32g3xxaevb/Kconfig"
+ source "board/nxp/s32g3xxaevb3/Kconfig"
+ source "board/nxp/s32g399aemu/Kconfig"
+diff --git a/board/nxp/aptiv_cvc_fl/Kconfig b/board/nxp/aptiv_cvc_fl/Kconfig
+new file mode 100644
+index 0000000000..b8d38ddd9a
+--- /dev/null
++++ b/board/nxp/aptiv_cvc_fl/Kconfig
+@@ -0,0 +1,15 @@
++# SPDX-License-Identifier: GPL-2.0+
++# Copyright 2022 NXP
++
++if TARGET_APTIV_CVC_FL
++
++config SYS_CONFIG_NAME
++	default "s32g3xxaevb"
++
++config SYS_BOARD
++	default "s32g3xxaevb"
++
++config NR_DRAM_BANKS
++	default 2
++
++endif
+diff --git a/board/nxp/aptiv_cvc_fl/Makefile b/board/nxp/aptiv_cvc_fl/Makefile
+new file mode 100644
+index 0000000000..9bbb5c34ab
+--- /dev/null
++++ b/board/nxp/aptiv_cvc_fl/Makefile
+@@ -0,0 +1,7 @@
++#
++# Copyright 2022 NXP
++#
++# SPDX-License-Identifier:      GPL-2.0+
++#
++
++obj-y += ../s32-cc/s32g/
+diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
+new file mode 100644
+index 0000000000..2bcf33e5ee
+--- /dev/null
++++ b/configs/aptiv_cvc_fl_defconfig
+@@ -0,0 +1,4 @@
++CONFIG_ARM=y
++CONFIG_ARCH_S32G3=y
++CONFIG_TARGET_APTIV_CVC_FL=y
++CONFIG_SD_BOOT=y
+diff --git a/drivers/usb/host/ehci-mx6.c b/drivers/usb/host/ehci-mx6.c
+index 920affe41f..ba3ab7df48 100644
+--- a/drivers/usb/host/ehci-mx6.c
++++ b/drivers/usb/host/ehci-mx6.c
+@@ -149,6 +149,7 @@ static void usb_power_config(int index)
+ 
+ #if defined(CONFIG_MX6) || defined(CONFIG_TARGET_S32G2XXAEVB) || \
+ 	defined(CONFIG_TARGET_S32G3XXAEVB) || \
++	defined(CONFIG_TARGET_APTIV_CVC_FL) || \
+ 	defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ /* Return 0 : host node, <>0 : device mode */
+ static int usb_phy_enable(int index, struct usb_ehci *ehci)
+@@ -157,6 +158,7 @@ static int usb_phy_enable(int index, struct usb_ehci *ehci)
+ 	void __iomem *usb_cmd;
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	void __iomem *phy_reg;
+ 	void __iomem *phy_ctrl;
+@@ -182,6 +184,7 @@ static int usb_phy_enable(int index, struct usb_ehci *ehci)
+ 
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) && \
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	/* Reset USBPHY module */
+ 	setbits_le32(phy_ctrl, USBPHY_CTRL_SFTRST);
+@@ -286,6 +289,7 @@ static void usb_oc_config(int index)
+ {
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) && \
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ #if defined(CONFIG_MX6)
+ 	struct usbnc_regs *usbnc = (struct usbnc_regs *)(USB_BASE_ADDR +
+@@ -365,6 +369,7 @@ int ehci_mx6_common_init(struct usb_ehci *ehci, int index)
+ {
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	int ret;
+ 
+@@ -386,6 +391,7 @@ int ehci_mx6_common_init(struct usb_ehci *ehci, int index)
+ 
+ #if defined(CONFIG_MX6) || defined(CONFIG_TARGET_S32G2XXAEVB) || \
+ 	defined(CONFIG_TARGET_S32G3XXAEVB) || \
++	defined(CONFIG_TARGET_APTIV_CVC_FL) || \
+ 	defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	usb_phy_enable(index, ehci);
+ #endif
+@@ -494,6 +500,7 @@ static int ehci_usb_phy_mode(struct udevice *dev)
+ {
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	struct usb_platdata *plat = dev_get_platdata(dev);
+ 	void *__iomem addr = (void *__iomem)devfdt_get_addr(dev);
+@@ -568,6 +575,7 @@ static int ehci_usb_bind(struct udevice *dev)
+ {
+ #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
+ 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	/*
+ 	 * TODO:
+diff --git a/include/configs/s32g3xxaevb.h b/include/configs/s32g3xxaevb.h
+index 649fe58a54..b87c750f63 100644
+--- a/include/configs/s32g3xxaevb.h
++++ b/include/configs/s32g3xxaevb.h
+@@ -9,6 +9,18 @@
+ 
+ #define EXTRA_BOOTCOMMAND		PFE_INIT_CMD
+ #define EXTRA_BOOT_ARGS			PFE_EXTRA_BOOT_ARGS
++
++#if defined(CONFIG_TARGET_APTIV_CVC_FL)
++
++#define FDT_FILE			"s32g399a-cvc-fl.dtb"
++
++#ifdef CONFIG_FSL_PFENG
++#  define PFENG_MODE			"enable,sgmii,sgmii,sgmii"
++#  define PFENG_EMAC			"1"
++#endif
++
++#else
++
+ #define FDT_FILE			"s32g3xxa-evb.dtb"
+ 
+ #ifdef CONFIG_FSL_PFENG
+@@ -16,6 +28,8 @@
+ #  define PFENG_EMAC			"0"
+ #endif
+ 
++#endif /* CONFIG_TARGET_APTIV_CVC_FL */
++
+ #if defined(CONFIG_USB)
+ #  define CONFIG_USB_EHCI_MX6
+ #  define CONFIG_MXC_USB_PORTSC		PORT_PTS_ULPI
+-- 
+2.36.1
+
