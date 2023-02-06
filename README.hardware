@@ -35,10 +35,11 @@ The following BSP features are validated and supported.
   o Bus
 	+ I2C: On-Chip I2C controller
 	+ uSDHC: On-Chip ultra secured digital host controller
-	+ USB: On-Chip USB 2.0 controller with host mode
+	+ USB: On-Chip USB 2.0 controller OTG
 
   o Network
 	+ Ethernet: DWMAC ethernet controller, BCM89610 Gigabit PHY
+	+ PFE: Package Forwarding Engine
 	+ FLEXCAN: Flexible controller area network
 	+ IEEE-1588
 
@@ -46,6 +47,7 @@ The following BSP features are validated and supported.
 	+ Micso SD card
 
   o Misc Devices
+	+ HSE: Hardware Security Engine
 	+ UART: NXP LINFLEX UART
 	+ eDMA: Enhanced Direct Memory Access
 	+ GPIO: On-Chip general purpose Input/Output
@@ -57,13 +59,10 @@ The following BSP features are validated and supported.
 
 The following features are not supported or validated same as SDK.
 
-	x USB OTG
 	x DSPI: NXP DSPI bus controller in master mode
 	x PCIe: On-Chip PCIe controller
 	x QSPI: On-Chip Quad-SPI flash controller
 	x CPU Freq
-	x HSE: Hardware Security Engine
-	x PFE: Package Forwarding Engine
 	x LLCE CAN: NXP Low Latency Communication Engine CAN
 
 4. BSP Notes
