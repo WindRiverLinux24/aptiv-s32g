@@ -1,1 +1,1 @@
-COMPATIBLE_MACHINE:aptiv_cvc_sousa = "aptiv_cvc_sousa"
+COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
