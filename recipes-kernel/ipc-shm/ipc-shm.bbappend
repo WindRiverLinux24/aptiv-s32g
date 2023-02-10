@@ -1,7 +1,7 @@
-FILESEXTRAPATHS:prepend:aptiv_cvc_sousa := "${THISDIR}/ipc-shm-aptiv:"
+FILESEXTRAPATHS:prepend:aptiv-cvc := "${THISDIR}/ipc-shm-aptiv:"
 
-SRC_URI:append:aptiv_cvc_sousa = " \
+SRC_URI:append:aptiv-cvc = " \
 	file://0001-shm-sample-use-strncpy-instead-of-strcpy.patch \
 "
 
-COMPATIBLE_MACHINE:aptiv_cvc_sousa = "aptiv_cvc_sousa"
+COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
