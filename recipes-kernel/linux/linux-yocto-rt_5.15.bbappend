@@ -12,4 +12,5 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0007-dts-Aptiv-linux-add-pfe-dts-nodes.patch \
 	file://0008-dts-Aptiv-add-s32g274a-aptiv-pfems.dts-to-enable-pf.patch \
 	file://0009-aptiv-add-dts-file-for-Aptiv-CVC-FL-board.patch \
+	file://0010-dts-cvc-fl-disable-unsupported-device-nodes.patch \
 "
