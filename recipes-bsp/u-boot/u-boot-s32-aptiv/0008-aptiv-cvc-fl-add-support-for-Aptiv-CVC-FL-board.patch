@@ -96,11 +96,12 @@ new file mode 100644
 index 0000000000..2bcf33e5ee
 --- /dev/null
 +++ b/configs/aptiv_cvc_fl_defconfig
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,5 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_S32G3=y
 +CONFIG_TARGET_APTIV_CVC_FL=y
 +CONFIG_SD_BOOT=y
++CONFIG_FAT_WRITE=y
 diff --git a/drivers/usb/host/ehci-mx6.c b/drivers/usb/host/ehci-mx6.c
 index 920affe41f..ba3ab7df48 100644
 --- a/drivers/usb/host/ehci-mx6.c
