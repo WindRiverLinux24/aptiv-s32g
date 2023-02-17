@@ -137,7 +137,7 @@ ipaddr=192.168.1.100
 serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
-fdtfile=s32g274a-aptiv.dtb
+fdtfile=s32g274a-aptiv.dtb (or s32g399a-cvc-fl.dtb)
 rootpath=/tftpboot/rootfs
 consoledev=ttyLF0
 baudrate=115200
@@ -172,13 +172,16 @@ To burn WIC image to SD card, user only need to execute the below command:
 
 Board can boot automatically by set the below uboot environment variables:
 
-=> setenv bootfile Image; setenv fdtfile s32g274a-aptiv.dtb; setenv loadaddr 0x8A080000; setenv fdtaddr 0x8FE00000;
+=> setenv bootfile Image; setenv fdtfile <fdt-file-name>; setenv loadaddr 0x8A080000; setenv fdtaddr 0x8FE00000;
 
 => setenv bootargs console=ttyLF0,115200n8 root=/dev/mmcblk0p2 rw
 
 => setenv bootcmd 'fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
 
 => saveenv; run bootcmd;
+
+The above fdt-file-name includes s32g274a-aptiv.dtb and s32g399a-cvc-fl.dtb,
+please use the right fdt file for different board.
 
 6. Features
 ===========
@@ -213,11 +216,11 @@ details of ATF, please refer to the sections
 and
 	"22 Power Management"
 
-in "S32G274_BSP28.0_User_Manual.pdf".
+in "S32G2_Linux_BSP35.0_User_Manual.pdf".
 
 NOTICE:
     For hardware reasons, the power management features are not supported for
-	Aptiv CVC board.
+	Aptiv CVC boards (Both Sousa and FL).
 
 6.2.1 CPU Hotplug verify steps
 ------------------------------
@@ -312,7 +315,7 @@ and etc., which can be found in related packages downloaded from flexra.
 And if the IPCF application on M7 side build successfully following the
 related documents, then users can find the binary file:
 
-	"IPCF_Example_S32G274.bin"
+	"IPCF_Example_S32G274.bin" and "IPCF_Example_S32G399_M7_0.bin"
 
 from S32DS IPCF example project.
 
@@ -329,12 +332,13 @@ then build the project as normal:
 
 	bitbake wrlinux-image-std
 
-the IPCF related drivers and M7 side app binary IPCF_Example_S32G274.bin
-will be built into WIC image.
+the IPCF related drivers and M7 side app binaries IPCF_Example_S32G274.bin and
+IPCF_Example_S32G399_M7_0.bin will be built into WIC image.
 
 NOTICE:
-    The M7 side binary default name is IPCF_Example_S32G274.bin and it's
-defined by the variable IPCF_M7_APP_BIN_NAME, users can use different binary
+    The M7 side binary default name is IPCF_Example_S32G274.bin or
+IPCF_Example_S32G399_M7_0.bin, and it's defined by the variable IPCF_M7_APP_BIN_NAME
+or IPCF_M7_APP_BIN_NAME_S32G3 respectively, users can use different binary
 names by modifying these variables, or set related variable(s) to empty if it
 is unneeded for users.
 

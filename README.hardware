@@ -17,12 +17,16 @@ This BSP supports the following boards:
 
    + Aptiv CVC Board: Secure Gateway S32G (SCH-24159368)
                        CPU: NXP S32G274A rev. 2.1.0
+   + Aptiv CVC-FL Board: Secure Gateway S32G (SCH24162794B)
+                       CPU: NXP S32G399A rev. 1.0
 
 2. Change History
 =================
 
   - 2022/04 (LINUXPG-1145): Wind River Linux CICD. Standard support based on NXP
 			   SDK v5.10_bsp32.0.
+  - 2023/04 (LINUXEXEC-24886): Wind River Linux LTS22 RCPL8. Standard support based on NXP
+			   SDK v5.10_bsp35.0.
 
 3. BSP Features
 ===============
@@ -35,13 +39,14 @@ The following BSP features are validated and supported.
   o Bus
 	+ I2C: On-Chip I2C controller
 	+ uSDHC: On-Chip ultra secured digital host controller
-	+ USB: On-Chip USB 2.0 controller OTG
+	+ USB: On-Chip USB 2.0 controller Host (Only FL)
+	+ USB: On-Chip USB 2.0 controller OTG (Only Sousa)
 
   o Network
-	+ Ethernet: DWMAC ethernet controller, BCM89610 Gigabit PHY
+	+ Ethernet: DWMAC ethernet controller, BCM89610 Gigabit PHY (Only Sousa)
 	+ PFE: Package Forwarding Engine
 	+ FLEXCAN: Flexible controller area network
-	+ IEEE-1588
+	+ IEEE-1588 (Only Sousa)
 
   o Storage
 	+ Micso SD card
@@ -80,3 +85,10 @@ Aptiv CVC Board:
 	Board Serial:			NXP S32G27x
 	BootLoader:				U-Boot
 	BootLoader Version:		U-Boot 2020.04+g6286902
+
+Aptiv CVC-FL Board:
+	Processor:				NXP S32G399A
+	CPU Revision:			rev. 1.0
+	Board Serial:			NXP S32G3XX
+	BootLoader:				U-Boot
+	BootLoader Version:		U-Boot 2020.04+gf30287c440
