@@ -14,6 +14,7 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0006-s32cc-increate-boot-image-size-to-128MB.patch \
 	file://0007-s32-serdes-hwconfig-change-hwconfig-for-CVC-board.patch \
 	file://0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch \
+	file://0009-aptiv-cvc-fl-add-cmd-to-configure-RTL9010-phys.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', '${SEC_PATCHES}', '', d)} \
 "
 

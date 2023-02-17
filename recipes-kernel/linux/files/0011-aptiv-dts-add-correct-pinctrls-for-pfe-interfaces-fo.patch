@@ -1,0 +1,243 @@
+From e8e85afe8bea1a395505cbd02b1ecb9ca47fba5f Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Fri, 10 Feb 2023 14:35:00 +0800
+Subject: [PATCH] aptiv: dts: add correct pinctrls for pfe interfaces for
+ Aptiv-FL board
+
+Add pinctrls for pfe0/1/2 interfaces for Aptiv-FL board. Note that
+RTL9010 phys need to be configured at u-boot.
+
+This patch comes from:
+meta-cvc-fl/recipes-kernel/linux/linux-s32/0001-ESL-427-Linux-S32-cvc-support+cleanup.patch
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ .../boot/dts/freescale/s32gxxxa-cvc-fl.dtsi   | 136 +++++-------------
+ 1 file changed, 38 insertions(+), 98 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi b/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
+index 03fd154bb8b36..6fb48b8e297cd 100644
+--- a/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
++++ b/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
+@@ -57,6 +57,7 @@ &pfe {
+ 
+ &pfe_netif0 {
+ 	status = "okay";
++	phy-mode = "sgmii";
+ 	phy-handle = <&mdio0_phy8>;
+ 	fixed-link {
+ 		speed = <1000>;
+@@ -66,6 +67,7 @@ fixed-link {
+ 
+ &pfe_netif1 {
+ 	status = "okay";
++	phy-mode = "sgmii";
+ 	phy-handle = <&mdio1_rtl_sw>;
+ 	fixed-link {
+ 		speed = <1000>;
+@@ -100,6 +102,9 @@ can0-en-hog {
+ 
+ &pfe_mdio0 {
+ 	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pfe0mdio_pins>;
++
+ 	/* RTL9010 */
+ 	mdio0_phy8: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
+@@ -107,11 +112,13 @@ mdio0_phy8: ethernet-phy@1 {
+ 		#size-cells = <0>;
+ 		reg = <1>;
+ 	};
+-
+ };
+ 
+ &pfe_mdio1 {
+ 	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pfe1mdio_pins>;
++
+ 	/* RTL9075 */
+ 	mdio1_rtl_sw: ethernet-phy@24 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
+@@ -123,6 +130,9 @@ mdio1_rtl_sw: ethernet-phy@24 {
+ 
+ &pfe_mdio2 {
+ 	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pfe2mdio_pins>;
++
+ 	/* RTL9010 */
+ 	mdio2_phy7: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
+@@ -528,67 +538,6 @@ usbotg_grp3 {
+ 
+ 	};
+ 
+-	pfe2mdioa_pins: pfe2mdioa {
+-		pfe2mdioa_grp0 {
+-			pinmux = <S32CC_PINMUX(82, FUNC2)>;
+-			output-enable;
+-			slew-rate = <S32CC_SLEW_208MHZ>;
+-		};
+-
+-		pfe2mdioa_grp1 {
+-			pinmux = <S32CC_PINMUX(79, FUNC2)>;
+-			output-enable;
+-			input-enable;
+-			slew-rate = <S32CC_SLEW_208MHZ>;
+-		};
+-
+-		pfe2mdioa_grp2 {
+-			pinmux = <S32CC_PINMUX(877, FUNC3)>;
+-		};
+-
+-	};
+-
+-	pfe2rgmiia_pins: pfe2rgmiia {
+-		pfe2rgmiia_grp0 {
+-			pinmux = <S32CC_PINMUX(144, FUNC2)>,
+-				 <S32CC_PINMUX(113, FUNC2)>,
+-				 <S32CC_PINMUX(114, FUNC2)>,
+-				 <S32CC_PINMUX(115, FUNC2)>,
+-				 <S32CC_PINMUX(78, FUNC2)>;
+-			output-enable;
+-			slew-rate = <S32CC_SLEW_208MHZ>;
+-		};
+-
+-		pfe2rgmiia_grp1 {
+-			pinmux = <S32CC_PINMUX(116, FUNC0)>,
+-				 <S32CC_PINMUX(117, FUNC0)>,
+-				 <S32CC_PINMUX(118, FUNC0)>,
+-				 <S32CC_PINMUX(119, FUNC0)>,
+-				 <S32CC_PINMUX(120, FUNC0)>,
+-				 <S32CC_PINMUX(121, FUNC0)>;
+-			input-enable;
+-			slew-rate = <S32CC_SLEW_208MHZ>;
+-		};
+-
+-		pfe2rgmiia_grp2 {
+-			pinmux = <S32CC_PINMUX(879, FUNC3)>,
+-				 <S32CC_PINMUX(885, FUNC3)>,
+-				 <S32CC_PINMUX(881, FUNC3)>,
+-				 <S32CC_PINMUX(882, FUNC3)>,
+-				 <S32CC_PINMUX(883, FUNC3)>,
+-				 <S32CC_PINMUX(884, FUNC3)>,
+-				 <S32CC_PINMUX(886, FUNC3)>;
+-		};
+-
+-		pfe2rgmiia_grp3 {
+-			pinmux = <S32CC_PINMUX(122, FUNC2)>;
+-			output-enable;
+-			slew-rate = <S32CC_SLEW_208MHZ>;
+-			bias-pull-up;
+-		};
+-
+-	};
+-
+ 	gmac0mdioc_pins: gmac0mdioc {
+ 		gmac0mdioc_grp0 {
+ 			pinmux = <S32CC_PINMUX(60, FUNC1)>;
+@@ -650,70 +599,61 @@ gmac0rgmiic_grp3 {
+ 
+ 	};
+ 
+-	pfe1mdioc_pins: pfe1mdioc {
+-		pfe1mdioc_grp0 {
+-			pinmux = <S32CC_PINMUX(177, FUNC4)>;
++	pfe0mdio_pins: pfe0mdio {
++		pfe0mdio_grp0 {
++			pinmux = <S32CC_PINMUX(82, FUNC1)>;
+ 			output-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+-		pfe1mdioc_grp1 {
+-			pinmux = <S32CC_PINMUX(178, FUNC4)>;
++		pfe0mdio_grp1 {
++			pinmux = <S32CC_PINMUX(79, FUNC1)>;
+ 			output-enable;
+ 			input-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+-		pfe1mdioc_grp2 {
+-			pinmux = <S32CC_PINMUX(857, FUNC3)>;
++		pfe0mdio_grp2 {
++			pinmux = <S32CC_PINMUX(837, FUNC2)>;
+ 		};
+-
+ 	};
+ 
+-	pfe1rgmiic_pins: pfe1rgmiic {
+-		pfe1rgmiic_grp0 {
+-			pinmux = <S32CC_PINMUX(66, FUNC2)>;
++	pfe1mdio_pins: pfe1mdio {
++		pfe1mdio_grp0 {
++			pinmux = <S32CC_PINMUX(177, FUNC4)>;
+ 			output-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+-			bias-pull-up;
+ 		};
+ 
+-		pfe1rgmiic_grp1 {
+-			pinmux = <S32CC_PINMUX(866, FUNC2)>,
+-				 <S32CC_PINMUX(859, FUNC2)>,
+-				 <S32CC_PINMUX(865, FUNC2)>,
+-				 <S32CC_PINMUX(861, FUNC2)>,
+-				 <S32CC_PINMUX(862, FUNC2)>,
+-				 <S32CC_PINMUX(863, FUNC2)>,
+-				 <S32CC_PINMUX(864, FUNC2)>;
+-		};
+-
+-		pfe1rgmiic_grp2 {
+-			pinmux = <S32CC_PINMUX(67, FUNC2)>,
+-				 <S32CC_PINMUX(68, FUNC2)>,
+-				 <S32CC_PINMUX(69, FUNC2)>,
+-				 <S32CC_PINMUX(70, FUNC2)>;
++		pfe1mdio_grp1 {
++			pinmux = <S32CC_PINMUX(178, FUNC4)>;
+ 			output-enable;
++			input-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+-		pfe1rgmiic_grp3 {
+-			pinmux = <S32CC_PINMUX(71, FUNC3)>;
++		pfe1mdio_grp2 {
++			pinmux = <S32CC_PINMUX(857, FUNC3)>;
++		};
++	};
++
++	pfe2mdio_pins: pfe2mdio {
++		pfe2mdio_grp0 {
++			pinmux = <S32CC_PINMUX(80, FUNC1)>;
+ 			output-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
+-		pfe1rgmiic_grp4 {
+-			pinmux = <S32CC_PINMUX(72, FUNC0)>,
+-				 <S32CC_PINMUX(73, FUNC0)>,
+-				 <S32CC_PINMUX(74, FUNC0)>,
+-				 <S32CC_PINMUX(75, FUNC0)>,
+-				 <S32CC_PINMUX(76, FUNC0)>,
+-				 <S32CC_PINMUX(77, FUNC0)>;
++		pfe2mdio_grp1 {
++			pinmux = <S32CC_PINMUX(81, FUNC2)>;
++			output-enable;
+ 			input-enable;
+ 			slew-rate = <S32CC_SLEW_208MHZ>;
+ 		};
+ 
++		pfe2mdio_grp2 {
++			pinmux = <S32CC_PINMUX(877, FUNC2)>;
++		};
+ 	};
+ 
+ 	ftm0_pins: ftm0 {
+-- 
+2.36.1
+
