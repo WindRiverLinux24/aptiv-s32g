@@ -403,24 +403,12 @@ If all the above steps succeed, the result messages should be like:
 	ipc-shm-sample: exit demo
 	root@nxp-s32g:~#
 
-6.6 Templates
--------------
-
-6.6.1 Skip_mmc_init
--------------------
-
-This template is to skip the mmc initialization in atf-s32g, since it conflicts
-with the mmc initialization in Autosar. To use this template, add the below line
-in your local.conf file:
-
-    WRTEMPLATE = "feature/skip_mmc_init"
-
-6.7 Secure boot
+6.6 Secure boot
 ---------------
 
 About the detailed description, please refer to the README in layers/nxp-s32g/s32g-secure-boot.
 
-6.7.1 Specific Boot Steps For Aptiv
+6.6.1 Specific Boot Steps For Aptiv
 -----------------------------------
 
 Aptiv board has its own load address, so user should use below configuration name and load address
@@ -435,7 +423,7 @@ Detailed steps as below:
 	# run mmcargs
 	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
 
-6.8 PFE
+6.7 PFE
 -------
 
 The NXP PFE (Packet Forwarding Engine) offloads the processing of Ethernet packets
@@ -446,14 +434,14 @@ PFE is a component of S32G274A and S32G399A SOCs. It must be installed with the
 firmware to use. PFE firmware is not shipped with SDK, customers have to contact
 NXP to get permission and download the PFE firmware.
 
-6.8.1 PFE firmware
+6.7.1 PFE firmware
 ------------------
 
 PFE is a firmware-based module. Load the firmware before using PFE.
 The firmwares name are "s32g_pfe_class.fw" and "s32g_pfe_util.fw" with
 version 1.5.0, which have to be downloaded from NXP Software.
 
-6.8.2 Steps to verify
+6.7.2 Steps to verify
 ---------------------
 
 1. Add the "pfe" package to the system through including the
