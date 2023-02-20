@@ -1,0 +1,33 @@
+From 73b8abc07ab196cd4c72ba2d837319173dddfc50 Mon Sep 17 00:00:00 2001
+From: Meng Li <Meng.Li@windriver.com>
+Date: Thu, 16 Feb 2023 15:05:52 +0800
+Subject: [PATCH] dts: s32: extend the hse reserve memory to 8 MB
+
+When enabling secure boot feature, the m7-autosar code and fip code have
+to be verified before installing their SMRs(secure memory region) into HSE
+module. So, extend the hse reserve memory so that there is enough space to
+store the m7-autosar code and fip code.
+
+Upstream-Status: Inappropriate [WR Linux specific change for Aptiv autosar]
+
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ fdts/s32cc.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fdts/s32cc.dtsi b/fdts/s32cc.dtsi
+index b1bfca3ac..561b612fc 100644
+--- a/fdts/s32cc.dtsi
++++ b/fdts/s32cc.dtsi
+@@ -65,7 +65,7 @@
+ 
+ 		hse_reserved: shm@84000000 {
+ 			compatible = "nxp,s32cc-hse-rmem";
+-			reg = <0x0 0x84000000 0x0 0x80000>;	/* 512k */
++			reg = <0x0 0x84000000 0x0 0x800000>;	/* 8 MB */
+ 			no-map;
+ 		};
+ 	};
+-- 
+2.36.1
+

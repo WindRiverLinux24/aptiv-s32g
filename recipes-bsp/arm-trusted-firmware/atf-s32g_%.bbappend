@@ -4,6 +4,7 @@ PLATFORM:aptiv_cvc_sousa = " aptiv_cvc_sousa"
 PLATFORM:aptiv-cvc-fl = " aptiv_cvc_fl"
 
 AUTOSAR_SEC_PATCHES = "file://0001-s32-extend-the-DTB-size-for-BL33.patch \
+			file://0001-dts-s32-extend-the-hse-reserve-memory-to-8-MB.patch \
 "
 
 SRC_URI:append:aptiv-cvc = " \
