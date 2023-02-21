@@ -22,6 +22,15 @@ Building the aptiv-s32g layer
 This layer should be added to bblayers.conf. This is done automatically
 when using the Wind River setup.sh wrapper.
 
+Note:
+To build wrlinux for CVC Sousa board, use:
+
+	--machines aptiv_cvc_sousa
+
+To build wrlinux for CVC FL board, use:
+
+	--machines aptiv-cvc-fl
+
 License
 -------
 Copyright (C) 2022 Wind River Systems, Inc.
