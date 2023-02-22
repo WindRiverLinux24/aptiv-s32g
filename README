@@ -486,3 +486,24 @@ more information.
 About the detailed pfe port map information can refer to the chapter "Ethernet
 Hardware Support on S32G2" of the documents of Linux BSP 35.0 User Manual for
 S32G2 platforms.
+
+6.8 Aptiv m7-autosar secure boot
+--------------------------------
+
+There is a Aptiv specific m7-autosar image(gcp_m7_app.bin) for Aptiv platform.
+If users want to integrate it into WRLinux product, it needs to setup WRLinux
+project with below template.
+
+	--templates feature/aptiv-autosar-secboot
+
+Because of the license limitation, users need to get the m7-autosar and HSE firmware images
+by themselves, and then copy them into below 2 directories respectively:
+m7-autosar	=> <project-path>/layers/aptiv-s32g/recipes-bsp/m7-autosar/files
+HSE firmware 	=> <project-path>/layers/aptiv-s32g/recipes-bsp/hse/files
+
+After above preparation, users can start to build project, and the final wic file is generated
+in <project-path>/build/tmp-glibc/deploy/images/<machine name>/ directory. Install the wic file
+with section 5.1, and then enable secure boot feature with section 6.6.
+
+Note: If the name of HSE firmware is not the same with default one, please set the correct
+      HSE firmware name with variable HSE_IMAGE in local.conf.
