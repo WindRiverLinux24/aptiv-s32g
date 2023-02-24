@@ -10,5 +10,5 @@ IMAGE_INSTALL += "libp11"
 IMAGE_INSTALL += "pkcs11-hse"
 IMAGE_INSTALL += "pkcs11-hse-examples"
 
-APTIV_CVC_WIC_INC:aptiv-cvc = "${@bb.utils.contains('S32G_FEATURES', 'm7_boot', 'make_aptiv_m7_boot_wic.inc', 'make_aptiv_cvc_wic.inc', d)}"
+APTIV_CVC_WIC_INC:aptiv-cvc = "${@bb.utils.contains('MACHINE_FEATURES', 'm7_boot', 'make_aptiv_m7_boot_wic.inc', 'make_aptiv_cvc_wic.inc', d)}"
 require conf/${APTIV_CVC_WIC_INC}
