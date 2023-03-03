@@ -60,3 +60,5 @@ FILES:${PN}:append = " \
 
 addtask deploy after do_compile before do_install
 EXPORT_FUNCTIONS do_deploy
+
+COMPATIBLE_MACHINE = "aptiv-cvc"

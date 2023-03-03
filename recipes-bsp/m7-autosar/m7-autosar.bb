@@ -92,3 +92,5 @@ python () {
     if d.getVar('HSE_SEC_ENABLED') == '1':
         bb.fatal("autosar secure boot and nxp-s32g secure boot are not able to be enabled at the same time!")
 }
+
+COMPATIBLE_MACHINE = "aptiv-cvc"
