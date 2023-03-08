@@ -87,10 +87,12 @@ EXPORT_FUNCTIONS do_deploy
 do_compile[depends] += "atf-s32g:do_deploy"
 
 python () {
-    if bb.utils.contains("MACHINE_FEATURES", "m7_boot m7_autosar_secboot", "true", "false", d) == "true":
+    if bb.utils.contains("MACHINE_FEATURES", "m7_boot m7_autosar_secboot", True, False, d):
         bb.fatal("m7_boot and aptiv-autosar-secboot template are not able to be enabled at the same time!")
-    if d.getVar('HSE_SEC_ENABLED') == '1':
-        bb.fatal("autosar secure boot and nxp-s32g secure boot are not able to be enabled at the same time!")
+    if bb.utils.contains("MACHINE_FEATURES", "m7_autosar_secboot", True, False, d):
+        if d.getVar('HSE_SEC_ENABLED') == '1' or \
+                bb.utils.contains("BBLAYERS", "s32g-secure-boot", True, False, d):
+            bb.fatal("autosar secure boot and nxp-s32g secure boot are not able to be used at the same time!")
 }
 
 COMPATIBLE_MACHINE = "aptiv-cvc"
