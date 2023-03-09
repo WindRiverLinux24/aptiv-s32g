@@ -19,7 +19,7 @@ SRC_URI:append:aptiv-cvc = " \
 	${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', '${AUTOSAR_SEC_PATCHES}', '', d)} \
 "
 
-EXTRA_OEMAKE:append:aptiv_cvc_sousa = " S32_HAS_HV=1"
+EXTRA_OEMAKE:append:aptiv-cvc = " S32_HAS_HV=1"
 
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
 
