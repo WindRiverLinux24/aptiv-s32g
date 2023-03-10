@@ -13,9 +13,9 @@ index 2bcf33e5ee..8fb7884980 100644
 --- a/configs/aptiv_cvc_fl_defconfig
 +++ b/configs/aptiv_cvc_fl_defconfig
 @@ -2,3 +2,5 @@ CONFIG_ARM=y
- CONFIG_TARGET_APTIV_CVC_FL=y
  CONFIG_SD_BOOT=y
  CONFIG_FAT_WRITE=y
+ CONFIG_XEN_SUPPORT=y
 +CONFIG_NXP_HSE_SUPPORT=y
 +CONFIG_FIT_SIGNATURE=y
 -- 
