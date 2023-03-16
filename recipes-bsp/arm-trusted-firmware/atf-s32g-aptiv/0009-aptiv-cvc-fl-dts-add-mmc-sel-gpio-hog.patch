@@ -1,0 +1,39 @@
+From 417a9cef3970108ffc55c33e42d9b288559fca32 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Thu, 16 Mar 2023 11:14:19 +0800
+Subject: [PATCH] aptiv-cvc-fl: dts: add mmc-sel gpio hog
+
+The pin PH08 (gpio120) is used to be "sel" pin to enable either SD card
+or eMMC. So let's make a gpio hog to give it a defined state to enable
+SD card by default.
+
+Upstream-Status: Inappropriate [WR Linux specific]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ fdts/aptiv_cvc_fl.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
+index 2d16763a1..31635c88f 100644
+--- a/fdts/aptiv_cvc_fl.dts
++++ b/fdts/aptiv_cvc_fl.dts
+@@ -40,6 +40,15 @@
+ 	status = "disabled";
+ };
+ 
++&gpio {
++	mmc-sel {
++		gpio-hog;
++		gpios = <120 0>;
++		output-high;
++		ine-name = "mmc_select";
++	};
++};
++
+ &gmac0 {
+ 	status = "okay";
+ 	phy-mode = "rgmii";
+-- 
+2.36.1
+

@@ -1,0 +1,28 @@
+From c26e2246616e7a7a91f646b2ecd6be85d28dc3da Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Thu, 16 Mar 2023 11:24:09 +0800
+Subject: [PATCH] aptiv-cvc-fl: add GPIO_HOG config
+
+Add CONFIG_GPIO_HOG to enable gpio hog device node in dts file.
+
+Upstream-Status: Inappropriate [WR Linux specific]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ configs/aptiv_cvc_fl_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
+index 528e86c2e8..3b727d60d0 100644
+--- a/configs/aptiv_cvc_fl_defconfig
++++ b/configs/aptiv_cvc_fl_defconfig
+@@ -1,5 +1,6 @@
+ CONFIG_ARM=y
+ CONFIG_ARCH_S32G3=y
++CONFIG_GPIO_HOG=y
+ CONFIG_TARGET_APTIV_CVC_FL=y
+ CONFIG_SD_BOOT=y
+ CONFIG_FAT_WRITE=y
+-- 
+2.36.1
+

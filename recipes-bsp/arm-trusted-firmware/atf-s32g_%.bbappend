@@ -16,6 +16,7 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0006-aptiv-set-S32_VR5510-for-aptiv-CVC-platform.patch \
 	file://0007-aptiv-s32g-atf-s32g-Patch-PFE1-2-SGMII-MDIO-Bus-for-.patch \
 	file://0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch \
+	file://0009-aptiv-cvc-fl-dts-add-mmc-sel-gpio-hog.patch \
 	${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', '${AUTOSAR_SEC_PATCHES}', '', d)} \
 "
 
