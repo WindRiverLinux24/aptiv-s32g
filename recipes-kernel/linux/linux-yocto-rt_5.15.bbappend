@@ -2,8 +2,15 @@ KBRANCH:aptiv-cvc  = "v5.15/standard/preempt-rt/nxp-sdk-5.10/nxp-s32g"
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
 TARGET_SUPPORTED_KTYPES:aptiv-cvc = "preempt-rt"
 FILESEXTRAPATHS:prepend:aptiv-cvc := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend:aptiv-cvc := "${LAYER_PATH_nxp-s32g-layer}/recipes-kernel/linux/files:"
 
 SRC_URI:append:aptiv-cvc = " \
+    file://0001-s32cc-update-to-align-with-bsp36-v5.15-kernel.patch \
+    file://0002-xpcs-s32-rename-fsl-s32gen1-xpcs.h-to-nxp-s32cc-xpcs.patch \
+    file://0003-xpcs-s32-rename-functions-s32gen1_xxx-to-s32cc_xxx-i.patch \
+    file://0001-Revert-mmc-sdhci-esdhc-imx-Propagate-ESDHC_FLAG_HS40.patch \
+    ${LINUX_BSP36_CD_RELEASE_PATCHES} \
+    ${LINUX_BSP36_RC5_PATCHES} \
 	file://0001-dts-Aptiv-change-scmi-buf.patch \
 "
 
