@@ -44,18 +44,20 @@ diff --git a/plat/nxp/s32/include/s32_platform_def.h b/plat/nxp/s32/include/s32_
 index 9be824c2f..72158dab6 100644
 --- a/plat/nxp/s32/include/s32_platform_def.h
 +++ b/plat/nxp/s32/include/s32_platform_def.h
-@@ -166,7 +166,7 @@
+@@ -166,8 +166,8 @@
  #define S32_UART_SIZE		S32_LINFLEX0_SIZE
  #endif
  
 -#define S32_OSPM_SCMI_MEM	(0xd0000000U)
+-#define S32_OSPM_SCMI_NOTIF_MEM	(0xd0000080U)
 +#define S32_OSPM_SCMI_MEM	(0xa0000000U)
++#define S32_OSPM_SCMI_NOTIF_MEM	(0xa0000080U)
  #define S32_OSPM_SCMI_MEM_SIZE	(0x400000U)
  
  #define S32_QSPI_BASE		(0x40134000ul)
 @@ -190,5 +190,9 @@
- #define ADC0_BASE_ADDR		(0x401f8000U)
- #define ADC0_SIZE		(0x1000)
+ #define S32_SCP_CH_META_SIZE		(0)
+ #endif
  
 +#define S32_XRDC0_BASE		(0x401A4000ul)
 +#define S32_XRDC1_BASE		(0x44004000ul)
@@ -76,7 +78,7 @@ index b1d89fe6f..0c3b13625 100644
 +	MAP_REGION_FLAT(S32_XRDC1_BASE, S32_XRDC_SZ,
 +			MT_DEVICE | MT_RW),
  	/* SCP entries */
- 	MAP_REGION_FLAT(MSCM_BASE_ADDR, MMU_ROUND_UP_TO_4K(MSCM_SIZE),
+ 	MAP_REGION_FLAT(MSCM_BASE_ADDR, MMU_ROUND_UP_TO_PAGE(MSCM_SIZE),
  			MT_DEVICE | MT_RW),
 diff --git a/plat/nxp/s32/s32_lowlevel_bl31.S b/plat/nxp/s32/s32_lowlevel_bl31.S
 index f1bd76587..ed181e789 100644
@@ -166,9 +168,9 @@ index 937f93b89..0dc620880 100644
 --- a/plat/nxp/s32/s32_svc.c
 +++ b/plat/nxp/s32/s32_svc.c
 @@ -9,8 +9,10 @@
- #include <drivers/scmi.h>
  #include <scmi-msg/common.h>
  #include <s32_bl_common.h>
+ #include <s32_scp_scmi.h>
 +#include <lib/mmio.h>
  
  #define S32_SCMI_ID			0xc20000feU
@@ -177,7 +179,7 @@ index 937f93b89..0dc620880 100644
  #define MSG_ID(m)			((m) & 0xffU)
  #define MSG_TYPE(m)			(((m) >> 8) & 0x3U)
 @@ -112,6 +114,71 @@ static int scp_scmi_handler(uint32_t smc_fid, u_register_t x1,
- 	return send_scmi_to_scp(S32_OSPM_SCMI_MEM);
+ 	return SMC_OK;
  }
  
 +static uint32_t xrdc_read(uint64_t addr, uint32_t len)
@@ -263,13 +265,13 @@ index 5c5b51f8f..1e089109a 100644
 --- a/plat/nxp/s32/s32g/include/s32g_platform_def.h
 +++ b/plat/nxp/s32/s32g/include/s32g_platform_def.h
 @@ -63,8 +63,8 @@
- #define BL31SSRAM_MAX_CODE_SIZE	(S32G_SSRAM_LIMIT - BL31SSRAM_BASE)
- #define BL31SSRAM_STACK_SIZE	0x1000
  
--#define MAX_MMAP_REGIONS		39
--#define MAX_XLAT_TABLES			28
-+#define MAX_MMAP_REGIONS		41
-+#define MAX_XLAT_TABLES			30
+ #define BL31SSRAM_MAILBOX	(S32G_SSRAM_BASE)
+ 
+-#define MAX_MMAP_REGIONS		40
+-#define MAX_XLAT_TABLES			27
++#define MAX_MMAP_REGIONS		42
++#define MAX_XLAT_TABLES			29
  
  #if defined IMAGE_BL33
  #pragma warning "BL33 image is being built; you should configure it out."

@@ -50,9 +50,9 @@ index f6e4733ab5..2f9ea5f5e7 100644
  source "board/nxp/s32g274ardb2/Kconfig"
  source "board/nxp/s32g2xxaevb/Kconfig"
 +source "board/nxp/aptiv_cvc_sousa/Kconfig"
+ source "board/nxp/s32g2xxaevb3/Kconfig"
  source "board/nxp/s32g274abluebox3/Kconfig"
  source "board/nxp/s32g274aemu/Kconfig"
- 
 diff --git a/board/nxp/aptiv_cvc_sousa/Kconfig b/board/nxp/aptiv_cvc_sousa/Kconfig
 new file mode 100644
 index 0000000000..4eab69ed98

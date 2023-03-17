@@ -18,15 +18,23 @@ diff --git a/arch/arm64/boot/dts/freescale/s32cc.dtsi b/arch/arm64/boot/dts/free
 index 7e96c1c5b4b6..aa5a96c88568 100644
 --- a/arch/arm64/boot/dts/freescale/s32cc.dtsi
 +++ b/arch/arm64/boot/dts/freescale/s32cc.dtsi
-@@ -72,9 +72,9 @@ pci_shared_memory1: shm@c0400000 {
+@@ -72,15 +72,15 @@ pci_shared_memory1: shm@c0400000 {
  			no-map;
  		};
  
--		scmi_shbuf: shm@d0000000 {
-+		scmi_shbuf: shm@a0000000 {
+-		scmi_tx_buf: shm@d0000000 {
++		scmi_tx_buf: shm@a0000000 {
  			compatible = "arm,scmi-shmem";
--			reg = <0x0 0xd0000000 0x0 0x400000>;    /* 4 MB */
-+			reg = <0x0 0xa0000000 0x0 0x400000>;    /* 4 MB */
+-			reg = <0x0 0xd0000000 0x0 0x80>;
++			reg = <0x0 0xa0000000 0x0 0x80>;
+ 			no-map;
+ 		};
+ 
+-		scmi_rx_buf: shm@d0000080 {
++		scmi_rx_buf: shm@a0000080 {
+ 			compatible = "arm,scmi-shmem";
+-			reg = <0x0 0xd0000080 0x0 0x80>;
++			reg = <0x0 0xa0000080 0x0 0x80>;
  			no-map;
  		};
  

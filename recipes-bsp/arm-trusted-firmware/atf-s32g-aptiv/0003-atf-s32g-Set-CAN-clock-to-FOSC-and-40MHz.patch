@@ -30,7 +30,7 @@ index 9d945b19f..eda8bfd16 100644
  				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI4>,
  				<&plat_clks S32GEN1_CLK_PERIPH_PLL_PHI5>,
 @@ -415,7 +415,7 @@
- 				<S32GEN1_PER_FREQ>,
+ 				<80000000>,
  				<40000000>,
  				<40000000>,
 -				<80000000>,
