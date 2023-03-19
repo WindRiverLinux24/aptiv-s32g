@@ -23,7 +23,7 @@ index b1bfca3ac..561b612fc 100644
  
  		hse_reserved: shm@84000000 {
  			compatible = "nxp,s32cc-hse-rmem";
--			reg = <0x0 0x84000000 0x0 0x80000>;	/* 512k */
+-			reg = <0x0 0x84000000 0x0 0x400000>;	/* 4 MB */
 +			reg = <0x0 0x84000000 0x0 0x800000>;	/* 8 MB */
  			no-map;
  		};
