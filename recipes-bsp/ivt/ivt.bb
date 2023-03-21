@@ -19,10 +19,17 @@ do_compile() {
 
         params="-o ${target_name}"
 
-        # M7 app pointer
-        params="${params} -a ${IVT_M7_PTR}"
-        # Boot configuration word
-        params="${params} -b ${IVT_BOOT_CFG_M7}"
+	if ${@bb.utils.contains('MACHINE_FEATURES', 'aptiv_secboot_parallel', 'true', 'false', d)}; then
+            # atf pointer
+            params="${params} -a ${IVT_ATF_PTR}"
+            # Boot configuration word
+            params="${params} -b ${IVT_BOOT_CFG_A53}"
+        else
+            # M7 app pointer
+            params="${params} -a ${IVT_M7_PTR}"
+            # Boot configuration word
+            params="${params} -b ${IVT_BOOT_CFG_M7}"
+        fi
 
         # HSE pointer
         params="${params} -h ${IVT_HSE_PTR}"
