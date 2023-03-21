@@ -61,8 +61,9 @@ declare dcd_ptr=""
 declare hse_ptr=""
 declare hse_sysimg_ptr=""
 declare boot_cfg=""
+declare autosar_ptr=""
 
-while getopts "a:b:d:h:s:o:x" opt; do
+while getopts "a:b:d:h:s:o:m:x" opt; do
     case "${opt}" in
         a)
             # Application pointer
@@ -87,6 +88,10 @@ while getopts "a:b:d:h:s:o:x" opt; do
         o)
             # Output file name
             ivt="${OPTARG}"
+            ;;
+        m)
+            # m7 autosar pointer
+            autosar_ptr="${OPTARG}"
             ;;
         x)
             # Debug output
@@ -127,4 +132,8 @@ fi
 # Boot configuration word
 if [[ -n "${boot_cfg}" ]]; then
     printf "$(fmt_str "${boot_cfg}")" | dd of="${ivt}" conv=notrunc seek=40 bs=1
+fi
+# m7 autosar flash start pointer
+if [[ -n "${autosar_ptr}" ]]; then
+    printf "$(fmt_str "${autosar_ptr}")" | dd of="${ivt}" conv=notrunc seek=224 bs=1
 fi
