@@ -1,0 +1,190 @@
+From 8e49dec8f9c24916bbcee5c66f60f90162b964c3 Mon Sep 17 00:00:00 2001
+From: Meng Li <Meng.Li@windriver.com>
+Date: Tue, 21 Mar 2023 19:43:46 +0800
+Subject: [PATCH] s32g: hse: support for bringing up M7 and A53 cores parallel
+ in secure boot mode
+
+Install 2 core reset items for M7 and A53 cores separately so that
+HSE firmware can boot up m7 and fip images parallel.
+
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ arch/arm/mach-s32/s32-cc/hse_adv_secboot.c | 64 ++++++++++++++++++----
+ include/hse/hse_abi.h                      |  6 +-
+ 2 files changed, 56 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm/mach-s32/s32-cc/hse_adv_secboot.c b/arch/arm/mach-s32/s32-cc/hse_adv_secboot.c
+index 288decd2ba..e72009ac9f 100644
+--- a/arch/arm/mach-s32/s32-cc/hse_adv_secboot.c
++++ b/arch/arm/mach-s32/s32-cc/hse_adv_secboot.c
+@@ -82,7 +82,7 @@ static inline int compare_uuids(const struct uuid *uuid1,
+ 
+ static u32 get_m7_start(struct hse_private *priv)
+ {
+-	return priv->ivt.app_boot + APP_CODE_OFFSET;
++	return priv->ivt.autosar_prt + APP_CODE_OFFSET;
+ }
+ 
+ static u64 get_fip_toc_offset(struct hse_private *priv, struct uuid *search)
+@@ -204,14 +204,19 @@ int hse_import_key(struct hse_private *priv, u32 *recv_buf)
+ 	return 0;
+ }
+ 
+-int hse_install_cr_entry(struct hse_private *priv, u32 *recv_buf)
++int hse_install_fip_cr_entry(struct hse_private *priv, u32 *recv_buf)
+ {
+ 	int ret;
+ 
+-	printf("\tGenerating Core Reset Entry...\n");
++	printf("\tGenerating fip Core Reset Entry...\n");
+ 	memset((void *)&priv->cr_entry, 0, sizeof(struct hse_cr_entry));
+ 	memset((void *)&priv->srv_desc, 0, sizeof(struct hse_srv_desc));
+ 
++	/* get app header of fip image , it needs to copy code from the address aligning with 512 bytes */
++	memset((void *)(uintptr_t)priv->buf_space, 0, sizeof(priv->buf_space));
++	hse_mmc_read((void *)priv->buf_space, FIP_CODE_ABS_OFFSET / 512, 1);
++
++
+ #if defined(CONFIG_ARCH_S32G2)
+ 	priv->cr_entry.core_id = HSE_APP_CORE3;
+ #elif defined(CONFIG_ARCH_S32G3)
+@@ -219,9 +224,41 @@ int hse_install_cr_entry(struct hse_private *priv, u32 *recv_buf)
+ #else
+ 	priv->cr_entry.core_id = HSE_APP_CORE3;
+ #endif
++	priv->cr_entry.cr_sanction = HSE_CR_SANCTION_KEEP_CORE_IN_RESET;
++	priv->cr_entry.preboot_smr_map =  HSE_SMR_ENTRY_2;
++	priv->cr_entry.pass_reset = ((struct app_boot_hdr *)priv->buf_space)->ram_entry;
++	priv->cr_entry.start_option = HSE_CR_AUTO_START;
++
++	priv->srv_desc.srv_id = HSE_SRV_ID_CORE_RESET_ENTRY_INSTALL;
++	priv->srv_desc.cr_install_req.cr_entry_index = 2u;
++	priv->srv_desc.cr_install_req.cr_entry_addr =
++					(uintptr_t)&priv->cr_entry;
++
++	flush_dcache_range((u64)priv,
++			   (u64)priv + sizeof(struct hse_private));
++
++	ret = hse_send_recv(HSE_CHANNEL_GENERAL,
++			    (u32)(uintptr_t)&priv->srv_desc,
++			    recv_buf);
++	if (ret) {
++		printf("ERROR: core reset entry install failed!\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++int hse_install_m7_cr_entry(struct hse_private *priv, u32 *recv_buf)
++{
++	int ret;
++
++	printf("\tGenerating M7 Core Reset Entry...\n");
++	memset((void *)&priv->cr_entry, 0, sizeof(struct hse_cr_entry));
++	memset((void *)&priv->srv_desc, 0, sizeof(struct hse_srv_desc));
++
+ 	priv->cr_entry.core_id = HSE_APP_M7_0;
+ 	priv->cr_entry.cr_sanction = HSE_CR_SANCTION_KEEP_CORE_IN_RESET;
+-	priv->cr_entry.preboot_smr_map = HSE_SMR_ENTRY_1 | HSE_SMR_ENTRY_2;
++	priv->cr_entry.preboot_smr_map = HSE_SMR_ENTRY_1;
+ 	priv->cr_entry.pass_reset = priv->app_boot_hdr.ram_entry;
+ 	priv->cr_entry.start_option = HSE_CR_AUTO_START;
+ 
+@@ -244,6 +281,7 @@ int hse_install_cr_entry(struct hse_private *priv, u32 *recv_buf)
+ 	return 0;
+ }
+ 
++
+ int hse_install_fip_smr_entry(struct hse_private *priv, u32 *recv_buf)
+ {
+ 	struct hse_smr_entry *smr_entry;
+@@ -315,7 +353,6 @@ int hse_install_m7_smr_entry(struct hse_private *priv, u32 *recv_buf)
+ 	struct hse_smr_install_srv *smr_install_req;
+ 	u32 m7_size;
+ 	int ret;
+-	int i = 0;
+ 
+ 	smr_entry = &(priv->smr_entry);
+ 	smr_install_req = &(priv->srv_desc.smr_install_req);
+@@ -328,14 +365,14 @@ int hse_install_m7_smr_entry(struct hse_private *priv, u32 *recv_buf)
+ 
+ 	/* copy m7-autosar code to pass verification, it needs to copy code from the address aligning with 512 bytes */
+ 	memset((void *)priv->buf_space, 0, sizeof(priv->buf_space));
+-	hse_mmc_read((void *)priv->buf_space, priv->ivt.app_boot / 512,
++	hse_mmc_read((void *)priv->buf_space, priv->ivt.autosar_prt / 512,
+ 				 (priv->app_boot_hdr.code_len / 512) + 1);
+ 
+ 	/**
+ 	 * no address of actual code start, need to reference app bl header
+ 	 * m7-autosar code start is at app_bl_header + 0x40
+ 	 */
+-	smr_entry->smr_src = priv->ivt.app_boot + APP_CODE_OFFSET;
++	smr_entry->smr_src = priv->ivt.autosar_prt + APP_CODE_OFFSET;
+ 	smr_entry->smr_dst_addr = priv->app_boot_hdr.ram_load;
+ 	smr_entry->smr_size = m7_size;
+ 	smr_entry->config_flags = (HSE_SMR_CFG_FLAG_SD_FLASH |
+@@ -497,7 +534,6 @@ static int do_hse_secboot_enable(cmd_tbl_t *cmdtp, int flag,
+ 	u64 hse_resmem;
+ 	long long len_read;
+ 	int hse_nodeoffset, ret;
+-	int i = 0;
+ 	u32 fip_sig_blk_off;
+ 	u32 fip_sig_off;
+ 	u32 fip_size;
+@@ -542,9 +578,9 @@ static int do_hse_secboot_enable(cmd_tbl_t *cmdtp, int flag,
+ 		return ret;
+ 	}
+ 
+-	/* read app boot code header */
++	/* read m7 code header */
+ 	ret = hse_mmc_read((void *)&priv->app_boot_hdr,
+-			   (priv->ivt.app_boot / 512), 1);
++			   (priv->ivt.autosar_prt / 512), 1);
+ 	if (ret) {
+ 		printf("ERROR: app boot code header read failed!\n");
+ 		return ret;
+@@ -552,7 +588,7 @@ static int do_hse_secboot_enable(cmd_tbl_t *cmdtp, int flag,
+ 
+ 	/* read m7 code signature  */
+ 	ret = hse_mmc_read((void *)priv->buf_space,
+-			   ((priv->ivt.app_boot + priv->app_boot_hdr.code_len)/ 512), 1);
++			   ((priv->ivt.autosar_prt + priv->app_boot_hdr.code_len)/ 512), 1);
+ 	if (ret) {
+ 		printf("ERROR: m7 code signature read failed!\n");
+ 		return ret;
+@@ -625,7 +661,11 @@ static int do_hse_secboot_enable(cmd_tbl_t *cmdtp, int flag,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = hse_install_cr_entry(priv, &hse_recv);
++	ret = hse_install_m7_cr_entry(priv, &hse_recv);
++	if (ret)
++		return ret;
++
++	ret = hse_install_fip_cr_entry(priv, &hse_recv);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/include/hse/hse_abi.h b/include/hse/hse_abi.h
+index 8bff87cfcd..d53ca4c67c 100644
+--- a/include/hse/hse_abi.h
++++ b/include/hse/hse_abi.h
+@@ -196,10 +196,12 @@ struct ivt {
+ 	u32 sys_img_ext_flash_type;
+ 	u32 sys_img_flash_page_size;
+ 	u32 app_bsb_ext_flash_type;
+-	u8 reserved3[168];
++	u8 reserved3[152];
++	u32 autosar_prt;
++	u8 reserved4[12];
+ 	u32 gmac[4];
+ 	/* pad to block size - 512 bytes */
+-	u8 reserved4[256];
++	u8 reserved5[256];
+ } __packed;
+ 
+ /**
+-- 
+2.36.1
+
