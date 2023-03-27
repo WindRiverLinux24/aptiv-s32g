@@ -17,10 +17,6 @@ AUTOSAR_SEC_PATCHES = "file://0001-configs-s32g2xxaevb-add-NXP_HSE_SUPPORT-confi
 			file://0001-Revert-hse-secboot-remove-unused-u-boot-secboot-code.patch \
 			file://0002-u-boot-secboot-correct-the-secure-boot-config.patch \
 			file://0003-s32-hse-support-secure-boot-feature-on-both-S32G2-an.patch \
-			file://0001-s32-hse-add-code-to-support-m7-autosar-secure-boot.patch \
-"
-
-PARALLEL_SECBOOT_PATCHES = "file://0001-s32g-hse-support-for-bringing-up-M7-and-A53-cores-pa.patch \
 "
 
 SRC_URI:append:aptiv-cvc = " \
@@ -37,7 +33,6 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0011-aptiv-cvc-fl-add-GPIO_HOG-config.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', '${SEC_PATCHES}', '', d)} \
 	${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', '${AUTOSAR_SEC_PATCHES}', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'aptiv_secboot_parallel', '${PARALLEL_SECBOOT_PATCHES}', '', d)} \
 "
 
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
