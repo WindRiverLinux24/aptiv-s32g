@@ -24,8 +24,6 @@ do_compile() {
             params="${params} -a ${IVT_ATF_PTR}"
             # Boot configuration word
             params="${params} -b ${IVT_BOOT_CFG_A53}"
-            # m7 autosar pointer
-            params="${params} -m ${IVT_M7_PTR}"
         else
             # M7 app pointer
             params="${params} -a ${IVT_M7_PTR}"
