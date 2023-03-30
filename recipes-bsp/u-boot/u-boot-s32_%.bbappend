@@ -17,6 +17,10 @@ AUTOSAR_SEC_PATCHES = "file://0001-configs-s32g2xxaevb-add-NXP_HSE_SUPPORT-confi
 			file://0001-Revert-hse-secboot-remove-unused-u-boot-secboot-code.patch \
 			file://0002-u-boot-secboot-correct-the-secure-boot-config.patch \
 			file://0003-s32-hse-support-secure-boot-feature-on-both-S32G2-an.patch \
+			file://0001-s32g-hse-reconstruct-the-code-used-to-enable-secure-.patch \
+			file://0001-s32g-hse-support-M7-secure-boot-feature.patch \
+			file://0001-s32g-hse-support-NXP-parallel-secure-boot-feature.patch \
+			file://0001-s32g-hse-support-Aptiv-autosar-secure-boot-feature.patch \
 "
 
 SRC_URI:append:aptiv-cvc = " \
