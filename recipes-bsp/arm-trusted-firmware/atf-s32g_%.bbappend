@@ -29,6 +29,11 @@ signature_size="256"
 
 m7_autosar_secboot = "00000004"
 
+# When booting up from autosar, it needs to bring up fip image, so save the fip image offset 0x1200
+# at the location of 0x110c
+fip_image_off_ptr = "4364"
+fip_image_off = "00001200"
+
 do_install:append() {
 	if ${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', 'true', 'false', d)}; then
 		unset i j
@@ -125,6 +130,10 @@ do_deploy:append() {
 				# Set the boot type
 				secboot_type=${m7_autosar_secboot}
 				str2bin ${secboot_type} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${boot_type_off} \
+						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
+
+				# Save fip image offset
+				str2bin ${fip_image_off} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${fip_image_off_ptr} \
 						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
 
 				#copy pub key and signed fip.bin to DEPLOY_DIR_IMAGE
