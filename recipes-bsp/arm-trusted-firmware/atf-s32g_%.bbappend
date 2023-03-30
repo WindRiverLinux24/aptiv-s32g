@@ -27,10 +27,7 @@ COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
 # 0x100 = 256
 signature_size="256"
 
-str2bin () {
-	# write binary as little endian
-	printf $(echo $1 | sed -E -e 's/(..)(..)(..)(..)/\4\3\2\1/' -e 's/../\\x&/g')
-}
+m7_autosar_secboot = "00000004"
 
 do_install:append() {
 	if ${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', 'true', 'false', d)}; then
@@ -124,6 +121,11 @@ do_deploy:append() {
 				mkimage -l ${ATF_BINARIES}/fip.s32 > ${ATF_BINARIES}/atf_layout 2>&1
 				fip_dd_offset=`cat ${ATF_BINARIES}/atf_layout | grep Application | awk -F ":" '{print $3}' | awk -F " " '{print $1}'`
 				dd if=${ATF_BINARIES}/fip.bin of=${ATF_BINARIES}/fip.s32 seek=`printf "%d" ${fip_dd_offset}` oflag=seek_bytes conv=notrunc,fsync
+
+				# Set the boot type
+				secboot_type=${m7_autosar_secboot}
+				str2bin ${secboot_type} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${boot_type_off} \
+						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
 
 				#copy pub key and signed fip.bin to DEPLOY_DIR_IMAGE
 				cp -v ${hse_keys_dir}/${HSE_SEC_PUB_KEY} ${DEPLOY_DIR_IMAGE}/
