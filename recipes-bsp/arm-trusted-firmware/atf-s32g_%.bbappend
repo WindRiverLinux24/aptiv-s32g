@@ -35,6 +35,13 @@ aptiv_parallel_secboot = "00000005"
 fip_image_off_ptr = "4364"
 fip_image_off = "00001200"
 
+# When configing the parallel secure boot, the atf image is brought up by BOOTROM, because autosar
+# image can't bring up atf image any more. In order to verify the autosar image, it needs to install
+# a SMR(secure memory region) for it. So, it needs to save the autosar image offset at 0x1110 from
+# the beginning of bootloader image.
+autosar_image_off_ptr = "4368"
+autosar_image_off = "00300000"
+
 do_install:append() {
 	if ${@bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_secboot', 'true', 'false', d)}; then
 		unset i j
@@ -138,6 +145,10 @@ do_deploy:append() {
 
 				# Save fip image offset
 				str2bin ${fip_image_off} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${fip_image_off_ptr} \
+						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
+
+				# Save autosar image offset
+				str2bin ${autosar_image_off} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${autosar_image_off_ptr} \
 						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
 
 				#copy pub key and signed fip.bin to DEPLOY_DIR_IMAGE
