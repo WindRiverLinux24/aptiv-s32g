@@ -28,6 +28,7 @@ COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
 signature_size="256"
 
 m7_autosar_secboot = "00000004"
+aptiv_parallel_secboot = "00000005"
 
 # When booting up from autosar, it needs to bring up fip image, so save the fip image offset 0x1200
 # at the location of 0x110c
@@ -129,6 +130,9 @@ do_deploy:append() {
 
 				# Set the boot type
 				secboot_type=${m7_autosar_secboot}
+				if ${@bb.utils.contains('MACHINE_FEATURES', 'aptiv_secboot_parallel', 'true', 'false', d)}; then
+					secboot_type=${aptiv_parallel_secboot}
+				fi
 				str2bin ${secboot_type} | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${boot_type_off} \
 						conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
 
