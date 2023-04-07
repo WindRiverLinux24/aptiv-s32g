@@ -22,6 +22,7 @@ AUTOSAR_SEC_PATCHES = "file://0001-configs-s32g2xxaevb-add-NXP_HSE_SUPPORT-confi
 			file://0001-s32g-hse-support-NXP-parallel-secure-boot-feature.patch \
 			file://0001-s32g-hse-support-Aptiv-autosar-secure-boot-feature.patch \
 			file://0001-s32g-hse-support-Aptiv-parallel-secure-boot-feature.patch \
+			file://0001-s32g-hse-improve-the-code-of-enable-secure-boot-comm.patch \
 "
 
 SRC_URI:append:aptiv-cvc = " \
