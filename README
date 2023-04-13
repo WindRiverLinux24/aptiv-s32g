@@ -454,8 +454,8 @@ PFE is a firmware-based module. Load the firmware before using PFE.
 The firmwares name are "s32g_pfe_class.fw" and "s32g_pfe_util.fw" with
 version 1.5.0, which have to be downloaded from NXP Software.
 
-6.7.2 Steps to verify
----------------------
+6.7.2 PFE Master
+------------------
 
 1. Add the "pfe" package to the system through including the
 following line in your local.conf:
@@ -479,13 +479,52 @@ following line in your local.conf:
 
 	# bitbake wrlinux-image-<small/std>
 
-As PFE driver is a kernel module now, so it should not be used to NFS boot
-port. Please refer to the document "S32G Linux PFE Driver User’s Manual" for
-more information.
+3. Boot Sousa board and stop in U-Boot, make sure that the U-Boot environment
+variable "fdt_file" is set to be "s32g274a-aptiv.dtb" or "s32g399a-cvc-fl.dtb"
+in which the pfe0~2 is in master mode, and make sure that pfeng_mode is enabled.
 
-About the detailed pfe port map information can refer to the chapter "Ethernet
-Hardware Support on S32G2" of the documents of Linux BSP 35.0 User Manual for
-S32G2 platforms.
+	U-Boot=>setenv fdt_file 's32g274a-aptiv.dtb' or 's32g399a-cvc-fl.dtb'
+	U-Boot=>setenv pfeng_mode 'enable,sgmii,sgmii,sgmii'
+
+4. After entering WRLinux, the pfe0~2 interface can be seen:
+
+6.7.3 PFE Slave
+---------------
+
+1. If we want to make PFE work in slave mode in linux, add the "pfe-slave" package
+to the system through including the following line in your local.conf:
+
+    # Install pfe in rootfs
+    IMAGE_INSTALL:append = " pfe-slave"
+
+Also we need to integrate m7-autosar image which is pfe master to WRLinux by following
+the instructions in Chapter 6.8.
+
+2. Built and install them:
+
+	# bitbake wrlinux-image-<small/std>
+
+3. Boot Sousa board and stop in U-Boot, make sure that the U-Boot environment
+variable "fdt_file" is set to be "s32g274a-aptiv-pfems.dtb" in which the pfe
+will work in slave mode, and make sure that pfeng_mode is disabled.
+
+	U-Boot=>setenv fdt_file 's32g274a-aptiv-pfems.dtb'
+	U-Boot=>setenv pfeng_mode 'disable,sgmii,none,sgmii'
+
+4. After entering WRLinux, the aux0sl interface can be seen:
+
+	root@aptivcvcsousa:~# ifconfig aux0sl
+	aux0sl: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 128.224.34.247  netmask 255.255.254.0  broadcast 128.224.35.255
+        inet6 fe80::f7c9:47b9:fbaf:2085  prefixlen 64  scopeid 0x20<link>
+        ether e2:51:24:01:df:37  txqueuelen 1000  (Ethernet)
+        RX packets 10502  bytes 10059034 (9.5 MiB)
+        RX errors 0  dropped 38  overruns 0  frame 0
+        TX packets 30  bytes 3708 (3.6 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device memory 0x46000000-46ffffff
+
+NOTE: The PFE slave mode is only verified at Sousa board.
 
 6.8 Aptiv m7-autosar secure boot
 --------------------------------
