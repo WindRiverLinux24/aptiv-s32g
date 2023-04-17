@@ -5,6 +5,7 @@ FILESEXTRAPATHS:prepend:aptiv-cvc := "${THISDIR}/files:"
 
 SRC_URI:append:aptiv-cvc = " \
 	file://0001-dts-Aptiv-change-scmi-buf.patch \
+	file://0001-Revert-mm-memcg-Only-perform-the-debug-checks-on-PRE.patch \
 "
 
 # Add public key to ATF dtb for multiple platforms
