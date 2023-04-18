@@ -1,0 +1,151 @@
+From f58f440a66faa6445c6b7be9e45473a612da64dd Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Wed, 12 Apr 2023 08:52:51 +0800
+Subject: [PATCH 2/4] dts: Aptiv-FL: refactor Aptiv CVC FL s32g399a dts files
+
+For now, dts files for NXP rdb/evb boards are following the naming
+rules as s32gXXX.dtsi/s32gXXX.dts/s32gXXX-pfems.dts. Let's switch
+Aptiv dts files to the same rule.
+
+Rename original s32g399a-cvc-fl.dts to be s32g399a-cvc-fl.dtsi and make
+new s32g399a-cvc-fl.dts and s32g399a-cvc-fl-pfems.dts to include this dtsi
+file.
+
+Upstream-Status: Pending
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  3 +-
+ .../dts/freescale/s32g399a-cvc-fl-pfems.dts   | 23 +++++++++++++
+ .../boot/dts/freescale/s32g399a-cvc-fl.dts    | 32 ++++++-------------
+ .../boot/dts/freescale/s32g399a-cvc-fl.dtsi   | 28 ++++++++++++++++
+ 4 files changed, 62 insertions(+), 24 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/s32g399a-cvc-fl-pfems.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dtsi
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index b74977a1467f0..7e16374a0e0d4 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -72,6 +72,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
+ 
+ dtb-$(CONFIG_ARCH_S32) += s32g274a-aptiv.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32g274a-aptiv-pfems.dtb
++dtb-$(CONFIG_ARCH_S32) += s32g399a-cvc-fl.dtb
++dtb-$(CONFIG_ARCH_S32) += s32g399a-cvc-fl-pfems.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32g274a-bluebox3.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32g2xxa-evb.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32g2xxa-evb-pfems.dtb
+@@ -91,4 +93,3 @@ dtb-$(CONFIG_ARCH_S32) += s32g399a-emu.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32r45-evb.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32r45-emu.dtb
+ dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb
+-dtb-$(CONFIG_ARCH_S32) += s32g399a-cvc-fl.dtb
+diff --git a/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl-pfems.dts b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl-pfems.dts
+new file mode 100644
+index 0000000000000..661f8f8efb6cf
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl-pfems.dts
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 Wind River Systems, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Based on s32g399a-rdb3-pfems.dts
++ */
++
++/dts-v1/;
++#include "s32g399a-cvc-fl.dtsi"
++#include "s32g-pfe-slave.dtsi"
++
++&pfe_aux0 {
++	status = "okay";
++};
++
++&pfesl_aux0 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dts b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dts
+index 994f80a736ee4..bee72e0eeed1e 100644
+--- a/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dts
++++ b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dts
+@@ -1,28 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright 2021 NXP
++ * Copyright (C) 2023 Wind River Systems, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Based on s32g399a-rdb3.dts
+  */
+ 
+ /dts-v1/;
+-#include "s32g3.dtsi"
+-#include "s32gxxxa-cvc-fl.dtsi"
+-/ {
+-	model = "Freescale S32G399A";
+-	compatible = "fsl,s32g399", "arm,vexpress";
+-};
+-
+-&swt8 {
+-	status = "okay";
+-};
+-
+-&swt9 {
+-	status = "okay";
+-};
+-
+-&swt10 {
+-	status = "okay";
+-};
+-
+-&swt11 {
+-	status = "okay";
+-};
++#include "s32g399a-cvc-fl.dtsi"
+diff --git a/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dtsi b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dtsi
+new file mode 100644
+index 0000000000000..994f80a736ee4
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/s32g399a-cvc-fl.dtsi
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright 2021 NXP
++ */
++
++/dts-v1/;
++#include "s32g3.dtsi"
++#include "s32gxxxa-cvc-fl.dtsi"
++/ {
++	model = "Freescale S32G399A";
++	compatible = "fsl,s32g399", "arm,vexpress";
++};
++
++&swt8 {
++	status = "okay";
++};
++
++&swt9 {
++	status = "okay";
++};
++
++&swt10 {
++	status = "okay";
++};
++
++&swt11 {
++	status = "okay";
++};
+-- 
+2.36.1
+
