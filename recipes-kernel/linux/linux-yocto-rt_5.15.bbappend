@@ -6,10 +6,6 @@ FILESEXTRAPATHS:prepend:aptiv-cvc := "${THISDIR}/files:"
 SRC_URI:append:aptiv-cvc = " \
 	file://0001-dts-Aptiv-change-scmi-buf.patch \
 	file://0001-Revert-mm-memcg-Only-perform-the-debug-checks-on-PRE.patch \
-	file://0001-dts-Aptiv-refactor-Aptiv-Sousa-s32g274a-dts-files.patch \
-	file://0002-dts-Aptiv-FL-refactor-Aptiv-CVC-FL-s32g399a-dts-file.patch \
-	file://0003-dts-Aptiv-modify-pfe-bmu2-pool-address-and-size-for-.patch \
-	file://0004-Fix-DTS-for-Aptiv-PFE-Slave.patch \
 "
 
 # Add public key to ATF dtb for multiple platforms
