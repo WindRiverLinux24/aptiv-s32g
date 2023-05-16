@@ -107,67 +107,67 @@ index 920affe41f..ba3ab7df48 100644
 --- a/drivers/usb/host/ehci-mx6.c
 +++ b/drivers/usb/host/ehci-mx6.c
 @@ -149,6 +149,7 @@ static void usb_power_config(int index)
+ #endif
  
  #if defined(CONFIG_MX6) || defined(CONFIG_TARGET_S32G2XXAEVB) || \
- 	defined(CONFIG_TARGET_S32G3XXAEVB) || \
 +	defined(CONFIG_TARGET_APTIV_CVC_FL) || \
- 	defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	defined(CONFIG_TARGET_S32G3XXAEVB)
  /* Return 0 : host node, <>0 : device mode */
  static int usb_phy_enable(int index, struct usb_ehci *ehci)
 @@ -157,6 +158,7 @@ static int usb_phy_enable(int index, struct usb_ehci *ehci)
+ 	int ret;
  	void __iomem *usb_cmd;
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
-+	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
++	!defined(CONFIG_TARGET_APTIV_CVC_FL) && \
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  	void __iomem *phy_reg;
  	void __iomem *phy_ctrl;
 @@ -182,6 +184,7 @@ static int usb_phy_enable(int index, struct usb_ehci *ehci)
+ 		return ret;
  
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
 +	!defined(CONFIG_TARGET_APTIV_CVC_FL) && \
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  	/* Reset USBPHY module */
  	setbits_le32(phy_ctrl, USBPHY_CTRL_SFTRST);
 @@ -286,6 +289,7 @@ static void usb_oc_config(int index)
+ static void usb_oc_config(int index)
  {
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
 +	!defined(CONFIG_TARGET_APTIV_CVC_FL) && \
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  #if defined(CONFIG_MX6)
  	struct usbnc_regs *usbnc = (struct usbnc_regs *)(USB_BASE_ADDR +
 @@ -365,6 +369,7 @@ int ehci_mx6_common_init(struct usb_ehci *ehci, int index)
+ int ehci_mx6_common_init(struct usb_ehci *ehci, int index)
  {
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
 +	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  	int ret;
  
 @@ -386,6 +391,7 @@ int ehci_mx6_common_init(struct usb_ehci *ehci, int index)
+ #endif
  
  #if defined(CONFIG_MX6) || defined(CONFIG_TARGET_S32G2XXAEVB) || \
- 	defined(CONFIG_TARGET_S32G3XXAEVB) || \
 +	defined(CONFIG_TARGET_APTIV_CVC_FL) || \
- 	defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	defined(CONFIG_TARGET_S32G3XXAEVB)
  	usb_phy_enable(index, ehci);
  #endif
 @@ -494,6 +500,7 @@ static int ehci_usb_phy_mode(struct udevice *dev)
+ static int ehci_usb_phy_mode(struct udevice *dev)
  {
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
 +	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  	struct usb_platdata *plat = dev_get_platdata(dev);
  	void *__iomem addr = (void *__iomem)devfdt_get_addr(dev);
 @@ -568,6 +575,7 @@ static int ehci_usb_bind(struct udevice *dev)
+ static int ehci_usb_bind(struct udevice *dev)
  {
  #if !defined(CONFIG_TARGET_S32G2XXAEVB) && \
- 	!defined(CONFIG_TARGET_S32G3XXAEVB) && \
 +	!defined(CONFIG_TARGET_APTIV_CVC_FL) &&\
- 	!defined(CONFIG_TARGET_APTIV_CVC_SOUSA)
+ 	!defined(CONFIG_TARGET_S32G3XXAEVB)
  	/*
  	 * TODO:
 diff --git a/include/configs/s32g3xxaevb.h b/include/configs/s32g3xxaevb.h

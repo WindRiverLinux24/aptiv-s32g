@@ -23,9 +23,6 @@ This layer should be added to bblayers.conf. This is done automatically
 when using the Wind River setup.sh wrapper.
 
 Note:
-To build wrlinux for CVC Sousa board, use:
-
-	--machines aptiv_cvc_sousa
 
 To build wrlinux for CVC FL board, use:
 
@@ -146,7 +143,7 @@ ipaddr=192.168.1.100
 serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
-fdtfile=s32g274a-aptiv.dtb (or s32g399a-cvc-fl.dtb)
+fdtfile=s32g399a-cvc-fl.dtb
 rootpath=/tftpboot/rootfs
 consoledev=ttyLF0
 baudrate=115200
@@ -163,9 +160,9 @@ https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
-tmp-glibc/deploy/images/aptiv_cvc_sousa/ ,such as:
+tmp-glibc/deploy/images/aptiv-cvc-fl/ ,such as:
 
-tmp-glibc/deploy/images/aptiv_cvc_sousa/wrlinux-image-<rootfs_type>-aptiv_cvc_sousa-aptiv.wic
+tmp-glibc/deploy/images/aptiv-cvc-fl/wrlinux-image-<rootfs_type>-aptiv-cvc-fl.wic
 
 Then user can write the output image to a SD card:
 
@@ -174,23 +171,20 @@ Then user can write the output image to a SD card:
 
 To burn WIC image to SD card, user only need to execute the below command:
 
-# dd if=wrlinux-image-std-aptiv_cvc_sousa-aptiv.wic of=/dev/your_sd_dev
+# dd if=wrlinux-image-std-aptiv-cvc-fl.wic of=/dev/your_sd_dev
 
 5.2 Set uboot env
 -----------------
 
 Board can boot automatically by set the below uboot environment variables:
 
-=> setenv bootfile Image; setenv fdtfile <fdt-file-name>; setenv loadaddr 0x8EE00000; setenv fdtaddr 0x80000000;
+=> setenv bootfile Image; setenv fdtfile s32g399a-cvc-fl.dtb; setenv loadaddr 0x8EE00000; setenv fdtaddr 0x80000000;
 
 => setenv bootargs console=ttyLF0,115200n8 root=/dev/mmcblk0p2 rw
 
 => setenv bootcmd 'fatload mmc 0:1 $loadaddr $bootfile; fatload mmc 0:1 $fdtaddr $fdtfile; booti $loadaddr - $fdtaddr'
 
 => saveenv; run bootcmd;
-
-The above fdt-file-name includes s32g274a-aptiv.dtb and s32g399a-cvc-fl.dtb,
-please use the right fdt file for different board.
 
 6. Features
 ===========
@@ -324,7 +318,7 @@ and etc., which can be found in related packages downloaded from flexra.
 And if the IPCF application on M7 side build successfully following the
 related documents, then users can find the binary file:
 
-	"IPCF_Example_S32G274.bin" and "IPCF_Example_S32G399_M7_0.bin"
+	"IPCF_Example_S32G399_M7_0.bin"
 
 from S32DS IPCF example project.
 
@@ -341,15 +335,14 @@ then build the project as normal:
 
 	bitbake wrlinux-image-std
 
-the IPCF related drivers and M7 side app binaries IPCF_Example_S32G274.bin and
-IPCF_Example_S32G399_M7_0.bin will be built into WIC image.
+the IPCF related drivers and M7 side app binaries IPCF_Example_S32G399_M7_0.bin
+will be built into WIC image.
 
 NOTICE:
-    The M7 side binary default name is IPCF_Example_S32G274.bin or
-IPCF_Example_S32G399_M7_0.bin, and it's defined by the variable IPCF_M7_APP_BIN_NAME
-or IPCF_M7_APP_BIN_NAME_S32G3 respectively, users can use different binary
-names by modifying these variables, or set related variable(s) to empty if it
-is unneeded for users.
+    The M7 side binary default name is IPCF_Example_S32G399_M7_0.bin, and it's
+defined by the variable IPCF_M7_APP_BIN_NAME or IPCF_M7_APP_BIN_NAME_S32G3
+respectively, users can use different binary names by modifying these variables,
+or set related variable(s) to empty if it is unneeded for users.
 
 6.5.3 IPCF verify steps
 -----------------------
@@ -369,7 +362,7 @@ this feature:
 		b> zero-set SRAM shared memory used by both sample apps:
 			=>mw.q 0x34000000 0x0 0x100000
 		c> load IPCF binary in SRAM:
-			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G274_M7_0.bin
+			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G399_M7_0.bin
 		   then:
 			=>cp.q 0x80000000 0x34300000 0x30000
 			=>dcache on;
@@ -428,13 +421,13 @@ Aptiv board has its own load address, so user should use below configuration nam
 to replace the corresponding ones in section 3.4 of
 layers/nxp-s32g/s32g-secure-boot/README
 
-configuration Name: conf-freescale_s32g274a-aptiv.dtb
+configuration Name: conf-freescale_s32g399a-cvc-fl.dtb
 Load Address of fitImage: 0x8A080000
 
 Detailed steps as below:
 	# fatload mmc 0:1 0x8A080000 fitImage
 	# run mmcargs
-	# bootm 0x8A080000#conf-freescale_s32g274a-aptiv.dtb
+	# bootm 0x8A080000#conf-freescale_s32g399a-cvc-fl.dtb
 
 6.7 PFE
 -------
@@ -443,9 +436,9 @@ The NXP PFE (Packet Forwarding Engine) offloads the processing of Ethernet packe
 from the host cores, yielding higher performance and lower power than pure software
 processing can achieve.
 
-PFE is a component of S32G274A and S32G399A SOCs. It must be installed with the
-firmware to use. PFE firmware is not shipped with SDK, customers have to contact
-NXP to get permission and download the PFE firmware.
+PFE is a component of S32G399A SOC. It must be installed with the firmware to use.
+PFE firmware is not shipped with SDK, customers have to contact NXP to get permission
+and download the PFE firmware.
 
 6.7.1 PFE firmware
 ------------------
@@ -480,10 +473,10 @@ following line in your local.conf:
 	# bitbake wrlinux-image-<small/std>
 
 3. Boot Sousa board and stop in U-Boot, make sure that the U-Boot environment
-variable "fdt_file" is set to be "s32g274a-aptiv.dtb" or "s32g399a-cvc-fl.dtb"
-in which the pfe0~2 is in master mode, and make sure that pfeng_mode is enabled.
+variable "fdt_file" is set to be "s32g399a-cvc-fl.dtb" in which the pfe0~2 is
+in master mode, and make sure that pfeng_mode is enabled.
 
-	U-Boot=>setenv fdt_file 's32g274a-aptiv.dtb' or 's32g399a-cvc-fl.dtb'
+	U-Boot=>setenv fdt_file 's32g399a-cvc-fl.dtb'
 	U-Boot=>setenv pfeng_mode 'enable,sgmii,sgmii,sgmii'
 
 4. After entering WRLinux, the pfe0~2 interface can be seen:
@@ -491,58 +484,4 @@ in which the pfe0~2 is in master mode, and make sure that pfeng_mode is enabled.
 6.7.3 PFE Slave
 ---------------
 
-1. If we want to make PFE work in slave mode in linux, add the "pfe-slave" package
-to the system through including the following line in your local.conf:
-
-    # Install pfe in rootfs
-    IMAGE_INSTALL:append = " pfe-slave"
-
-Also we need to integrate m7-autosar image which is pfe master to WRLinux by following
-the instructions in Chapter 6.8.
-
-2. Built and install them:
-
-	# bitbake wrlinux-image-<small/std>
-
-3. Boot Sousa board and stop in U-Boot, make sure that the U-Boot environment
-variable "fdt_file" is set to be "s32g274a-aptiv-pfems.dtb" in which the pfe
-will work in slave mode, and make sure that pfeng_mode is disabled.
-
-	U-Boot=>setenv fdt_file 's32g274a-aptiv-pfems.dtb'
-	U-Boot=>setenv pfeng_mode 'disable,sgmii,none,sgmii'
-
-4. After entering WRLinux, the aux0sl interface can be seen:
-
-	root@aptivcvcsousa:~# ifconfig aux0sl
-	aux0sl: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 128.224.34.247  netmask 255.255.254.0  broadcast 128.224.35.255
-        inet6 fe80::f7c9:47b9:fbaf:2085  prefixlen 64  scopeid 0x20<link>
-        ether e2:51:24:01:df:37  txqueuelen 1000  (Ethernet)
-        RX packets 10502  bytes 10059034 (9.5 MiB)
-        RX errors 0  dropped 38  overruns 0  frame 0
-        TX packets 30  bytes 3708 (3.6 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-        device memory 0x46000000-46ffffff
-
-NOTE: The PFE slave mode is only verified at Sousa board.
-
-6.8 Aptiv m7-autosar secure boot
---------------------------------
-
-There is a Aptiv specific m7-autosar image(gcp_m7_app.bin) for Aptiv platform.
-If users want to integrate it into WRLinux product, it needs to setup WRLinux
-project with below template.
-
-	--templates feature/aptiv-autosar-secboot
-
-Because of the license limitation, users need to get the m7-autosar and HSE firmware images
-by themselves, and then copy them into below 2 directories respectively:
-m7-autosar	=> <project-path>/layers/aptiv-s32g/recipes-bsp/m7-autosar/files
-HSE firmware 	=> <project-path>/layers/aptiv-s32g/recipes-bsp/hse/files
-
-After above preparation, users can start to build project, and the final wic file is generated
-in <project-path>/build/tmp-glibc/deploy/images/<machine name>/ directory. Install the wic file
-with section 5.1, and then enable secure boot feature with section 6.6.
-
-Note: If the name of HSE firmware is not the same with default one, please set the correct
-      HSE firmware name with variable HSE_IMAGE in local.conf.
+NOTE: The PFE slave mode is not verified at FL board.
