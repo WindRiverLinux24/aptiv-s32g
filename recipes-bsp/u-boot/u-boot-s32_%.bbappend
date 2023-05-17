@@ -22,7 +22,7 @@ do_compile:append:aptiv-cvc() {
         for config in ${UBOOT_MACHINE}; do
             cfgout="${B}/${config}/u-boot-s32.cfgout"
             if [ -e $cfgout ]; then
-				sed -i 's|${HSE_FW_DEFAULT_NAME}|${HSE_LOCAL_FIRMWARE_DIR}/${HSE_FW_NAME_S32G3}|g' $cfgout
+				sed -i 's|${HSE_FW_DEFAULT_NAME}|${HSE_LOCAL_FIRMWARE_DIR}/${HSE_FW_VERSION_S32G3}/${HSE_FW_NAME_S32G3}|g' $cfgout
             fi
         done
     fi
