@@ -38,13 +38,11 @@ The following BSP features are validated and supported.
 	+ I2C: On-Chip I2C controller
 	+ uSDHC: On-Chip ultra secured digital host controller
 	+ USB: On-Chip USB 2.0 controller Host (Only FL)
-	+ USB: On-Chip USB 2.0 controller OTG (Only Sousa)
 
   o Network
-	+ Ethernet: DWMAC ethernet controller, BCM89610 Gigabit PHY (Only Sousa)
 	+ PFE: Package Forwarding Engine
 	+ FLEXCAN: Flexible controller area network
-	+ IEEE-1588 (Only Sousa)
+	+ IEEE-1588
 
   o Storage
 	+ Micso SD card
