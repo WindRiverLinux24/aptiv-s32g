@@ -1,0 +1,30 @@
+From f4746854d90d8676a2704db34585f4f62879c7fb Mon Sep 17 00:00:00 2001
+From: Hongxu Jia <hongxu.jia@windriver.com>
+Date: Tue, 30 May 2023 15:54:34 +0800
+Subject: [PATCH] support bootmenu
+
+The u-boot command bootmenu is required by binary image
+
+Upstream-Status: Inappropriate [wrlinux specific]
+
+Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
+---
+ configs/aptiv_cvc_fl_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
+index 3b727d60d0..87c402bd4f 100644
+--- a/configs/aptiv_cvc_fl_defconfig
++++ b/configs/aptiv_cvc_fl_defconfig
+@@ -2,6 +2,8 @@ CONFIG_ARM=y
+ CONFIG_ARCH_S32G3=y
+ CONFIG_GPIO_HOG=y
+ CONFIG_TARGET_APTIV_CVC_FL=y
++CONFIG_MENU=y
++CONFIG_CMD_BOOTMENU=y
+ CONFIG_SD_BOOT=y
+ CONFIG_FAT_WRITE=y
+ CONFIG_XEN_SUPPORT=y
+-- 
+2.27.0
+
