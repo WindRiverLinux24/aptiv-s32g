@@ -1,23 +1,46 @@
-From 3fca8934af55cd76b2978af669cf4f46e8f33e01 Mon Sep 17 00:00:00 2001
+From 40bcb7760f35612fc5e67936ed8869bbde6640fa Mon Sep 17 00:00:00 2001
 From: Meng Li <Meng.Li@windriver.com>
 Date: Wed, 1 Feb 2023 16:20:53 +0800
 Subject: [PATCH] configs: aptiv_cvc_fl: add secure boot related configs
 
 Signed-off-by: Meng Li <Meng.Li@windriver.com>
+
+The ostree image requires to boot from script boot.scr, while secure
+boot enabled, it failed:
+
+    => source
+    ## Executing script at 80000000
+    Wrong image format for "source" command
+
+From the Kconfig of u-boot[1]:
+
+    WARNING: When relying on signed FIT images with a required signature
+    check the legacy image format is disabled by default, so that unsigned
+    images cannot be loaded. If a board needs the legacy image format
+    support in this case, enable it using CONFIG_LEGACY_IMAGE_FORMAT.
+
+Set CONFIG_LEGACY_IMAGE_FORMAT=y to boot from script
+
+[1] https://source.codeaurora.org/external/autobsps32/u-boot/tree/Kconfig?h=release/bsp34.0-2020.04#n372
+
+Upstream-Status: Inappropriate [WR Linux specific]
+
+Signed-off-by: Hongxu Jia <hongxu.jia@eng.windriver.com>
 ---
- configs/aptiv_cvc_fl_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ configs/aptiv_cvc_fl_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
-index 2bcf33e5ee..8fb7884980 100644
+index 3b727d60d0..882f3f66bf 100644
 --- a/configs/aptiv_cvc_fl_defconfig
 +++ b/configs/aptiv_cvc_fl_defconfig
-@@ -2,3 +2,5 @@ CONFIG_ARM=y
+@@ -5,3 +5,6 @@ CONFIG_TARGET_APTIV_CVC_FL=y
  CONFIG_SD_BOOT=y
  CONFIG_FAT_WRITE=y
  CONFIG_XEN_SUPPORT=y
 +CONFIG_NXP_HSE_SUPPORT=y
 +CONFIG_FIT_SIGNATURE=y
++CONFIG_LEGACY_IMAGE_FORMAT=y
 -- 
-2.36.1
+2.35.5
 
