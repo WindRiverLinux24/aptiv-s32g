@@ -148,6 +148,9 @@ rootpath=/tftpboot/rootfs
 consoledev=ttyLF0
 baudrate=115200
 
+NOTE: Because pfe is an out-of-tree module, it can't be considered as a net device
+to boot a NFS rootfs. A USB Ethernet adapter is an alternative option.
+
 5. Creating Partitioned Images(WIC)
 ===================================
 
