@@ -1,0 +1,26 @@
+		The Local Patches Applied To ATF
+
+All ATF patches will be applied in the following order. Please note that the patches marked with
+an asterisk (*) at the beginning are only applied when secure boot is enabled.
+
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-fix-auth-forbid-junk-after-extensions.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0002-fix-auth-require-at-least-one-extension-to-be-presen.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0003-fix-auth-avoid-out-of-bounds-read-in-auth_nvctr.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0004-fix-auth-properly-validate-X.509-extensions.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-Revert-secboot-add-support-for-userspace-secboot.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-s32_common.mk-Fix-DTC_VERSION.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-Makefile-Add-BUILD_PLAT-to-FORCE-s-order-only-prereq.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-s32g-evb-usb-remove-usb-phy-device-node.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-s32-clk-Return-the-preset-freq-when-we-can-t-calcula.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-s32_common.mk-Print-error-message-for-debugging.patch
+  layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/rwx-segments.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0003-atf-s32g-Set-CAN-clock-to-FOSC-and-40MHz.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0005-aptiv-s32g-atf-add-xrdc.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0006-aptiv-set-S32_VR5510-for-aptiv-CVC-platform.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0007-aptiv-s32g-atf-s32g-Patch-PFE1-2-SGMII-MDIO-Bus-for-.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch
+  layers/aptiv-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g-aptiv/0009-aptiv-cvc-fl-dts-add-mmc-sel-gpio-hog.patch
+* layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-s32-extend-the-DTB-size-for-BL33.patch
+* layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-secboot-move-bl2-base-address-to-0x34100000-when-sec.patch
+* layers/nxp-s32g/recipes-bsp/arm-trusted-firmware/atf-s32g/0001-dts-s32-extend-the-hse-reserve-memory-to-8-MB.patch
+
