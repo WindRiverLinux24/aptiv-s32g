@@ -1,0 +1,43 @@
+	The Local Patches Applied To u-boot-s32
+
+All u-boot-s32 patches will be applied in the following order. Please note that the patches marked with
+an asterisk (*) at the beginning are only applied when secure boot is enabled.
+
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-scripts-mailmapper-python2-python3.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-tools-s32gen1_secboot-replace-u-boot.s32-with-u-boot.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-tools-s32ccimage-add-reserved-member-for-struct-prog.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-u-boot-s32-Makefile-add-scripts_basic-dependency-to-.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-configs-Enable-commands-for-ostree.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-include-config_distro_bootcmd.h-Check-go-before-boot.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-remove-SAF1508-phy-driver-and-use-common-ulpi-i.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-configs-s32g2xxaevb-add-NXP_HSE_SUPPORT-config.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0002-configs-s32g274ardb2-add-NXP_HSE_SUPPORT-config.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0003-configs-s32g399ardb3-add-NXP_HSE_SUPPORT-config.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0004-configs-s32g3xxaevb-add-NXP_HSE_SUPPORT-config.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32ccimage.c-Use-PATH_MAX-for-path-length.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-hse-enable-eFUSE-power-on-s32g399-RDB3-platform.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-phy-s32cc-serdes-configure-REF_USE_PAD-bit-during-re.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32-env-support-for-booting-up-fitImage.patch
+  layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32-env-Add-support-to-load-the-initrd-in-mmcboot.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0002-set-gmac-to-right-speed-of-the-phy-if-autoneg-works.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0005-u-boot-s32-remove-XEN_EXTRA_ENV_SETTINGS.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0006-s32cc-increate-boot-image-size-to-128MB.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0007-s32-serdes-hwconfig-change-hwconfig-for-CVC-board.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0009-aptiv-cvc-fl-add-cmd-to-configure-RTL9010-phys.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0010-u-boot-s32-enable-CONFIG_XEN_SUPPORT-for-Aptiv-CVC-FL-board.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0011-aptiv-cvc-fl-add-GPIO_HOG-config.patch
+  layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0012-support-bootmenu.patch
+* layers/aptiv-s32g/recipes-bsp/u-boot/u-boot-s32-aptiv/0001-configs-aptiv_cvc_fl-add-secure-boot-related-configs.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-configs-s32g2xx-enable-CONFIG_FIT_SIGNATURE-for-secu.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-u-boot-32-Enable-support-for-the-legacy-image-format.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-arch-mach-s32-extend-the-DTB-size-for-BL33.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-Revert-hse-secboot-remove-unused-u-boot-secboot-code.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0002-u-boot-secboot-correct-the-secure-boot-config.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0003-s32-hse-support-secure-boot-feature-on-both-S32G2-an.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-reconstruct-the-code-used-to-enable-secure-.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-support-M7-secure-boot-feature.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-support-NXP-parallel-secure-boot-feature.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-support-Aptiv-autosar-secure-boot-feature.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-support-Aptiv-parallel-secure-boot-feature.patch
+* layers/nxp-s32g/recipes-bsp/u-boot/files/0001-s32g-hse-improve-the-code-of-enable-secure-boot-comm.patch
