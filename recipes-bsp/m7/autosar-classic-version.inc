@@ -1,0 +1,5 @@
+ARTIFACTORYPV ?= ""
+PV:append ?= ".xxx"
+M7_IMAGE ?= "cvc_s32g3_m7_app_draft_3.bin"
+BASEURI ?= "https://jfrog.asux.aptiv.com/artifactory/vw_bna_poc-volkswagen-10034131-releases-generic-local/firmware/m7/xxx/"
+MD5SUM ?= "688de4507ca304a859bf7d202e139c5e"
