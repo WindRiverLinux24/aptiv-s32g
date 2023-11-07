@@ -8,6 +8,12 @@ IMAGE_INSTALL += "watchdog"
 IMAGE_INSTALL += "libfci libfci-cli"
 IMAGE_INSTALL += "libp11"
 
-APTIV_CVC_WIC_INC:aptiv-cvc ?= "${@bb.utils.contains('MACHINE_FEATURES', 'm7_boot', 'make_aptiv_m7_boot_wic.inc', 'make_aptiv_cvc_wic.inc', d)}"
+def get_wic_inc(d):
+    if bb.utils.contains('MACHINE_FEATURES', 'm7_boot', True, False, d):
+        return 'make_aptiv_m7_boot_wic.inc'
+    elif bb.utils.contains('MACHINE_FEATURES', 'm7_autosar_boot', True, False, d):
+        return 'make_aptiv_m7_autosar_wic.inc'
+    else:
+        return 'make_aptiv_cvc_wic.inc'
 
-require conf/${APTIV_CVC_WIC_INC}
+require conf/${@get_wic_inc(d)}
