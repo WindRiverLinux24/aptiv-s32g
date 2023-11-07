@@ -2,16 +2,9 @@ DESCRIPTION = "HSE firmware"
 LICENSE = "CLOSED"
 
 inherit deploy
+include version_rev.inc
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-
-HSE_IMAGE ?= "s32g2xx_hse_fw_0.1.0_1.0.5_pb220413.bin.pink"
-PV = "220413"
-MD5SUM = "ea5fb099c8451295ca1a39d907a266cc"
-
-SRC_URI:append:aptiv-cvc = " \
-	file://${HSE_IMAGE} \
-"
+SRC_URI = "${BASEURI}/${HSE_IMAGE}"
 SRC_URI[md5sum] = "${MD5SUM}"
 SRC_URI[unpack] = "no"
 
@@ -55,5 +48,7 @@ FILES:${PN}:append = " \
 
 addtask deploy after do_compile before do_install
 EXPORT_FUNCTIONS do_deploy
+
+EXCLUDE_FROM_WORLD = "1"
 
 COMPATIBLE_MACHINE = "aptiv-cvc"
