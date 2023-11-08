@@ -9,4 +9,6 @@ SRC_URI:append:aptiv-cvc = " \
 	${LINUX_HVP_PATCH} \
 	${@bb.utils.contains('MACHINE_FEATURES', 'disable_linux_i2c4', \
 	'file://0001-dts-cvc-fl-disable-i2c4-device-node.patch', '', d)} \
+	${@bb.utils.contains('MACHINE_FEATURES', 'disable_flexcan0', \
+	'file://0002-dts-cvc-fl-disable-can0-device-node.patch', '', d)} \
 "
