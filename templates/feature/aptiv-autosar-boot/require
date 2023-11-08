@@ -3,3 +3,4 @@ feature/aptiv-hse
 feature/aptiv-dcd
 feature/aptiv-ivt
 feature/disable-atf-i2c4
+feature/disable-linux-i2c4

@@ -7,4 +7,6 @@ LINUX_HVP_PATCH="${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'file://0001-dt
 
 SRC_URI:append:aptiv-cvc = " \
 	${LINUX_HVP_PATCH} \
+	${@bb.utils.contains('MACHINE_FEATURES', 'disable_linux_i2c4', \
+	'file://0001-dts-cvc-fl-disable-i2c4-device-node.patch', '', d)} \
 "
