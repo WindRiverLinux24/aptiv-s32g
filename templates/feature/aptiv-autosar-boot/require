@@ -2,3 +2,4 @@ feature/aptiv-m7
 feature/aptiv-hse
 feature/aptiv-dcd
 feature/aptiv-ivt
+feature/disable-atf-i2c4

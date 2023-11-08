@@ -1,0 +1,144 @@
+From 75c1259790f79b70c4d6a0f7b4a3fe716c1cc67e Mon Sep 17 00:00:00 2001
+From: Meng Li <Meng.Li@windriver.com>
+Date: Sun, 8 Oct 2023 14:35:29 +0800
+Subject: [PATCH] aptiv-cvc-fl: dts: prohibit pmic devices on i2c4 bus
+
+i2c4 bus is used on M7 side, so disable it and the devices
+attached on it from A53 side.
+
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ drivers/nxp/s32/pmic/vr5510.c          |  5 ++++-
+ fdts/aptiv_cvc_fl.dts                  |  6 +++---
+ plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c |  4 +++-
+ plat/nxp/s32/s32g/s32g_bl_common.c     |  6 ++++++
+ plat/nxp/s32/s32g/s32g_vr5510.c        | 12 +++++++++---
+ 5 files changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/nxp/s32/pmic/vr5510.c b/drivers/nxp/s32/pmic/vr5510.c
+index 626c988cf..27dff1fcd 100644
+--- a/drivers/nxp/s32/pmic/vr5510.c
++++ b/drivers/nxp/s32/pmic/vr5510.c
+@@ -50,7 +50,7 @@ struct vr5510_inst {
+ };
+ 
+ static struct vr5510_inst instances[MAX_VR5510_INSTANCES];
+-static size_t fill_level;
++static size_t fill_level = 0;
+ 
+ struct read_msg {
+ 	uint16_t address;
+@@ -180,6 +180,9 @@ int vr5510_get_inst(const char *name, vr5510_t *inst)
+ 	size_t i;
+ 	size_t len = strlen(name);
+ 
++	if (fill_level == 0)
++		return -ENODEV;
++
+ 	for (i = 0; i < fill_level; i++) {
+ 		*inst = &instances[i];
+ 		if (strncmp(name, (*inst)->name, len))
+diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
+index 31635c88f..c3e60f674 100644
+--- a/fdts/aptiv_cvc_fl.dts
++++ b/fdts/aptiv_cvc_fl.dts
+@@ -132,7 +132,7 @@
+ 
+ /* PMIC */
+ &i2c4 {
+-	status = "okay";
++	status = "disabled";
+ 	pinctrl-0 = <&i2c4_pins>;
+ 	pinctrl-1 = <&i2c4_gpio_pins>;
+ 	scl-gpios = <&gpio 34 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+@@ -143,13 +143,13 @@
+ 	vr5510@20 {
+ 		compatible = "nxp,vr5510";
+ 		reg = <0x20>;
+-		status = "okay";
++		status = "disabled";
+ 	};
+ 
+ 	vr5510_fsu@21 {
+ 		compatible = "nxp,vr5510";
+ 		reg = <0x21>;
+-		status = "okay";
++		status = "disabled";
+ 	};
+ };
+ 
+diff --git a/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c b/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
+index 59e9a8dc1..e990386ca 100644
+--- a/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
++++ b/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
+@@ -20,7 +20,9 @@ int pmic_setup(void)
+ 	s32g_reinit_i2c();
+ 
+ 	ret = vr5510_get_inst(VR5510_FSU_NAME, &fsu);
+-	if (ret) {
++	if (ret == -ENODEV)
++		return 0;
++	else if (ret) {
+ 		ERROR("Failed to get VR5510 FSU\n");
+ 		return ret;
+ 	}
+diff --git a/plat/nxp/s32/s32g/s32g_bl_common.c b/plat/nxp/s32/s32g/s32g_bl_common.c
+index 15142e8b6..62ede2089 100644
+--- a/plat/nxp/s32/s32g/s32g_bl_common.c
++++ b/plat/nxp/s32/s32g/s32g_bl_common.c
+@@ -38,6 +38,7 @@ void dt_init_pmic(void)
+ 	struct s32_i2c_driver *i2c_driver;
+ 	unsigned int instance;
+ 	int ret;
++	const char *node_status;
+ 
+ 	ret = dt_open_and_check();
+ 	if (ret < 0) {
+@@ -62,6 +63,11 @@ void dt_init_pmic(void)
+ 			break;
+ 		}
+ 
++		node_status = fdt_getprop(fdt, pmic_node, "status", NULL);
++		if (strncmp(node_status, "disabled", strlen("disabled")) == 0) {
++			continue;
++		}
++
+ 		i2c_node = fdt_parent_offset(fdt, pmic_node);
+ 		if (i2c_node == -1) {
+ 			ret = -EIO;
+diff --git a/plat/nxp/s32/s32g/s32g_vr5510.c b/plat/nxp/s32/s32g/s32g_vr5510.c
+index ea8b1dd4c..e1ada50aa 100644
+--- a/plat/nxp/s32/s32g/s32g_vr5510.c
++++ b/plat/nxp/s32/s32g/s32g_vr5510.c
+@@ -76,11 +76,15 @@ int pmic_prepare_for_suspend(void)
+ 	s32g_reinit_i2c();
+ 
+ 	ret = vr5510_get_inst(VR5510_MU_NAME, &mu);
+-	if (ret)
++	if (ret == -ENODEV)
++		return 0;
++	else if (ret)
+ 		return ret;
+ 
+ 	ret = vr5510_get_inst(VR5510_FSU_NAME, &fsu);
+-	if (ret)
++	if (ret == -ENODEV)
++		return 0;
++	else if (ret)
+ 		return ret;
+ 
+ 	ret = vr5510_goto_initfs(fsu);
+@@ -178,7 +182,9 @@ void pmic_system_off(void)
+ 	uint8_t *regp = (uint8_t *)&reg;
+ 
+ 	ret = vr5510_get_inst(VR5510_MU_NAME, &mu);
+-	if (ret) {
++	if (ret == -ENODEV)
++		return;
++	else if (ret) {
+ 		ERROR("Failed to get VR5510 MU\n");
+ 		return;
+ 	}
+-- 
+2.34.1
+
