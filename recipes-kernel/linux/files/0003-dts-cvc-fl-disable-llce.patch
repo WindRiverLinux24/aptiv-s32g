@@ -1,0 +1,28 @@
+From b458d7980ce3d47978cc8ba4656d50ef890f7444 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Tue, 24 Oct 2023 10:50:51 +0800
+Subject: [PATCH 3/3] dts: cvc-fl: disable llce
+
+The llce device is used by M7, so disable it from A53 side.
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi b/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
+index 5a12262900528..f2a53a29b2ce8 100644
+--- a/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
++++ b/arch/arm64/boot/dts/freescale/s32gxxxa-cvc-fl.dtsi
+@@ -852,3 +852,7 @@ &pwm0 {
+ &pwm1 {
+ 	status = "okay";
+ };
++
++&llce {
++	status = "disabled";
++};
+-- 
+2.36.1
+
