@@ -18,4 +18,39 @@ SRC_URI:append:aptiv-cvc = " \
 
 EXTRA_OEMAKE:append:aptiv-cvc = " S32_HAS_HV=1"
 
+get_u32 () {
+	local file="$1"
+	local offset="$2"
+	printf "%s" $(od --address-radix=n --format=u4 --skip-bytes="$offset" --read-bytes=4 "$file")
+}
+
+str2bin () {
+	# write binary as little endian
+	print_cmd=`which printf`
+	$print_cmd $(echo $1 | sed -E -e 's/(..)(..)(..)(..)/\4\3\2\1/' -e 's/../\\x&/g')
+}
+
+# This is a workaround, because Aptiv autosar doesn't copy the correct size of BL2 image,
+# the last 64 bytes is missed. make a workaround to extend BL2 size so that Aptiv autosar
+# copy the whole BL2 code into internal RAM.
+bl2_extend_size="512"
+# bl2 size is in application header, offset from the beginning of fip.s32 is 0x120c
+bl2_size_off="4620"
+
+do_deploy:append() {
+    if ${@bb.utils.contains("MACHINE_FEATURES", "m7_autosar_boot", "true", "false", d)}; then
+        for type in ${BOOT_TYPE}; do
+            for plat in ${PLATFORM}; do
+                ATF_BINARIES="${B}/$type/${plat}/${BUILD_TYPE}"
+                bl2_size=$(get_u32 "${ATF_BINARIES}/fip.s32" ${bl2_size_off})
+                bl2_size=$(expr $bl2_size + ${bl2_extend_size})
+                bl2_size=$(printf "%08x" $bl2_size)
+                str2bin $bl2_size | dd of="${ATF_BINARIES}/fip.s32" count=4 seek=${bl2_size_off} \
+                                        conv=notrunc,fsync status=none iflag=skip_bytes,count_bytes oflag=seek_bytes
+	            cp -v ${ATF_BINARIES}/fip.s32 ${DEPLOY_DIR_IMAGE}/atf-${plat}.s32
+            done
+        done
+    fi
+}
+
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
