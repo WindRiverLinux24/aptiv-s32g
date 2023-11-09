@@ -509,3 +509,47 @@ in master mode, and make sure that pfeng_mode is enabled.
 ---------------
 
 NOTE: The PFE slave mode is not verified at FL board.
+
+6.8 Aptiv m7-autosar boot
+-------------------------
+
+There is a Aptiv specific m7-autosar image(cvc_s32g3_m7_app.bin) for Aptiv platform.
+If users want to integrate it into WRLinux product, it needs to setup WRLinux
+project with below template.
+
+	--templates feature/aptiv-autosar-boot
+
+Because of the license limitation, and the Aptiv repo is not public.
+Common users need to get the m7-autosar and HSE firmware images by themselves,
+and then copy images into their local directory.
+In addition, the m7 and hse recipes are from Aptiv, and they are almost unmodified
+so that they can be used smoothly on Aptiv own project.
+Because of the above reasons, add below content into local.conf in order to use m7-autosar
+and hse images normally.
+
+	FILESEXTRAPATHS:prepend := "<m7 autosar image path>:"
+	BASEURI:pn-m7 = "file:"
+	ARTIFACTORYPV:pn-m7 = ""
+	M7_IMAGE:pn-m7 = "cvc_s32g3_m7_app.bin"
+	MD5SUM:pn-m7 = "688de4507ca304a859bf7d202e139c5e"
+
+	FILESEXTRAPATHS:prepend := "<hse image path>:"
+	BASEURI:pn-hse = "file:/"
+	HSE_IMAGE:pn-hse = "rev1.0_s32g3xx_hse_fw_0.20.0_2.16.1_pb221011.bin.pink"
+	PV:pn-hse = "221011"
+	MD5SUM:pn-hse = "ce6eb31784a0f41be03bf8cf9a61207c"
+
+Because aptiv m7 autosar boot feature uses m7, hse, dcd and ivt non opensource recipes, it also
+needs to add below content in local.conf.
+
+	CUSTOMER_RECIPES:wr-aptiv-s32g += 'm7'
+	CUSTOMER_RECIPES:wr-aptiv-s32g += 'hse'
+	CUSTOMER_RECIPES:wr-aptiv-s32g += 'dcd'
+	CUSTOMER_RECIPES:wr-aptiv-s32g += 'ivt'
+
+After above preparation, users can start to build project, and the final wic file is generated
+in <project-path>/build/tmp-glibc/deploy/images/<machine name>/ directory. Regarding how to install
+the wic file, please refer to section 5.1.
+
+Note: The set of configurations in local.conf is only an example, please modify them according to
+      your own file name, version and md5 of the 2 images.
