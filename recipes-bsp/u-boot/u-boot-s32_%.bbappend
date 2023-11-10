@@ -5,15 +5,15 @@ SEC_PATCHES = "file://0001-configs-aptiv_cvc_fl-add-secure-boot-related-configs.
 
 SRC_URI:append:aptiv-cvc = " \
 	file://0002-set-gmac-to-right-speed-of-the-phy-if-autoneg-works.patch \
-	file://0005-u-boot-s32-remove-XEN_EXTRA_ENV_SETTINGS.patch \
 	file://0006-s32cc-increate-boot-image-size-to-128MB.patch \
 	file://0007-s32-serdes-hwconfig-change-hwconfig-for-CVC-board.patch \
 	file://0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch \
 	file://0009-aptiv-cvc-fl-add-cmd-to-configure-RTL9010-phys.patch \
-	file://0010-u-boot-s32-enable-CONFIG_XEN_SUPPORT-for-Aptiv-CVC-FL-board.patch \
 	file://0011-aptiv-cvc-fl-add-GPIO_HOG-config.patch \
 	file://0012-support-bootmenu.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', '${SEC_PATCHES}', '', d)} \
+	file://0005-u-boot-s32-remove-XEN_EXTRA_ENV_SETTINGS.patch \
+	file://0010-u-boot-s32-enable-CONFIG_XEN_SUPPORT-for-Aptiv-CVC-FL-board.patch \
 "
 
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"

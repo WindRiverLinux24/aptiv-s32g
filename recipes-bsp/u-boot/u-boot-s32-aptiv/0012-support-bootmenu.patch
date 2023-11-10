@@ -16,7 +16,7 @@ diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
 index 3b727d60d0..87c402bd4f 100644
 --- a/configs/aptiv_cvc_fl_defconfig
 +++ b/configs/aptiv_cvc_fl_defconfig
-@@ -2,6 +2,8 @@ CONFIG_ARM=y
+@@ -2,5 +2,7 @@ CONFIG_ARM=y
  CONFIG_ARCH_S32G3=y
  CONFIG_GPIO_HOG=y
  CONFIG_TARGET_APTIV_CVC_FL=y
@@ -24,7 +24,6 @@ index 3b727d60d0..87c402bd4f 100644
 +CONFIG_CMD_BOOTMENU=y
  CONFIG_SD_BOOT=y
  CONFIG_FAT_WRITE=y
- CONFIG_XEN_SUPPORT=y
 -- 
 2.27.0
 
