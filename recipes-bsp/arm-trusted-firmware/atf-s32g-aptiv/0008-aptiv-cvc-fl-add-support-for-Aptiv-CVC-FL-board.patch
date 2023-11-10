@@ -35427,7 +35427,7 @@ index 000000000..2d16763a1
 +};
 +
 +&usdhc0 {
-+	pinctrl-0 = <&sd0_pins>;
++	pinctrl-0 = <&sd0_pins_default>;
 +	pinctrl-1 = <>;
 +	pinctrl-2 = <>;
 +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
@@ -35861,7 +35861,7 @@ index 3936ac037..1bef3682c 100644
 --- a/plat/nxp/s32/s32_ddr.mk
 +++ b/plat/nxp/s32/s32_ddr.mk
 @@ -15,6 +15,11 @@ COMMON_DDR_DRV	= ${DDR_DRV}
- PLAT_DDR_DRV	= ${DDR_DRV}/${S32_PLAT_SOC}
+ PLAT_DDR_DRV	= ${DDR_DRV}/${S32_PLAT_SOC}/${PLAT_BOARD}
  endif
  
 +ifeq (${PLAT}, aptiv_cvc_fl)
@@ -35872,19 +35872,12 @@ index 3936ac037..1bef3682c 100644
  DDR_DRV_SRCS += \
  	${PLAT_DDR_DRV}/ddrc_cfg.c \
  	${PLAT_DDR_DRV}/dmem_cfg.c \
-@@ -48,4 +55,4 @@ ifneq (${CUSTOM_DDR_DRV},)
- PLAT_INCLUDES += \
- 	-I ${CUSTOM_DDR_DRV} \
- 
--endif
-\ No newline at end of file
-+endif
 diff --git a/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
 new file mode 100644
 index 000000000..1949f1a65
 --- /dev/null
 +++ b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,14 @@
 +/*
 + * Copyright 2022 NXP
 + *
@@ -35894,6 +35887,9 @@ index 000000000..1949f1a65
 +#define PLATFORM_DEF_H
 +
 +#include <s32g3_platform_def.h>
++
++/* QSPI frequency setting */
++#define S32GEN1_QSPI_200MHZ
 +
 +#endif /* PLATFORM_DEF_H */
 diff --git a/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk
