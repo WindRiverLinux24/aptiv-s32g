@@ -11,14 +11,14 @@ Issue: VXWEXEC-62210
 
 Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
 ---
- include/configs/s32-cc.h | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+ include/configs/s32-cc.h | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
 diff --git a/include/configs/s32-cc.h b/include/configs/s32-cc.h
-index 7270cc376a..6f030a2c1f 100644
+index 7fc0502737..8d842afe2a 100644
 --- a/include/configs/s32-cc.h
 +++ b/include/configs/s32-cc.h
-@@ -147,19 +147,6 @@
+@@ -113,19 +113,6 @@
  #  define PCIE_EXTRA_ENV_SETTINGS ""
  #endif
  
@@ -38,7 +38,7 @@ index 7270cc376a..6f030a2c1f 100644
  #define S32CC_ENV_SETTINGS \
  	BOOTENV \
  	"boot_fdt=try\0" \
-@@ -279,17 +266,13 @@
+@@ -234,16 +221,12 @@
  		"fi\0" \
  	GMAC_EXTRA_ENV_SETTINGS \
  	PCIE_EXTRA_ENV_SETTINGS \
@@ -52,12 +52,10 @@ index 7270cc376a..6f030a2c1f 100644
 -#  ifdef CONFIG_XEN_SUPPORT
 -#    define BOOTCOMMAND XEN_BOOTCMD
 -#  else
--#    define BOOTCOMMAND \
-+#  define BOOTCOMMAND \
+ #    define BOOTCOMMAND \
  	"mmc dev ${mmcdev}; " \
  	"if mmc rescan; " \
- 	"then " \
-@@ -302,7 +285,6 @@
+@@ -257,7 +240,6 @@
  	"else " \
  		"run netboot;" \
  	"fi"
@@ -66,5 +64,5 @@ index 7270cc376a..6f030a2c1f 100644
  
  #ifdef CONFIG_BOOTCOMMAND
 -- 
-2.37.1
+2.34.1
 
