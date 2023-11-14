@@ -17,8 +17,8 @@ SRC_URI:append:aptiv-cvc = " \
 	${@bb.utils.contains('MACHINE_FEATURES', 'disable_atf_i2c4', \
 	'file://0001-aptiv-cvc-fl-dts-prohibit-pmic-devices-on-i2c4-bus.patch', '', d)} \
 "
-
-EXTRA_OEMAKE:append:aptiv-cvc = " S32_HAS_HV=1"
+HVP_EXTRA_OEMAKE="${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'S32_HAS_HV=1', '', d)}"
+EXTRA_OEMAKE:append:aptiv-cvc = " ${HVP_EXTRA_OEMAKE}"
 
 get_u32 () {
 	local file="$1"
