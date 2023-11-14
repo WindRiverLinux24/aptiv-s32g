@@ -4,7 +4,7 @@ SEC_PATCHES = "file://0001-configs-aptiv_cvc_fl-add-secure-boot-related-configs.
 "
 
 UBOOT_HVP_PATCHES += "${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'file://0005-u-boot-s32-remove-XEN_EXTRA_ENV_SETTINGS.patch', '', d)}"
-UBOOT_HVP_PATCHES += "${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'file://0010-u-boot-s32-enable-CONFIG_XEN_SUPPORT-for-Aptiv-CVC-FL-board.patch', '', d)}"
+UBOOT_HVP_PATCHES += "${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'file://xen.cfg', '', d)}"
 
 SRC_URI:append:aptiv-cvc = " \
 	file://0002-set-gmac-to-right-speed-of-the-phy-if-autoneg-works.patch \
