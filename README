@@ -26,7 +26,7 @@ Note:
 
 To build wrlinux for CVC FL board, use:
 
-	--machines aptiv-cvc-fl
+	--machines aptiv-cvc-131
 
 License
 -------
@@ -163,9 +163,9 @@ https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using
 
 This BSP supports disk images for SD card.
 After build the project, user will get a WIC image under the directory
-tmp-glibc/deploy/images/aptiv-cvc-fl/ ,such as:
+tmp-glibc/deploy/images/aptiv-cvc-131/ ,such as:
 
-tmp-glibc/deploy/images/aptiv-cvc-fl/wrlinux-image-<rootfs_type>-aptiv-cvc-fl.wic
+tmp-glibc/deploy/images/aptiv-cvc-131/wrlinux-image-<rootfs_type>-aptiv-cvc-131.wic
 
 Then user can write the output image to a SD card:
 
@@ -174,7 +174,7 @@ Then user can write the output image to a SD card:
 
 To burn WIC image to SD card, user only need to execute the below command:
 
-# dd if=wrlinux-image-std-aptiv-cvc-fl.wic of=/dev/your_sd_dev
+# dd if=wrlinux-image-std-aptiv-cvc-131.wic of=/dev/your_sd_dev
 
 5.2 Set uboot env
 -----------------
