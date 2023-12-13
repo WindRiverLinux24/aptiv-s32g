@@ -40,6 +40,7 @@ The following BSP features are validated and supported.
 	+ USB: On-Chip USB 2.0 controller Host (Only FL)
 
   o Network
+	+ Ethernet: DWMAC ethernet controller, connected to SJA1101 switch.
 	+ PFE: Package Forwarding Engine
 	+ FLEXCAN: Flexible controller area network
 	+ IEEE-1588
