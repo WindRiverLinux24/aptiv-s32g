@@ -59,7 +59,7 @@ The following BSP features are validated and supported.
 3.2 Unsupported Features
 ========================
 
-The following features are not supported or validated same as SDK.
+The following features are not supported and not validated same as SDK.
 
 	x DSPI: NXP DSPI bus controller in master mode
 	x PCIe: On-Chip PCIe controller
