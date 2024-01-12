@@ -18,14 +18,14 @@ index 7270cc376a..c16b474618 100644
 --- a/include/configs/s32-cc.h
 +++ b/include/configs/s32-cc.h
 @@ -75,7 +75,7 @@
- #endif
+ #define MMC_PART_EXT			2
  
- /* Increase image size */
--#define CONFIG_SYS_BOOTM_LEN		(SZ_64M)
-+#define CONFIG_SYS_BOOTM_LEN		(SZ_128M)
+ /* Increase max gunzip size */
+-#define CONFIG_SYS_BOOTM_LEN	(SZ_64M)
++#define CONFIG_SYS_BOOTM_LEN	(SZ_128M)
  
- /* Size of malloc() pool */
- #define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + SZ_2M)
+ #ifndef CONFIG_XEN_SUPPORT
+ #  define CONFIG_ARMV8_SWITCH_TO_EL1
 -- 
 2.36.1
 

@@ -1,4 +1,4 @@
-From dab395c07a3e2d32b22167fc17958e371ccc2c1c Mon Sep 17 00:00:00 2001
+From df2c20b2fd7852ecd1f77892915aebe8eac10df8 Mon Sep 17 00:00:00 2001
 From: Yu Feng <Yu.Feng@windriver.com>
 Date: Fri, 29 Jul 2022 11:18:38 +0800
 Subject: [PATCH] u-boot-s32: remove XEN_EXTRA_ENV_SETTINGS and XEN_BOOTCMD
@@ -15,11 +15,11 @@ Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
  1 file changed, 18 deletions(-)
 
 diff --git a/include/configs/s32-cc.h b/include/configs/s32-cc.h
-index 7fc0502737..8d842afe2a 100644
+index aa29f1350a..3d66c56d3e 100644
 --- a/include/configs/s32-cc.h
 +++ b/include/configs/s32-cc.h
-@@ -113,19 +113,6 @@
- #  define PCIE_EXTRA_ENV_SETTINGS ""
+@@ -82,19 +82,6 @@
+ #  define SERDES_EXTRA_ENV_SETTINGS ""
  #endif
  
 -#ifdef CONFIG_XEN_SUPPORT
@@ -37,32 +37,33 @@ index 7fc0502737..8d842afe2a 100644
 -
  #define S32CC_ENV_SETTINGS \
  	BOOTENV \
- 	"boot_fdt=try\0" \
-@@ -234,16 +221,12 @@
- 		"fi\0" \
- 	GMAC_EXTRA_ENV_SETTINGS \
- 	PCIE_EXTRA_ENV_SETTINGS \
+ 	"boot_mtd=booti\0" \
+@@ -190,7 +177,6 @@
+ 	"script=boot.scr\0" \
+ 	"serverip=" S32CC_SERVERIP "\0" \
+ 	SERDES_EXTRA_ENV_SETTINGS \
 -	XEN_EXTRA_ENV_SETTINGS \
  
  #if defined(CONFIG_TARGET_TYPE_S32CC_EMULATOR)
  #  define BOOTCOMMAND "${boot_mtd} ${loadaddr} - ${fdt_addr}"
- #elif defined(CONFIG_QSPI_BOOT)
- #  define BOOTCOMMAND "run flashboot"
- #elif defined(CONFIG_SD_BOOT)
--#  ifdef CONFIG_XEN_SUPPORT
--#    define BOOTCOMMAND XEN_BOOTCMD
--#  else
- #    define BOOTCOMMAND \
- 	"mmc dev ${mmcdev}; " \
- 	"if mmc rescan; " \
-@@ -257,7 +240,6 @@
- 	"else " \
- 		"run netboot;" \
+@@ -287,9 +273,6 @@
+ 		"fi;" \
  	"fi"
--#  endif
+ #  elif defined(CONFIG_SD_BOOT)
+-#    if defined(CONFIG_XEN_SUPPORT)
+-#      define CONFIG_BOOTCOMMAND XEN_BOOTCMD
+-#    else
+ #     if defined(CONFIG_FIT_SIGNATURE)
+ #       define PRECONFIG_BOOTCOMMAND \
+ 		"setenv image kernel.itb; " \
+@@ -322,7 +305,6 @@
+ 			"fi; " \
+ 		"fi; " \
+ 	"fi"
+-#    endif
+ #  endif
  #endif
  
- #ifdef CONFIG_BOOTCOMMAND
 -- 
 2.34.1
 

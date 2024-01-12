@@ -22,14 +22,14 @@ index 0b2d68f3a0..5401f3d22b 100644
 --- a/arch/arm/mach-s32/s32-cc/Kconfig
 +++ b/arch/arm/mach-s32/s32-cc/Kconfig
 @@ -60,7 +60,7 @@ config S32CC_HWCONFIG
- 	depends on NXP_S32CC && (PCIE_S32GEN1 || FSL_PFENG)
- 	default "serdes0:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs0_0:speed=2G5;xpcs0_1:speed=2G5;serdes1:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs1_0:speed=2G5;xpcs1_1:speed=2G5" if (!PCIE_S32GEN1 && FSL_PFENG)
- 	default "serdes0:mode=pcie,clock=ext;pcie0:mode=rc;serdes1:mode=pcie,clock=int;pcie1:mode=ep" if (PCIE_S32GEN1 && !FSL_PFENG)
--	default "serdes0:mode=pcie,clock=ext;pcie0:mode=rc;serdes1:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs1_0:speed=2G5" if (PCIE_S32GEN1 && FSL_PFENG)
+ 	depends on PHY_S32CC_SERDES
+ 	default "serdes0:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs0_0:speed=2G5;xpcs0_1:speed=2G5;serdes1:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs1_0:speed=2G5;xpcs1_1:speed=2G5" if (!PCI_S32CC && NXP_PFENG)
+ 	default "serdes0:mode=pcie,clock=ext;pcie0:mode=rc;serdes1:mode=pcie,clock=int;pcie1:mode=ep" if (PCI_S32CC && !NXP_PFENG)
+-	default "serdes0:mode=pcie,clock=ext;pcie0:mode=rc;serdes1:mode=xpcs0&xpcs1,clock=ext,fmhz=125;xpcs1_0:speed=2G5;xpcs1_1:speed=2G5" if (PCI_S32CC && NXP_PFENG)
 +	default "serdes0:mode=pcie&xpcs1,clock=int,fmhz=100;pcie0:mode=rc;xpcs0_1:speed=1G;serdes1:mode=xpcs0&xpcs1,clock=int,fmhz=100;xpcs1_0:speed=1G;xpcs1_1:speed=1G" if (PCIE_S32GEN1 && FSL_PFENG)
  
  	help
- 	  The configuration for the PCIe controllers, stored in
+ 	  The configuration for the SerDes modules, stored in
 -- 
 2.36.1
 
