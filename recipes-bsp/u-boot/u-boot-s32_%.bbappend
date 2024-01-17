@@ -12,6 +12,7 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch \
 	file://0011-aptiv-cvc-fl-add-GPIO_HOG-config.patch \
 	file://0012-support-bootmenu.patch \
+	file://0012-u-boot-s32-drop-restriction-of-count-of-SGMII-pfe.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', '${SEC_PATCHES}', '', d)} \
 	${UBOOT_HVP_PATCHES} \
 "

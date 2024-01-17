@@ -1,0 +1,53 @@
+From 3932f77354a6efe7ba478973bb58e40435a1849e Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Mon, 15 Jan 2024 15:14:43 +0800
+Subject: [PATCH] u-boot-s32: drop restriction of count of SGMII pfe
+
+For Aptiv board, pfe0~2 are configured as SGMII mode which means that
+3 MDIOs are used and the PHY lanes (xpcs0_1, xpcs1_0, xpcs1_1) in the
+SerDes need to be switched to SGMII mode.
+
+But NXP imposes some restrictions on PHY lanes and MDIOs. We need to
+drop them to adapt to Aptiv FL board.
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ arch/arm/mach-s32/s32-cc/serdes_hwconfig.c | 2 ++
+ drivers/net/nxp_pfeng/pfeng_mdio.c         | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c b/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
+index 566095e2bb..7dbc329e52 100644
+--- a/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
++++ b/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
+@@ -479,10 +479,12 @@ bool s32_serdes_is_cfg_valid(unsigned int id)
+ 		 */
+ 		enum serdes_xpcs_mode xpcs0_1_mode =
+ 			s32_serdes_get_xpcs_cfg_from_hwconfig(0, 1);
++#if 0
+ 		if (xpcs0_mode != SGMII_INVALID && xpcs0_1_mode != SGMII_INVALID) {
+ 			printf("xpcs0_1 and xpcs 1_0 can't be both SGMII\n");
+ 			return false;
+ 		}
++#endif
+ 	}
+ 	return true;
+ }
+diff --git a/drivers/net/nxp_pfeng/pfeng_mdio.c b/drivers/net/nxp_pfeng/pfeng_mdio.c
+index 2c856f124b..468013afd5 100644
+--- a/drivers/net/nxp_pfeng/pfeng_mdio.c
++++ b/drivers/net/nxp_pfeng/pfeng_mdio.c
+@@ -125,7 +125,7 @@ static int pfeng_mdio_bind(struct udevice *dev)
+ 	char name[16];
+ 	int ret;
+ 
+-	if (id >= PFENG_EMAC2) {
++	if (id >= PFENG_EMACS_COUNT) {
+ 		dev_err(dev, "EMAC MDIO id out of range\n");
+ 		return -ENODEV;
+ 	}
+-- 
+2.40.0
+
