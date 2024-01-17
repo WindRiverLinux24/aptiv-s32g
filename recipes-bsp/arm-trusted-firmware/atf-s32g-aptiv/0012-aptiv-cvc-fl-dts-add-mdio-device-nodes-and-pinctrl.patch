@@ -1,0 +1,82 @@
+From 4feb80e1aef28a9614945ffad4726eb0079a3203 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Mon, 15 Jan 2024 13:30:38 +0800
+Subject: [PATCH] aptiv-cvc-fl: dts: add mdio device nodes and pinctrl property for pfe
+
+Since u-boot-s32 updates to v2022.04, the pfe drivers requires mdio
+device nodes so that we can use mdio command under u-boot to configure
+RTL9010. And the pinctrl properties has been removed along with the
+device node "pfe_2020", so we need to add them in &pfe alias device node
+in dts file for board.
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ fdts/aptiv_cvc_fl.dts | 50 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
+index 7b37804b3..5eaeee9f1 100644
+--- a/fdts/aptiv_cvc_fl.dts
++++ b/fdts/aptiv_cvc_fl.dts
+@@ -87,6 +87,56 @@
+ 
+ &pfe {
+ 	status = "okay";
++	pinctrl-0 = <&pfe0_mdio_pins>, <&pfe2_mdio_pins>;
++	pinctrl-names = "default";
++};
++
++&pfe_mdio0 {
++	status = "okay";
++	mdio0_phy8: ethernet-phy@1 {
++		reg = <1>;
++	};
++};
++
++&pfe_mdio1 {
++	status = "okay";
++	mdio1_rtl_sw: ethernet-phy@24 {
++		reg = <24>;
++	};
++};
++
++&pfe_mdio2 {
++	status = "okay";
++	mdio2_phy7: ethernet-phy@1 {
++		reg = <1>;
++	};
++};
++
++&pfe_netif0 {
++	phy-mode = "sgmii";
++	phy-handle = <&mdio0_phy8>;
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&pfe_netif1 {
++	phy-mode = "sgmii";
++	phy-handle = <&mdio1_rtl_sw>;
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&pfe_netif2 {
++	phy-mode = "sgmii";
++	phy-handle = <&mdio2_phy7>;
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
+ };
+ 
+ /* EEPROM */
+-- 
+2.40.0
+

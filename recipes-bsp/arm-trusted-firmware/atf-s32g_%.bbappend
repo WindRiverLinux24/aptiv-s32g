@@ -17,6 +17,7 @@ SRC_URI:append:aptiv-cvc = " \
 	${@bb.utils.contains('MACHINE_FEATURES', 'disable_atf_i2c4', \
 	'file://0001-aptiv-cvc-fl-dts-prohibit-pmic-devices-on-i2c4-bus.patch', '', d)} \
         file://0011-aptiv-cvc-fl-dts-Update-Slew-Rates-from-MSCR-registe.patch \
+	file://0012-aptiv-cvc-fl-dts-add-mdio-device-nodes-and-pinctrl.patch \
 "
 HVP_EXTRA_OEMAKE="${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'S32_HAS_HV=1', '', d)}"
 EXTRA_OEMAKE:append:aptiv-cvc = " ${HVP_EXTRA_OEMAKE}"
