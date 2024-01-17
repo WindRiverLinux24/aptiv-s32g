@@ -195,250 +195,35 @@ Board can boot automatically by set the below uboot environment variables:
 6.1 FLEXCAN
 -----------
 
-Detail verification commands as below:
-
-	# ip link set can0 up type can bitrate 800000 dbitrate 8000000 fd on
-	# ip link set can1 up type can bitrate 800000 dbitrate 8000000 fd on
-	# candump can0 &
-	# cansend can1 5A1#11.22.33.44.55.66.77.88
-	# ip -d -s link show can0
-	# ip -d -s link show can1
-
-If can0 dumps data from can1, FLEXCAN feature works fine.
+About the detailed description, please refer to the section "6.1 FLEXCAN" of README
+in layers/nxp-s32g.
 
 6.2 ATF
 -------
 
-The ARM Trusted Firmware (ATF, or TF-A) is a software component of
-the linux BSP with a double role as a bootloader and Secure Monitor.
-As a bootloader, it runs before U-Boot on the A53 boot core and takes
-over some of the core and SoC initializations such as clocks or MC_ME
-partitions (mostly for those peripherals and subsystems that the ATF
-needs). As a Secure Monitor, the TF-A provides power management services
-to other software components, via a standard API/ABI called PSCI. For
-details of ATF, please refer to the sections
+About the detailed description, please refer to the section "6.5 ATF" of README
+in layers/nxp-s32g.
 
-	"11 ARM Trusted Firmware"
-and
-	"22 Power Management"
+NOTE: STR(Sleep To Ram) is not supported for Aptiv FL board.
 
-in "S32G2_Linux_BSP35.0_User_Manual.pdf".
-
-NOTICE:
-    For hardware reasons, the power management features are not supported for
-	Aptiv CVC FL boards.
-
-6.2.1 CPU Hotplug verify steps
-------------------------------
-
-With ATF enabled, CPU Hotplug is supported, below is the steps
-to verify this feature:
-
-  1. check current online cpu numbers
-
-	root@nxp-s32g:~#  nproc
-	4
-
-  2. offline cpu1
-
-	root@nxp-s32g:~# echo 0 > /sys/devices/system/cpu/cpu1/online
-	NOTICE:  SIRQ78: set affinity failed(-22).
-	process 201 (rngd) no longer affine to cpu1
-	process 199 (rngd) no longer affine to cpu1
-	CPU1: shutdown
-	psci: CPU1 killed (polled 0 ms)
-	root@nxp-s32g:~# nproc
-	3
-
-  3. online cpu1
-
-	root@nxp-s32g:~# echo 1 > /sys/devices/system/cpu/cpu1/online
-	NOTICE:  S32G TF-A: s32g_pwr_domain_on: booting up core 1
-	NOTICE:  S32G TF-A: s32g_pwr_domain_on_finish: cpu 1 running
-	Detected VIPT I-cache on CPU1
-	GICv3: CPU1: found redistributor 1 region 0:0x00000000508a0000
-	CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
-	root@nxp-s32g:~#
-	root@nxp-s32g:~# nproc
-	4
-	root@nxp-s32g:~#
-
-6.3 Build ATF
----------------
-
-By default, the atf image is compiled and installed. If you want atf to be manually
-compiled separately, use the following command：
-
-        # bitbake atf-s32g
-
-6.4 Build U-Boot
+6.3 Build U-Boot
 ----------------
 
-By default, the u-boot image is compiled and installed. If you want u-boot to be manually
-compiled separately, use the following command：
+About the detailed description, please refer to the section "6.7 Build U-Boot" of README
+in layers/nxp-s32g.
 
-        # bitbake u-boot-s32
-
-6.5 IPCF
+6.4 IPCF
 --------
 
-IPCF is short for "Inter-Platform Communication Framework" on NXP S32G
-platform, it is designed to work on various hardware platforms and operating
-systems. Prior to being used it needs to be integrated in the operating
-systems running on each platform. For S32G, to use this feature, users need
-to manually prepare application for M7 cores(refer to the following section
-6.6.1 "IPCF application on M7 side"), and the A53 linux side components
-have already integrated into wrlinux(please refer to the following section
-6.6.2 "Enable IPCF feature in wrlinux").
+About the detailed description, please refer to the section "6.6 IPCF" of README
+in layers/nxp-s32g.
 
-6.5.1 IPCF application on M7 side
----------------------------------
-
-Please note that, application on M7 side is not a pre-built binary file, it
-should be built manually, as preparation, the following(all of them can be
-found on Flexera) should be setup in the following order on user's local host
-machine:
-
-	1. S32 Design Studio 3.4
-	2. SW32G_S32DS_3.4.3_D2112.zip
-	3. SW32_RTD_4.4_4.0.0_DS_updatesite_D2210.zip
-	4. SW32G_IPCF_4.8.0_D2212_updatesite.zip
-
-For detail informations about the above packages setup, installation and
-build steps, please refer to the documents:
-
-	"S32DS_Installation_Guide_3.4.0.pdf"
-	"SW32_RTD_4.4_4.0.0_D2210_ReleaseNotes.pdf"
-	"SW32G_IPCF_4.8.0_D2212_ReleaseNotes.pdf"
-
-and etc., which can be found in related packages downloaded from flexra.
-
-And if the IPCF application on M7 side build successfully following the
-related documents, then users can find the binary file:
-
-	"IPCF_Example_S32G399_M7_0.bin"
-
-from S32DS IPCF example project.
-
-NOTE:
-
-1. For S32G3 boards, before compile the M7 side application, there are some
-   modifications should be done as following:
-
-     a. In src/sample.c, remove the "+ 1" in line 333, 336 and 339
-     b. In generate/src/ipcf_Ip_Cfg.c, change
-            .local_shm_addr  = 0x34100000,
-            .remote_shm_addr = 0x34000000,
-        to
-            .local_shm_addr  = 0x34200000,
-            .remote_shm_addr = 0x34100000,
-        in line 91.
-
-   Then build the project and use the output M7 side application binary to
-   test. Or else, the test will fail, and there is a ticket to verdor to track
-   the status of this issue:
-    https://community.nxp.com/t5/S32G/IPCF-v4-8-single-instance-M7-codes-issue-for-S32G3-boards/m-p/1687224#M4119
-
-2. For IPCF v4.8 multi-instance M7 side applications, there are also known
-   issues and there is a ticket to track the status of the issue:
-    https://community.nxp.com/t5/S32G/IPCF-v4-8-multi-instance-affects-S32G-board-functions-RDB2/m-p/1686793#M4104
-
-   So the multi-instance M7 side applications are not supported by default
-   until the above issues are fixed.
-
-6.5.2 Enable IPCF feature in wrlinux
-------------------------------------
-
-If users want to enable IPCF feature on A53 side linux system, please add
-the following lines in the <project-build-dir>/conf/local.conf:
-
-	IPCF_M7_APP_BIN_DIR = "/path/to/your-ipcf-m7-app/"
-	IMAGE_INSTALL:append = ' ipc-shm'
-
-then build the project as normal:
-
-	bitbake wrlinux-image-std
-
-the IPCF related drivers and M7 side app binaries IPCF_Example_S32G399_M7_0.bin
-will be built into WIC image.
-
-NOTICE:
-    The M7 side binary default name is IPCF_Example_S32G399_M7_0.bin, and it's
-defined by the variable IPCF_M7_APP_BIN_NAME or IPCF_M7_APP_BIN_NAME_S32G3
-respectively, users can use different binary names by modifying these variables,
-or set related variable(s) to empty if it is unneeded for users.
-
-6.5.3 IPCF verify steps
------------------------
-
-If both the IPCF application on M7 side and IPCF related drivers in linux
-are all build successfully, then users can follow the below steps to verify
-this feature:
-
-	1. dd WIC image(build following 6.6.2 section) into one SD-card
-
-	2. using the SD-card to bootup the board
-
-	3. stop in u-boot stage, and excute following commands
-
-		a> disable Data Cache from uboot:
-			=>dcache off
-		b> zero-set SRAM shared memory used by both sample apps:
-			=>mw.q 0x34000000 0x0 0x100000
-		c> load IPCF binary in SRAM:
-			=>fatload mmc 0:1 0x80000000 IPCF_Example_S32G399_M7_0.bin
-		   then:
-			=>cp.q 0x80000000 0x34300000 0x30000
-			=>dcache on;
-		d> start M7 core (the argument is the address of the Interrupt Vector):
-			=>startm7 0x34401000;
-		e> boot Linux:
-			=>boot
-
-	4. after linux system startup, enable ipcf driver support on linux
-
-		modprobe ipc-shm-sample
-
-
-	5. run ipcf test command
-
-		echo 10 > /sys/kernel/ipc-shm-sample/ping
-
-If all the above steps succeed, the result messages should be like:
-
-	root@nxp-s32g:~# echo 10 > /sys/kernel/ipc-shm-sample/ping
-	ipc-shm-sample: starting demo...
-	ipc-shm-sample: ch 0 >> 20 bytes: SENDING MESSAGES: 10
-	ipc-shm-sample: ch 1 >> 32 bytes: #0 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 1 << 32 bytes: #0 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 2 >> 32 bytes: #1 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 2 << 32 bytes: #1 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 1 >> 32 bytes: #2 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 1 << 32 bytes: #2 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 2 >> 32 bytes: #3 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 2 << 32 bytes: #3 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 1 >> 32 bytes: #4 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 1 << 32 bytes: #4 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 2 >> 32 bytes: #5 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 2 << 32 bytes: #5 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 1 >> 32 bytes: #6 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 1 << 32 bytes: #6 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 2 >> 32 bytes: #7 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 2 << 32 bytes: #7 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 1 >> 32 bytes: #8 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 1 << 32 bytes: #8 HELLO WORLD! from CORE 4
-	ipc-shm-sample: ch 2 >> 32 bytes: #9 HELLO WORLD! from KERNEL
-	ipc-shm-sample: ch 0 << 20 bytes: REPLIED MESSAGES: 10
-	ipc-shm-sample: ch 2 << 32 bytes: #9 HELLO WORLD! from CORE 4
-	ipc-shm-sample: exit demo
-	root@nxp-s32g:~#
-
-6.6 Secure boot
+6.5 Secure boot
 ---------------
 
 About the detailed description, please refer to the README in layers/nxp-s32g/s32g-secure-boot.
 
-6.6.1 Specific Boot Steps For Aptiv
+6.5.1 Specific Boot Steps For Aptiv
 -----------------------------------
 
 Aptiv board has its own load address, so user should use below configuration name and load address
@@ -453,7 +238,7 @@ Detailed steps as below:
 	# run mmcargs
 	# bootm 0x8A080000#conf-freescale_s32g399a-cvc-fl.dtb
 
-6.7 PFE
+6.6 PFE
 -------
 
 The NXP PFE (Packet Forwarding Engine) offloads the processing of Ethernet packets
@@ -464,14 +249,13 @@ PFE is a component of S32G399A SOC. It must be installed with the firmware to us
 PFE firmware is not shipped with SDK, customers have to contact NXP to get permission
 and download the PFE firmware.
 
-6.7.1 PFE firmware
+6.6.1 PFE firmware
 ------------------
 
-PFE is a firmware-based module. Load the firmware before using PFE.
-The firmwares name are "s32g_pfe_class.fw" and "s32g_pfe_util.fw" with
-version 1.5.0, which have to be downloaded from NXP Software.
+About the detailed description, please refer to the section "6.3.1 PFE firmware" of README
+in layers/nxp-s32g.
 
-6.7.2 PFE Master
+6.6.2 PFE Master
 ------------------
 
 1. Add the "pfe" package to the system through including the
@@ -503,14 +287,14 @@ in master mode, and make sure that pfeng_mode is enabled.
 	U-Boot=>setenv fdt_file 's32g399a-cvc-fl.dtb'
 	U-Boot=>setenv pfeng_mode 'enable,sgmii,sgmii,sgmii'
 
-4. After entering WRLinux, the pfe0~2 interface can be seen:
+4. After entering WRLinux, the pfe0~2 interfaces can be observed.
 
-6.7.3 PFE Slave
+6.6.3 PFE Slave
 ---------------
 
 NOTE: The PFE slave mode is not verified at FL board.
 
-6.8 Aptiv m7-autosar boot
+6.7 Aptiv m7-autosar boot
 -------------------------
 
 There is a Aptiv specific m7-autosar image(cvc_s32g3_m7_app.bin) for Aptiv platform.
