@@ -81,4 +81,4 @@ Aptiv CVC-FL Board:
 	CPU Revision:			rev. 1.0
 	Board Serial:			NXP S32G3XX
 	BootLoader:				U-Boot
-	BootLoader Version:		U-Boot 2020.04+g57741dd80e
+	BootLoader Version:		U-Boot 2022.04

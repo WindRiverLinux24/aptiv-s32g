@@ -285,7 +285,18 @@ variable "fdt_file" is set to be "s32g399a-cvc-fl.dtb" in which the pfe0~2 is
 in master mode, and make sure that pfeng_mode is enabled.
 
 	U-Boot=>setenv fdt_file 's32g399a-cvc-fl.dtb'
-	U-Boot=>setenv pfeng_mode 'enable,sgmii,sgmii,sgmii'
+
+Furthermore, pfe0 and pfe2 are connected with the RTL9010 PHYs and these PHYs need
+to be configured by the following commands to ensure that pfe0 and pfe2 work under
+both U-boot and Linux:
+
+       U-Boot=>mdio write pfeng-mdio-0 1 1b 0xCC04; mdio write pfeng-mdio-0 1 1c 0x7180;
+       U-Boot=>mdio write pfeng-mdio-2 1 1b 0xCC04; mdio write pfeng-mdio-2 1 1c 0x7180;
+
+And if using pfe0~2 in U-Boot, please set the U-Boot environment variable "ethact" to
+be "pfe0" or "pfe1" or "pfe2":
+
+       U-Boot=>setenv ethact 'pfe0'
 
 4. After entering WRLinux, the pfe0~2 interfaces can be observed.
 
