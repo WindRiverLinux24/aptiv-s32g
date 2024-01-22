@@ -22,6 +22,9 @@ SRC_URI:append:aptiv-cvc = " \
 HVP_EXTRA_OEMAKE="${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'S32_HAS_HV=1', '', d)}"
 EXTRA_OEMAKE:append:aptiv-cvc = " ${HVP_EXTRA_OEMAKE}"
 
+EXTRA_OEMAKE += "${@['', '${HSE_ARGS}']['aptiv' in d.getVar('MACHINE') and d.getVar('HSE_SEC_ENABLED') == '1']}"
+EXTRA_OEMAKE += "${@['', '${SECBOOT_ARGS}']['aptiv' in d.getVar('MACHINE') and d.getVar('ATF_SIGN_ENABLE') == '1']}"
+
 get_u32 () {
 	local file="$1"
 	local offset="$2"
