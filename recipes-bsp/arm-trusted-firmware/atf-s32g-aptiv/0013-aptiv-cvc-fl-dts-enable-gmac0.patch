@@ -1,0 +1,32 @@
+From 6127d2e5871293b51975efa2a6e15e3f23a02801 Mon Sep 17 00:00:00 2001
+From: Quanyang Wang <quanyang.wang@windriver.com>
+Date: Wed, 24 Jan 2024 14:56:51 +0800
+Subject: [PATCH] aptiv-cvc-fl: dts: enable gmac0
+
+Set gmac to be a fixed link so that we can use it in U-boot.
+
+Upstream-Status: Inappropriate [WR Linux specific change]
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ fdts/aptiv_cvc_fl.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
+index 5eaeee9f1..fa28200f0 100644
+--- a/fdts/aptiv_cvc_fl.dts
++++ b/fdts/aptiv_cvc_fl.dts
+@@ -53,6 +53,10 @@
+ 	status = "okay";
+ 	phy-mode = "rgmii";
+ 	phy-handle = <&mdio_c_phy19>;
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
+ };
+ 
+ &usbotg {
+-- 
+2.40.0
+
