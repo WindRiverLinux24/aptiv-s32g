@@ -348,3 +348,13 @@ the wic file, please refer to section 5.1.
 
 Note: The set of configurations in local.conf is only an example, please modify them according to
       your own file name, version and md5 of the 2 images.
+
+6.8 dm-verity
+-------------
+
+About the detailed description, please refer to the section "6.9 dm-verity" of README in layers/nxp-s32g.
+
+6.9 cpu thermal
+----------------
+
+About the detailed description, please refer to the section "6.10 cpu thermal" of README in layers/nxp-s32g.

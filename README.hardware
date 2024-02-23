@@ -55,6 +55,7 @@ The following BSP features are validated and supported.
 	+ GPIO: On-Chip general purpose Input/Output
 	+ Watchdog
 	+ RTC
+	+ CPU Freq
 
 3.2 Unsupported Features
 ========================
@@ -64,7 +65,6 @@ The following features are not supported and not validated same as SDK.
 	x DSPI: NXP DSPI bus controller in master mode
 	x PCIe: On-Chip PCIe controller
 	x QSPI: On-Chip Quad-SPI flash controller
-	x CPU Freq
 	x LLCE CAN: NXP Low Latency Communication Engine CAN
 
 4. BSP Notes
