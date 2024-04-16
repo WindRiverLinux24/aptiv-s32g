@@ -14,3 +14,6 @@ SRC_URI:append:aptiv-cvc = " \
 	${@bb.utils.contains('MACHINE_FEATURES', 'disable_linux_llce', \
 	'file://0003-dts-cvc-fl-disable-llce.patch', '', d)} \
 "
+
+SRCREV_machine:kb-v6.1-standard-preempt-rt-nxp-sdk-5.15-nxp-s32g = "acda2a279d8f9e5f60c19e47d6ae70e207e751e1"
+SRCREV_meta_6.1:aptiv-cvc = "8b555bd39017d9e6b19a0e2c98e563c5ebccef14"
