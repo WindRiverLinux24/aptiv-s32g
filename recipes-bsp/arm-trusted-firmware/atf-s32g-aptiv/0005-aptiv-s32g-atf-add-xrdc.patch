@@ -1,4 +1,4 @@
-From 2d4429924010b99f7baf2393d2915b8c09d639dd Mon Sep 17 00:00:00 2001
+From 59aa6001d4499cc365a087efffe8c9f94292e2cd Mon Sep 17 00:00:00 2001
 From: Yu Feng <Yu.Feng@windriver.com>
 Date: Tue, 6 Dec 2022 13:52:10 +0800
 Subject: [PATCH] aptiv-s32g: atf: add xrdc
@@ -17,60 +17,57 @@ Upstream-Status: Pending
 Signed-off-by: Yu Feng <Yu.Feng@windriver.com>
 ---
  fdts/s32cc.dtsi                               |  4 +-
- plat/nxp/s32/include/s32_platform_def.h       |  8 ++-
+ plat/nxp/s32/include/s32_platform_def.h       |  6 +-
  plat/nxp/s32/s32_bl31.c                       |  4 ++
  plat/nxp/s32/s32_lowlevel_bl31.S              | 68 +++++++++++++++++-
  plat/nxp/s32/s32_svc.c                        | 70 +++++++++++++++++++
  plat/nxp/s32/s32g/include/s32g_platform_def.h |  4 +-
- 6 files changed, 151 insertions(+), 7 deletions(-)
+ 6 files changed, 150 insertions(+), 6 deletions(-)
 
 diff --git a/fdts/s32cc.dtsi b/fdts/s32cc.dtsi
-index 239837774..c5b1415c0 100644
+index 41495b2d4..8bec7c301 100644
 --- a/fdts/s32cc.dtsi
 +++ b/fdts/s32cc.dtsi
-@@ -75,9 +75,9 @@
+@@ -72,9 +72,9 @@
  			no-map;
  		};
  
 -		scmi_shbuf: shm@d0000000 {
 +		scmi_shbuf: shm@a0000000 {
  			compatible = "arm,scmi-shmem";
--			reg = <0x0 0xd0000000 0x0 0x400000>;    /* 4 MB */
-+			reg = <0x0 0xa0000000 0x0 0x400000>;    /* 4 MB */
+-			reg = <0x0 0xd0000000 0x0 0x80>;
++			reg = <0x0 0xa0000000 0x0 0x80>;
  			no-map;
  		};
  
 diff --git a/plat/nxp/s32/include/s32_platform_def.h b/plat/nxp/s32/include/s32_platform_def.h
-index f01ead1d6..de721e596 100644
+index d7bd1a0b1..3a49de8d2 100644
 --- a/plat/nxp/s32/include/s32_platform_def.h
 +++ b/plat/nxp/s32/include/s32_platform_def.h
-@@ -172,14 +172,18 @@
+@@ -168,12 +168,16 @@
  #endif
  
  #ifndef S32_PLATFORM_OSPM_SCMI_MEM
 -#define S32_OSPM_SCMI_MEM	(0xd0000000U)
--#define S32_OSPM_SCMI_NOTIF_MEM	(0xd0000080U)
 +#define S32_OSPM_SCMI_MEM	(0xa0000000U)
-+#define S32_OSPM_SCMI_NOTIF_MEM	(0xa0000080U)
  #else /* S32_PLATFORM_OSPM_SCMI_MEM */
  #define S32_OSPM_SCMI_MEM       S32_PLATFORM_OSPM_SCMI_MEM
- #define S32_OSPM_SCMI_NOTIF_MEM S32_PLATFORM_OSPM_SCMI_NOTIF_MEM
  #endif /* S32_PLATFORM_OSPM_SCMI_MEM */
- #define S32_OSPM_SCMI_MEM_SIZE	(0x400000U)
+ #define S32_OSPM_SCMI_MEM_SIZE	(0x80U)
  
 +#define S32_XRDC0_BASE		(0x401A4000ul)
 +#define S32_XRDC1_BASE		(0x44004000ul)
-+#define S32_XRDC_SIZE		(0x4000)
++#define S32_XRDC_SIZE 		(0x4000)
 +
  #define S32_QSPI_BASE		(0x40134000ul)
  #define S32_QSPI_SIZE		(0x1000)
  
 diff --git a/plat/nxp/s32/s32_bl31.c b/plat/nxp/s32/s32_bl31.c
-index 6cb131f82..cf28f8f19 100644
+index 5777149bc..f120d1651 100644
 --- a/plat/nxp/s32/s32_bl31.c
 +++ b/plat/nxp/s32/s32_bl31.c
-@@ -37,6 +37,10 @@ static gicv3_redist_ctx_t rdisif_ctxs[PLATFORM_CORE_COUNT];
- static gicv3_dist_ctx_t dist_ctx;
+@@ -40,6 +40,10 @@ static uint64_t timer_ctx;
+ #endif
  
  static const mmap_region_t s32_mmap[] = {
 +	MAP_REGION_FLAT(S32_XRDC0_BASE, S32_XRDC_SIZE,
@@ -164,7 +161,7 @@ index 022c2c559..0a7ec4845 100644
 +	RET
 +endfunc s32_xrdc_reg_write
 diff --git a/plat/nxp/s32/s32_svc.c b/plat/nxp/s32/s32_svc.c
-index 43850f2e3..bbf29e374 100644
+index cc2ec89a7..6f7cb9292 100644
 --- a/plat/nxp/s32/s32_svc.c
 +++ b/plat/nxp/s32/s32_svc.c
 @@ -11,8 +11,10 @@
@@ -261,20 +258,21 @@ index 43850f2e3..bbf29e374 100644
  		WARN("Unimplemented SIP Service Call: 0x%x\n", smc_fid);
  		SMC_RET1(handle, SMC_UNK);
 diff --git a/plat/nxp/s32/s32g/include/s32g_platform_def.h b/plat/nxp/s32/s32g/include/s32g_platform_def.h
-index f147ec5d4..30b381846 100644
+index be9427e33..2576dda00 100644
 --- a/plat/nxp/s32/s32g/include/s32g_platform_def.h
 +++ b/plat/nxp/s32/s32g/include/s32g_platform_def.h
-@@ -56,8 +56,8 @@
+@@ -56,9 +56,9 @@
  
  #define BL31SSRAM_MAILBOX	(S32G_SSRAM_BASE)
  
 -#define MAX_MMAP_REGIONS		40
--#define MAX_XLAT_TABLES			27
 +#define MAX_MMAP_REGIONS		42
-+#define MAX_XLAT_TABLES			29
+ #ifndef MAX_XLAT_TABLES
+-#define MAX_XLAT_TABLES			28
++#define MAX_XLAT_TABLES			30
+ #endif
  
  #if defined IMAGE_BL33
- #pragma warning "BL33 image is being built; you should configure it out."
 -- 
 2.34.1
 
