@@ -1,4 +1,4 @@
-From 3932f77354a6efe7ba478973bb58e40435a1849e Mon Sep 17 00:00:00 2001
+From ca1256835d5104291a22771c50b4b572e5dca477 Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
 Date: Mon, 15 Jan 2024 15:14:43 +0800
 Subject: [PATCH] u-boot-s32: drop restriction of count of SGMII pfe
@@ -19,24 +19,22 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c b/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
-index 566095e2bb..7dbc329e52 100644
+index 0210990b95..2e01e770e6 100644
 --- a/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
 +++ b/arch/arm/mach-s32/s32-cc/serdes_hwconfig.c
-@@ -479,10 +479,12 @@ bool s32_serdes_is_cfg_valid(unsigned int id)
+@@ -483,8 +483,10 @@ bool s32_serdes_is_cfg_valid(unsigned int id)
+ 		 * are connected to the same PHY.
  		 */
- 		enum serdes_xpcs_mode xpcs0_1_mode =
- 			s32_serdes_get_xpcs_cfg_from_hwconfig(0, 1);
+ 		xpcs0_1_mode = s32_serdes_get_xpcs_cfg_from_hwconfig(0, 1);
 +#if 0
- 		if (xpcs0_mode != SGMII_INVALID && xpcs0_1_mode != SGMII_INVALID) {
- 			printf("xpcs0_1 and xpcs 1_0 can't be both SGMII\n");
- 			return false;
- 		}
+ 		if (xpcs0_mode != SGMII_INVALID && xpcs0_1_mode != SGMII_INVALID)
+ 			printf("xpcs0_1 and xpcs 1_0 can't be both SGMII on S32CC EVB/RDB\n");
 +#endif
  	}
+ 
  	return true;
- }
 diff --git a/drivers/net/nxp_pfeng/pfeng_mdio.c b/drivers/net/nxp_pfeng/pfeng_mdio.c
-index 2c856f124b..468013afd5 100644
+index 89a122adc3..eca279d516 100644
 --- a/drivers/net/nxp_pfeng/pfeng_mdio.c
 +++ b/drivers/net/nxp_pfeng/pfeng_mdio.c
 @@ -125,7 +125,7 @@ static int pfeng_mdio_bind(struct udevice *dev)
@@ -49,5 +47,5 @@ index 2c856f124b..468013afd5 100644
  		return -ENODEV;
  	}
 -- 
-2.40.0
+2.34.1
 

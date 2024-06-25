@@ -8,7 +8,6 @@ UBOOT_HVP_PATCHES += "${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'file://xe
 
 SRC_URI:append:aptiv-cvc = " \
 	file://0006-s32cc-increate-boot-image-size-to-128MB.patch \
-	file://0007-s32-serdes-hwconfig-change-hwconfig-for-CVC-board.patch \
 	file://0008-aptiv-cvc-fl-add-support-for-Aptiv-CVC-FL-board.patch \
 	file://0011-aptiv-cvc-fl-add-GPIO_HOG-config.patch \
 	file://0012-support-bootmenu.patch \

@@ -1,4 +1,4 @@
-KBRANCH:aptiv-cvc  = "v6.1/standard/preempt-rt/nxp-sdk-5.15/nxp-s32g"
+KBRANCH:aptiv-cvc  = "v6.6/standard/preempt-rt/nxp-sdk-6.6/nxp-s32g"
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
 TARGET_SUPPORTED_KTYPES:aptiv-cvc = "preempt-rt"
 FILESEXTRAPATHS:prepend:aptiv-cvc := "${THISDIR}/files:"

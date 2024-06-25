@@ -1,4 +1,4 @@
-From be21a860fee3656431adb5f39220c27219d98ad3 Mon Sep 17 00:00:00 2001
+From 415e97e84fdaf8b4ddb47b7cab4f246b59977838 Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
 Date: Mon, 30 Jan 2023 18:31:27 +0800
 Subject: [PATCH] aptiv-cvc-fl: add support for Aptiv CVC-FL board
@@ -23,10 +23,10 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  drivers/nxp/s32/ddr/aptiv_cvc_fl/phy_cfg.c    |   122 +
  drivers/nxp/s32/ddr/aptiv_cvc_fl/pie_cfg.c    |   594 +
  fdts/aptiv_cvc_fl.dts                         |   454 +
- plat/nxp/s32/s32_ddr.mk                       |    11 +-
- .../s32g3/aptiv_cvc_fl/include/platform_def.h |    11 +
- .../s32/s32g/s32g3/aptiv_cvc_fl/platform.mk   |    16 +
- 10 files changed, 35813 insertions(+), 2 deletions(-)
+ plat/nxp/s32/s32cc/s32_ddr.mk                 |     5 +
+ .../s32g3/aptiv_cvc_fl/include/platform_def.h |    14 +
+ .../s32cc/s32g/s32g3/aptiv_cvc_fl/platform.mk |    16 +
+ 10 files changed, 35812 insertions(+)
  create mode 100644 drivers/nxp/s32/ddr/aptiv_cvc_fl/ddrc_cfg.c
  create mode 100644 drivers/nxp/s32/ddr/aptiv_cvc_fl/dmem_cfg.c
  create mode 100644 drivers/nxp/s32/ddr/aptiv_cvc_fl/dq_swap_cfg.c
@@ -34,8 +34,8 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  create mode 100644 drivers/nxp/s32/ddr/aptiv_cvc_fl/phy_cfg.c
  create mode 100644 drivers/nxp/s32/ddr/aptiv_cvc_fl/pie_cfg.c
  create mode 100644 fdts/aptiv_cvc_fl.dts
- create mode 100644 plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
- create mode 100644 plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk
+ create mode 100644 plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
+ create mode 100644 plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/platform.mk
 
 diff --git a/drivers/nxp/s32/ddr/aptiv_cvc_fl/ddrc_cfg.c b/drivers/nxp/s32/ddr/aptiv_cvc_fl/ddrc_cfg.c
 new file mode 100644
@@ -35398,7 +35398,7 @@ index 000000000..e265b6487
 +size_t pie_cfg_size = ARRAY_SIZE(pie_cfg);
 diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
 new file mode 100644
-index 000000000..2d16763a1
+index 000000000..f5429bed5
 --- /dev/null
 +++ b/fdts/aptiv_cvc_fl.dts
 @@ -0,0 +1,454 @@
@@ -35856,10 +35856,10 @@ index 000000000..2d16763a1
 +	};
 +
 +};
-diff --git a/plat/nxp/s32/s32_ddr.mk b/plat/nxp/s32/s32_ddr.mk
-index 3936ac037..1bef3682c 100644
---- a/plat/nxp/s32/s32_ddr.mk
-+++ b/plat/nxp/s32/s32_ddr.mk
+diff --git a/plat/nxp/s32/s32cc/s32_ddr.mk b/plat/nxp/s32/s32cc/s32_ddr.mk
+index c20204ad6..70abcc744 100644
+--- a/plat/nxp/s32/s32cc/s32_ddr.mk
++++ b/plat/nxp/s32/s32cc/s32_ddr.mk
 @@ -15,6 +15,11 @@ COMMON_DDR_DRV	= ${DDR_DRV}
  PLAT_DDR_DRV	= ${DDR_DRV}/${S32_PLAT_SOC}/${PLAT_BOARD}
  endif
@@ -35872,11 +35872,11 @@ index 3936ac037..1bef3682c 100644
  DDR_DRV_SRCS += \
  	${PLAT_DDR_DRV}/ddrc_cfg.c \
  	${PLAT_DDR_DRV}/dmem_cfg.c \
-diff --git a/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
+diff --git a/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h b/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
 new file mode 100644
-index 000000000..1949f1a65
+index 000000000..a5279553b
 --- /dev/null
-+++ b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
++++ b/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/include/platform_def.h
 @@ -0,0 +1,14 @@
 +/*
 + * Copyright 2022 NXP
@@ -35892,11 +35892,11 @@ index 000000000..1949f1a65
 +#define S32GEN1_QSPI_200MHZ
 +
 +#endif /* PLATFORM_DEF_H */
-diff --git a/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk
+diff --git a/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/platform.mk b/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/platform.mk
 new file mode 100644
-index 000000000..224ac3bab
+index 000000000..bce760b99
 --- /dev/null
-+++ b/plat/nxp/s32/s32g/s32g3/aptiv_cvc_fl/platform.mk
++++ b/plat/nxp/s32/s32cc/s32g/s32g3/aptiv_cvc_fl/platform.mk
 @@ -0,0 +1,16 @@
 +#
 +# Copyright 2022 NXP
@@ -35907,7 +35907,7 @@ index 000000000..224ac3bab
 +# This definition must be ahead aptiv.mk
 +APTIV_CVC_FL := 1
 +
-+include plat/nxp/s32/s32g/s32g3/s32g3.mk
++include plat/nxp/s32/s32cc/s32g/s32g3/s32g3.mk
 +
 +S32_BOARD_PATH		:= ${PLAT_SOC_PATH}/aptiv_cvc_fl
 +
@@ -35915,5 +35915,5 @@ index 000000000..224ac3bab
 +
 +DTB_FILE_NAME		?= aptiv_cvc_fl.dtb
 -- 
-2.36.1
+2.34.1
 
