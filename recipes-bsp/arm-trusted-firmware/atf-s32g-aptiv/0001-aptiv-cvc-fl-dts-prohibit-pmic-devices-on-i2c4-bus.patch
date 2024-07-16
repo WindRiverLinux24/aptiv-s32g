@@ -10,9 +10,9 @@ Signed-off-by: Meng Li <Meng.Li@windriver.com>
 ---
  drivers/nxp/s32/pmic/vr5510.c          |  5 ++++-
  fdts/aptiv_cvc_fl.dts                  |  6 +++---
- plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c |  4 +++-
- plat/nxp/s32/s32g/s32g_bl_common.c     |  6 ++++++
- plat/nxp/s32/s32g/s32g_vr5510.c        | 12 +++++++++---
+ plat/nxp/s32/s32cc/s32g/s32g3/s32g3_vr5510.c |  4 +++-
+ plat/nxp/s32/s32cc/s32g/s32g_bl_common.c     |  6 ++++++
+ plat/nxp/s32/s32cc/s32g/s32g_vr5510.c        | 12 +++++++++---
  5 files changed, 25 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/nxp/s32/pmic/vr5510.c b/drivers/nxp/s32/pmic/vr5510.c
@@ -67,10 +67,10 @@ index 31635c88f..c3e60f674 100644
  	};
  };
  
-diff --git a/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c b/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
+diff --git a/plat/nxp/s32/s32cc/s32g/s32g3/s32g3_vr5510.c b/plat/nxp/s32/s32cc/s32g/s32g3/s32g3_vr5510.c
 index 59e9a8dc1..e990386ca 100644
---- a/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
-+++ b/plat/nxp/s32/s32g/s32g3/s32g3_vr5510.c
+--- a/plat/nxp/s32/s32cc/s32g/s32g3/s32g3_vr5510.c
++++ b/plat/nxp/s32/s32cc/s32g/s32g3/s32g3_vr5510.c
 @@ -20,7 +20,9 @@ int pmic_setup(void)
  	s32g_reinit_i2c();
  
@@ -82,10 +82,10 @@ index 59e9a8dc1..e990386ca 100644
  		ERROR("Failed to get VR5510 FSU\n");
  		return ret;
  	}
-diff --git a/plat/nxp/s32/s32g/s32g_bl_common.c b/plat/nxp/s32/s32g/s32g_bl_common.c
+diff --git a/plat/nxp/s32/s32cc/s32g/s32g_bl_common.c b/plat/nxp/s32/s32cc/s32g/s32g_bl_common.c
 index 15142e8b6..62ede2089 100644
---- a/plat/nxp/s32/s32g/s32g_bl_common.c
-+++ b/plat/nxp/s32/s32g/s32g_bl_common.c
+--- a/plat/nxp/s32/s32cc/s32g/s32g_bl_common.c
++++ b/plat/nxp/s32/s32cc/s32g/s32g_bl_common.c
 @@ -38,6 +38,7 @@ void dt_init_pmic(void)
  	struct s32_i2c_driver *i2c_driver;
  	unsigned int instance;
@@ -106,10 +106,10 @@ index 15142e8b6..62ede2089 100644
  		i2c_node = fdt_parent_offset(fdt, pmic_node);
  		if (i2c_node == -1) {
  			ret = -EIO;
-diff --git a/plat/nxp/s32/s32g/s32g_vr5510.c b/plat/nxp/s32/s32g/s32g_vr5510.c
+diff --git a/plat/nxp/s32/s32cc/s32g/s32g_vr5510.c b/plat/nxp/s32/s32cc/s32g/s32g_vr5510.c
 index ea8b1dd4c..e1ada50aa 100644
---- a/plat/nxp/s32/s32g/s32g_vr5510.c
-+++ b/plat/nxp/s32/s32g/s32g_vr5510.c
+--- a/plat/nxp/s32/s32cc/s32g/s32g_vr5510.c
++++ b/plat/nxp/s32/s32cc/s32g/s32g_vr5510.c
 @@ -76,11 +76,15 @@ int pmic_prepare_for_suspend(void)
  	s32g_reinit_i2c();
  
