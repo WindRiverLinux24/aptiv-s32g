@@ -5,6 +5,8 @@ Subject: [PATCH 3/3] dts: cvc-fl: disable llce
 
 The llce device is used by M7, so disable it from A53 side.
 
+Upstream-Status: Pending
+
 Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 Signed-off-by: Meng Li <Meng.Li@windriver.com>
 ---
