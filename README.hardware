@@ -21,10 +21,8 @@ This BSP supports the following boards:
 2. Change History
 =================
 
-  - 2023/05 (LINUXPG-1570): WindRiver Linux LTS23 RCPL1. Standard and preempt-rt support based on NXP
-			   SDK bsp36.0-5.15.85-rt.
-  - 2023/12 (LINUXPG-1864): WindRiver Linux LTS23 RCPL5. Standard and preempt-rt support based on NXP
-			   SDK bsp38.0-5.15.119-rt.
+  - 2024/07 (LINUXPG-2288): WindRiver Linux LTS24 RCPL1. Standard and preempt-rt support based on NXP
+			   SDK bsp41.0-6.6.25-rt.
 
 3. BSP Features
 ===============
