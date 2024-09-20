@@ -10,6 +10,7 @@ Dependencies
 ------------
 This layer depends on the following layers supplied with Wind River Linux:
 	oe-core
+	wrlinux
 	nxp-s32g
 
 Maintenance
