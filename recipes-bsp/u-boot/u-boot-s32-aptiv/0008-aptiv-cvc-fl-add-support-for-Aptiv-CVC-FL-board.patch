@@ -1,4 +1,4 @@
-From 5bd0344e5360f0d871a1a5abcbad2bb6af423958 Mon Sep 17 00:00:00 2001
+From a4bbb66826eaf0ae9ddabaed9d0dfde05e5b2fc5 Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
 Date: Mon, 30 Jan 2023 18:32:37 +0800
 Subject: [PATCH] aptiv-cvc-fl: add support for Aptiv CVC-FL board
@@ -17,19 +17,18 @@ Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
  arch/arm/mach-s32/s32g3/Kconfig | 14 ++++++++++++++
  board/nxp/aptiv_cvc_fl/Kconfig  | 15 +++++++++++++++
  board/nxp/aptiv_cvc_fl/Makefile |  7 +++++++
- configs/aptiv_cvc_fl_defconfig  |  4 ++++
- drivers/usb/host/ehci-mx6.c     |  8 ++++++++
- include/configs/s32g3xxaevb.h   | 14 ++++++++++++++
- 6 files changed, 62 insertions(+)
+ configs/aptiv_cvc_fl_defconfig  |  5 +++++
+ include/configs/s32g3xxaevb.h   |  9 +++++++++
+ 5 files changed, 50 insertions(+)
  create mode 100644 board/nxp/aptiv_cvc_fl/Kconfig
  create mode 100644 board/nxp/aptiv_cvc_fl/Makefile
  create mode 100644 configs/aptiv_cvc_fl_defconfig
 
 diff --git a/arch/arm/mach-s32/s32g3/Kconfig b/arch/arm/mach-s32/s32g3/Kconfig
-index 82f575985a..a0fd8e6491 100644
+index 778338b96f..5e4ecb26dd 100644
 --- a/arch/arm/mach-s32/s32g3/Kconfig
 +++ b/arch/arm/mach-s32/s32g3/Kconfig
-@@ -26,6 +26,19 @@ config TARGET_S32G3XXAEVB
+@@ -30,6 +30,19 @@ config TARGET_S32G3XXAEVB
  	imply USB_ULPI
  	select NXP_S32GEVB_BOARD
  
@@ -49,14 +48,14 @@ index 82f575985a..a0fd8e6491 100644
  config TARGET_S32G3XXAEVB3
  	bool "Support S32G3-EVB3 board"
  	help
-@@ -48,6 +61,7 @@ config S32CC_HWCONFIG
+@@ -72,6 +85,7 @@ config NXP_PFENG
  
  source "board/nxp/s32-cc/s32g/Kconfig"
  source "board/nxp/s32g399ardb3/Kconfig"
 +source "board/nxp/aptiv_cvc_fl/Kconfig"
  source "board/nxp/s32g3xxaevb/Kconfig"
  source "board/nxp/s32g3xxaevb3/Kconfig"
- source "board/nxp/s32g399aemu/Kconfig"
+ source "board/nxp/s32g399asom/Kconfig"
 diff --git a/board/nxp/aptiv_cvc_fl/Kconfig b/board/nxp/aptiv_cvc_fl/Kconfig
 new file mode 100644
 index 0000000000..b8d38ddd9a
@@ -93,7 +92,7 @@ index 0000000000..9bbb5c34ab
 +obj-y += ../s32-cc/s32g/
 diff --git a/configs/aptiv_cvc_fl_defconfig b/configs/aptiv_cvc_fl_defconfig
 new file mode 100644
-index 0000000000..2bcf33e5ee
+index 0000000000..3f8f568be6
 --- /dev/null
 +++ b/configs/aptiv_cvc_fl_defconfig
 @@ -0,0 +1,5 @@
@@ -103,10 +102,10 @@ index 0000000000..2bcf33e5ee
 +CONFIG_SD_BOOT=y
 +CONFIG_FAT_WRITE=y
 diff --git a/include/configs/s32g3xxaevb.h b/include/configs/s32g3xxaevb.h
-index 649fe58a54..b87c750f63 100644
+index 3e7717d5e2..e1ed7a9d96 100644
 --- a/include/configs/s32g3xxaevb.h
 +++ b/include/configs/s32g3xxaevb.h
-@@ -9,9 +9,18 @@
+@@ -7,9 +7,18 @@
  
  #include <configs/s32g3.h>
  
@@ -126,5 +125,5 @@ index 649fe58a54..b87c750f63 100644
  #	define CONFIG_MXC_USB_PORTSC	PORT_PTS_ULPI
  #	define CONFIG_USB_EHCI_MX6
 -- 
-2.36.1
+2.34.1
 

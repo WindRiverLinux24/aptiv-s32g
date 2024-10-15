@@ -1,4 +1,4 @@
-From d183699337aa045a5d6ab00f7f4a8a8814d1a2f3 Mon Sep 17 00:00:00 2001
+From aad07f5056ff6671da3012ca5168c7f95bc4b6fc Mon Sep 17 00:00:00 2001
 From: Quanyang Wang <quanyang.wang@windriver.com>
 Date: Thu, 11 Aug 2022 14:59:16 +0800
 Subject: [PATCH] s32cc: increate boot image size to 128MB
@@ -10,22 +10,22 @@ Upstream-Status: Pending
 
 Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 ---
- include/configs/s32-cc.h | 2 +-
+ include/configs/s32.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/configs/s32-cc.h b/include/configs/s32-cc.h
-index 7270cc376a..c16b474618 100644
---- a/include/configs/s32-cc.h
-+++ b/include/configs/s32-cc.h
-@@ -75,7 +75,7 @@
- #define MMC_PART_EXT			2
+diff --git a/include/configs/s32.h b/include/configs/s32.h
+index c91844ae87..ab5e8d3a2f 100644
+--- a/include/configs/s32.h
++++ b/include/configs/s32.h
+@@ -21,7 +21,7 @@
+ #define CONFIG_SYS_MMC_ENV_DEV		0
  
  /* Increase max gunzip size */
 -#define CONFIG_SYS_BOOTM_LEN	(SZ_64M)
 +#define CONFIG_SYS_BOOTM_LEN	(SZ_128M)
  
- #ifndef CONFIG_XEN_SUPPORT
- #  define CONFIG_ARMV8_SWITCH_TO_EL1
+ #if defined(CONFIG_NO_LINUX_EARLY_CONSOLE)
+ #  define LINUX_EARLY_CONSOLE ""
 -- 
-2.36.1
+2.34.1
 
