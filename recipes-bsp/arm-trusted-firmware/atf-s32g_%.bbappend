@@ -19,6 +19,7 @@ SRC_URI:append:aptiv-cvc = " \
         file://0011-aptiv-cvc-fl-dts-Update-Slew-Rates-from-MSCR-registe.patch \
 	file://0012-aptiv-cvc-fl-dts-add-mdio-device-nodes-and-pinctrl.patch \
 	file://0013-aptiv-cvc-fl-dts-enable-gmac0.patch \
+	file://0001-fdts-cvc-enable-pcie-serdes-and-pfe-netif-nodes-expl.patch \
 "
 HVP_EXTRA_OEMAKE="${@bb.utils.contains('MACHINE_FEATURES', 'hvp', 'S32_HAS_HV=1', '', d)}"
 EXTRA_OEMAKE:append:aptiv-cvc = " ${HVP_EXTRA_OEMAKE}"

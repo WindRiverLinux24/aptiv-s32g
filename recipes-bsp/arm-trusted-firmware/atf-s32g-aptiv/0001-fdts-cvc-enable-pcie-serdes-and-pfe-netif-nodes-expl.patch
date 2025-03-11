@@ -1,0 +1,70 @@
+From a009fb051173636784fa931fa6c96d8c5e99b89c Mon Sep 17 00:00:00 2001
+From: Zhantao Tang <zhantao.tang@windriver.com>
+Date: Tue, 11 Mar 2025 09:28:29 +0000
+Subject: [PATCH] fdts: cvc: enable pcie, serdes and pfe netif nodes explicitly
+
+In latest atf codes, the pcie, serdes and pfe netif nodes should be
+enabled explicitly in bsp's own dts, so update aptiv_cvc_fl.dts to
+enable the nodes, or else, the network will fail in uboot stage.
+
+Upstream-Status: Pending
+
+Signed-off-by: Zhantao Tang <zhantao.tang@windriver.com>
+---
+ fdts/aptiv_cvc_fl.dts | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/fdts/aptiv_cvc_fl.dts b/fdts/aptiv_cvc_fl.dts
+index f5b7456..d3132f7 100644
+--- a/fdts/aptiv_cvc_fl.dts
++++ b/fdts/aptiv_cvc_fl.dts
+@@ -49,6 +49,22 @@
+ 	};
+ };
+ 
++&pcie0 {
++        status = "okay";
++};
++
++&pcie1 {
++        status = "okay";
++};
++
++&serdes0 {
++        status = "okay";
++};
++
++&serdes1 {
++        status = "okay";
++};
++
+ &gmac0 {
+ 	status = "okay";
+ 	phy-mode = "rgmii";
+@@ -117,6 +133,7 @@
+ };
+ 
+ &pfe_netif0 {
++	status = "okay";
+ 	phy-mode = "sgmii";
+ 	phy-handle = <&mdio0_phy8>;
+ 	fixed-link {
+@@ -126,6 +143,7 @@
+ };
+ 
+ &pfe_netif1 {
++	status = "okay";
+ 	phy-mode = "sgmii";
+ 	phy-handle = <&mdio1_rtl_sw>;
+ 	fixed-link {
+@@ -135,6 +153,7 @@
+ };
+ 
+ &pfe_netif2 {
++	status = "okay";
+ 	phy-mode = "sgmii";
+ 	phy-handle = <&mdio2_phy7>;
+ 	fixed-link {
+-- 
+2.34.1
+
