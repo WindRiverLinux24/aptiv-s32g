@@ -1,0 +1,34 @@
+From 4db17461fc2e1f2da3da8a75c8ccbe483dfb24de Mon Sep 17 00:00:00 2001
+From: Zhantao Tang <zhantao.tang@windriver.com>
+Date: Thu, 13 Mar 2025 07:46:06 +0000
+Subject: [PATCH] uboot: configs: add BL2_BIN_FILE and M7_BIN_FILE for aptiv
+ bsp
+
+Add BL2_BIN_FILE and M7_BIN_FILE settings for aptiv bsp, to fix the
+following build failure:
+  include/configs/s32-cc.h:133:20: error: expected '}' before 'BL2_BIN_FILE'
+  |   133 |         "bl2_bin=" BL2_BIN_FILE "\0"\
+
+Upstream-Status: Inappropriate [WR Linux specific]
+
+Signed-off-by: Zhantao Tang <zhantao.tang@windriver.com>
+---
+ include/configs/s32g3xxaevb.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/configs/s32g3xxaevb.h b/include/configs/s32g3xxaevb.h
+index 05c31ebb..7d7c0acf 100644
+--- a/include/configs/s32g3xxaevb.h
++++ b/include/configs/s32g3xxaevb.h
+@@ -10,6 +10,8 @@
+ #if defined(CONFIG_TARGET_APTIV_CVC_FL)
+ 
+ #define FDT_FILE			"s32g399a-cvc-fl.dtb"
++#define BL2_BIN_FILE        "bl2_w_dtb-aptiv_cvc_fl.bin"
++#define M7_BIN_FILE         "m7-aptiv_cvc_fl-sd.bin"
+ #define EXTRA_BOOT_ARGS	""
+ 
+ #else
+-- 
+2.34.1
+

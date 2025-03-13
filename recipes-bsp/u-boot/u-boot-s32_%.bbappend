@@ -15,6 +15,7 @@ SRC_URI:append:aptiv-cvc = " \
 	file://0012-u-boot-s32-drop-restriction-of-count-of-SGMII-pfe.patch \
 	${@bb.utils.contains('HSE_SEC_ENABLED', '1', '${SEC_PATCHES}', '', d)} \
 	${UBOOT_HVP_PATCHES} \
+	file://0001-uboot-configs-add-BL2_BIN_FILE-and-M7_BIN_FILE-for-a.patch \
 "
 
 COMPATIBLE_MACHINE:aptiv-cvc = "aptiv-cvc"
