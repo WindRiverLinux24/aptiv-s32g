@@ -351,6 +351,13 @@ the wic file, please refer to section 5.1.
 Note: The set of configurations in local.conf is only an example, please modify them according to
       your own file name, version and md5 of the 2 images.
 
+6.7.1 Known issue
+-----------------
+Because the cvc_s32g3_m7_app.bin is a Aptiv specific m7-autosar image, it is
+not compatible with latest BSP status, after updating to S32G SDK BSP43, so if
+users want to use this feature, they should get the workable image from Aptiv,
+or else, it will fail.
+
 6.8 dm-verity
 -------------
 
